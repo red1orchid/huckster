@@ -2,6 +2,7 @@
   <library name="Maven: org.apache.tomcat.embed:tomcat-embed-core:7.0.57">
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/org/apache/tomcat/embed/tomcat-embed-core/7.0.57/tomcat-embed-core-7.0.57.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/xchart-3.0.3/xchart-3.0.3/xchart-3.0.3.jar!/" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$MAVEN_REPOSITORY$/org/apache/tomcat/embed/tomcat-embed-core/7.0.57/tomcat-embed-core-7.0.57-javadoc.jar!/" />
