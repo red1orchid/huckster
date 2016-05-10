@@ -13,14 +13,14 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+/*
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.Chart;
-import org.knowm.xchart.QuickChart;
+import org.knowm.xchart.QuickChart;*/
 
-@javax.servlet.annotation.WebServlet(name = "ChartServlet", urlPatterns = { "/chart" })
+//@javax.servlet.annotation.WebServlet(name = "ChartServlet", urlPatterns = { "/chart" })
 public class ChartServlet extends HttpServlet {
-
+/*
     private static Map<String, Chart> CHART_MAP = new HashMap<String, Chart>();
 
     @Override
@@ -72,5 +72,5 @@ public class ChartServlet extends HttpServlet {
             y[i] = y[i - 1] + Math.random() - .5;
         }
         return y;
-    }
+    }*/
 }

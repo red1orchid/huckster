@@ -12,22 +12,9 @@
     <title>Личный кабинет</title>
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/dashboard.css" rel="stylesheet">
-    <link href="../css/xcharts.min.css" rel="stylesheet">
-    <link href="../css/style.css" rel="stylesheet">
-    <link href="../css/daterangepicker.css" rel="stylesheet">
 
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/jquery.min.js"></script>
-
-    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/2.10.0/d3.v2.js"></script>
-    <script src="../js/xcharts.min.js"></script>
-
-    <!-- The daterange picker bootstrap plugin -->
-    <script src="../js/sugar.min.js"></script>
-    <script src="../js/daterangepicker.js"></script>
-
-    <!-- Our main script file -->
-    <script src="../js/script.js"></script>
 </head>
 <body>
 
@@ -226,19 +213,11 @@
         </div>
     </div>
 </div>
+<%--
 
 <script src="../js/bootstrap.min.js"></script>
-<script src="../js/jquery.min.js"></script>
-
-<script src="//cdnjs.cloudflare.com/ajax/libs/d3/2.10.0/d3.v2.js"></script>
-<script src="../js/xcharts.min.js"></script>
-
-<!-- The daterange picker bootstrap plugin -->
-<script src="../js/sugar.min.js"></script>
-<script src="../js/daterangepicker.js"></script>
-
-<!-- Our main script file -->
-<script src="../js/script.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+--%>
 
 </body>
 </html>

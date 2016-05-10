@@ -3,6 +3,7 @@ package huckster.cabinet;
 /**
  * Created by PerevalovaMA on 10.05.2016.
  */
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +44,50 @@ public class XChartServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Gson gson = new Gson();
+        String json = "{\n" +
+                "  \"xScale\": \"time\",\n" +
+                "  \"yScale\": \"linear\",\n" +
+                "  \"main\": [\n" +
+                "    {\n" +
+                "      \"className\": \".pizza\",\n" +
+                "      \"data\": [\n" +
+                "        {\n" +
+                "          \"x\": \"2012-11-05\",\n" +
+                "          \"y\": 6\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"x\": \"2012-11-06\",\n" +
+                "          \"y\": 6\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"x\": \"2012-11-07\",\n" +
+                "          \"y\": 8\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"x\": \"2012-11-08\",\n" +
+                "          \"y\": 3\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"x\": \"2012-11-09\",\n" +
+                "          \"y\": 4\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"x\": \"2012-11-10\",\n" +
+                "          \"y\": 9\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"x\": \"2012-11-11\",\n" +
+                "          \"y\": 6\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}";
+
+        System.out.println(json);
+        request.setAttribute("data", json);
         request.getRequestDispatcher("/jsp/chart.jsp").forward(request, response);
-        doPost(request, response);
     }
 
     /**
@@ -54,30 +97,16 @@ public class XChartServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Gson gson = new Gson();
         String json = "";
-        //get start date from request parameter
-        String sDate = request.getParameter("start");
-        //get end date from request parameter
-        String eDate = request.getParameter("end");
-        if (sDate != null && eDate != null) {
-            System.out.println("Start Date : " + sDate);
-            System.out.println("End Date : " + eDate);
-            //Actual data should come from database
-            //select data from database based on start date and end date
-            //here I am neither going to fetch data from database nor fetch data based on date range
-            //you need to manipulate those things from database
-            List<ChartDto> chartDtos = new ArrayList<ChartDto>();
-            for (ChartModel chartModel : chartModels) {
-                ChartDto chartDto = new ChartDto(chartModel.getDate(), chartModel.getVisits());
-                chartDtos.add(chartDto);
-            }
-            if (!chartDtos.isEmpty()) {
-                //convert list of pojo model to json for plotting on graph
-                json = gson.toJson(chartDtos);
-            } else {
-                json = "No record found";
-            }
+        List<ChartDto> chartDtos = new ArrayList<ChartDto>();
+        for (ChartModel chartModel : chartModels) {
+            ChartDto chartDto = new ChartDto(chartModel.getDate(), chartModel.getVisits());
+            chartDtos.add(chartDto);
+        }
+        if (!chartDtos.isEmpty()) {
+            //convert list of pojo model to json for plotting on graph
+            json = gson.toJson(chartDtos);
         } else {
-            json = "Date must be selected.";
+            json = "No record found";
         }
         System.out.println(json);
         //write to the response
