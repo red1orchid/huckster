@@ -2,6 +2,7 @@
 package huckster.cabinet;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,23 +28,24 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        if(checkLogin(req.getParameter("username"), req.getParameter("password"))){
-            Cookie loginCookie = new Cookie("user", req.getParameter("username"));
-            //setting cookie to expiry in 30 mins
-            loginCookie.setMaxAge(30*60);
-            resp.addCookie(loginCookie);
-            resp.sendRedirect("/");
-        }else{
-            req.setAttribute("message", "Неправильное имя пользователя или пароль");
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+
+        try {
+            if (DbStatistic.isUserExists(username, password)) {
+                Cookie loginCookie = new Cookie("user", username);
+                //setting cookie to expiry in 30 mins
+                loginCookie.setMaxAge(30 * 60);
+                resp.addCookie(loginCookie);
+                resp.sendRedirect("/");
+            } else {
+                req.setAttribute("message", "Неправильное имя пользователя или пароль");
+                req.getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            req.setAttribute("message", "В данный момент вход невозможен. Попробуйте позже.");
             req.getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
         }
     }
-
-    private boolean checkLogin(String username, String password) {
-        if (username.equals("1admin") && password.equals("nikita"))
-            return true;
-        else
-            return false;
-    }
-
 }
