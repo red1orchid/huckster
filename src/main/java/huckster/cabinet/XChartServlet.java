@@ -28,20 +28,6 @@ import com.google.gson.Gson;
 public class XChartServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    List<ChartModel> chartModels;
-
-    /**
-     * @see Servlet#init(ServletConfig)
-     */
-    @Override
-    public void init(ServletConfig config) throws ServletException {
-        //get data for XChart
-        chartModels = XChartData.getHighChartDataList();
-    }
-
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Gson gson = new Gson();
@@ -53,7 +39,7 @@ public class XChartServlet extends HttpServlet {
                 "      \"className\": \".pizza\",\n" +
                 "      \"data\": [\n" +
                 "        {\n" +
-                "          \"x\": \"2012-11-05\",\n" +
+                "          \"x\": \"2012-10-05\",\n" +
                 "          \"y\": 6\n" +
                 "        },\n" +
                 "        {\n" +
@@ -85,14 +71,21 @@ public class XChartServlet extends HttpServlet {
                 "  ]\n" +
                 "}";
 
+        List<MenuItem> list = new ArrayList<>();
+        list.add(new MenuItem("Работа с заказами", null, "glyphicon glyphicon-shopping-cart"));
+        list.add(new MenuItem("Настройки виджета", null, "glyphicon glyphicon-plus-sign"));
+        list.add(new MenuItem("Статистика и аналитика", null, "glyphicon glyphicon-stats"));
+        list.add(new MenuItem("Общие настройки", null, "glyphicon glyphicon-cog"));
+
         System.out.println(json);
         request.setAttribute("data", json);
+        request.setAttribute("menu", list);
         request.getRequestDispatcher("/jsp/chart.jsp").forward(request, response);
     }
-
-    /**
+/*
+    *//**
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-     */
+     *//*
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Gson gson = new Gson();
@@ -111,6 +104,6 @@ public class XChartServlet extends HttpServlet {
         System.out.println(json);
         //write to the response
         response.getWriter().write(json);
-    }
+    }*/
 
 }

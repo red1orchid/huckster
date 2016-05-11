@@ -25,11 +25,12 @@ public class DashbordServlet extends HttpServlet {
             req.setAttribute("menu", getMenu());
             req.setAttribute("panels", getPanels());
             System.out.println(getMenu().size());
-            req.getRequestDispatcher("/jsp/main.jsp").forward(req, resp);
+            req.getRequestDispatcher("/jsp/dashbord.jsp").forward(req, resp);
         }
         else {
             resp.sendRedirect("login");
         }
+
     }
 
     private List<MenuItem> getMenu() {
