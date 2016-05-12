@@ -1,2 +1,19 @@
 <Context reloadable="true" backgroundProcessorDelay="1">
+  <!-- 
+    maxActive: Maximum number of dB connections in pool. Set to -1 for no limit.
+    maxIdle: Maximum number of idle dB connections to retain in pool. Set to -1 for no limit.
+    maxWait: Maximum milliseconds to wait for a dB connection to become available
+             Set to -1 to wait indefinitely.
+  -->
+<Resource name="jdbc/huckster" 
+auth="Container"
+factory="oracle.jdbc.pool.OracleDataSourceFactory"
+type="javax.sql.DataSource"
+maxActive="100" 
+maxIdle="30" 
+maxWait="10000"
+username="huckster" 
+password="19643258"
+driverClassName="oracle.jdbc.OracleDriver"
+url="jdbc:oracle:thin:@188.166.92.58:1521:orcldb"/>
 </Context>

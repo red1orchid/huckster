@@ -27,14 +27,14 @@ public class StatisticPanel {
         icon = type.getIcon();
         panelClass = type.getPanelClass();
         try {
-            content = DbStatistic.getRate(type, companyId, period);
+            content = DbHelper.getRate(type, companyId, period);
         } catch (SQLException | DataException e) {
             content = 0.0;
             e.printStackTrace();
         }
         String prc;
         try {
-            prc = DbStatistic.getRatePrc(type, companyId, period);
+            prc = DbHelper.getRatePrc(type, companyId, period);
         } catch (SQLException | DataException e) {
             prc = "0.0";
             e.printStackTrace();

@@ -28,13 +28,13 @@ public class DashboardServlet extends HttpServlet {
         String user = getUser(req);
         if (user != null) {
             try {
-                int companyId = DbStatistic.getCompanyId(user);
+                int companyId = DbHelper.getCompanyId(user);
                 String period = getPeriod(req, resp);
 
                 req.setAttribute("menu", getMenu());
                 req.setAttribute("panels", getPanels(period, companyId));
                 req.setAttribute("period", period);
-                req.setAttribute("company", DbStatistic.getCompanyName(companyId));
+                req.setAttribute("company", DbHelper.getCompanyName(companyId));
                 req.getRequestDispatcher("/jsp/dashboard.jsp").forward(req, resp);
             } catch (SQLException e) {
                 e.printStackTrace();

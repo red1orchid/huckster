@@ -1,12 +1,15 @@
 /* Copyright � 2015 Oracle and/or its affiliates. All rights reserved. */
 package huckster.cabinet;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -17,6 +20,12 @@ import java.sql.SQLException;
 public class LoginServlet extends HttpServlet {
     //setting cookie to expiry in 30 mins
     private static final int COOKIE_MAX_AGE = 30 * 60;
+    private static DbHelper db;
+
+    @Override
+    public void init( ) throws ServletException {
+        db = new DbHelper();
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,7 +38,7 @@ public class LoginServlet extends HttpServlet {
         String password = req.getParameter("password");
 
         try {
-            if (DbStatistic.isUserExists(username, password)) {
+            if (db.isUserExists(username, password)) {
                 Cookie loginCookie = new Cookie("user", username);
                 loginCookie.setMaxAge(COOKIE_MAX_AGE);
                 resp.addCookie(loginCookie);
@@ -39,7 +48,8 @@ public class LoginServlet extends HttpServlet {
                 req.getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
             }
         } catch (SQLException e) {
-            resp.sendRedirect("/error.jsp");
+            e.printStackTrace();
+            resp.sendRedirect("/jsp/error.jsp");
         }
     }
 }
