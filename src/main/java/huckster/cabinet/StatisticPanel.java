@@ -6,13 +6,13 @@ import java.sql.SQLException;
  * Created by PerevalovaMA on 10.05.2016.
  */
 public class StatisticPanel {
-    Double content;
+    String content;
     String label;
     String icon;
     String panelClass;
     String footer;
 
-    public StatisticPanel(Type type, String period, int companyId) {
+    public StatisticPanel(DbHelper db, Type type, String period, int companyId) {
         switch (period) {
             case "day":
                 label = String.format(type.getLabel(), " за текущий день");
@@ -27,26 +27,26 @@ public class StatisticPanel {
         icon = type.getIcon();
         panelClass = type.getPanelClass();
         try {
-            content = DbHelper.getRate(type, companyId, period);
+            content = db.getRate(type, "main", companyId, period);
         } catch (SQLException | DataException e) {
-            content = 0.0;
+            content = "0";
             e.printStackTrace();
         }
         String prc;
         try {
-            prc = DbHelper.getRatePrc(type, companyId, period);
+            prc = db.getRate(type, "footer", companyId, period);
         } catch (SQLException | DataException e) {
             prc = "0.0";
             e.printStackTrace();
         }
-        footer = String.format("<b>%s</b>%% %s", prc, type.getFooter());
+        footer = String.format("<b>%s%%</b> %s", prc, type.getFooter());
     }
 
     public String getFooter() {
         return footer;
     }
 
-    public Double getContent() {
+    public String getContent() {
         return content;
     }
 

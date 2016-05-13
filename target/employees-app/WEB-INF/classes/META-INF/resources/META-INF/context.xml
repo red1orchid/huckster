@@ -7,7 +7,6 @@
   -->
 <Resource name="jdbc/huckster" 
 auth="Container"
-factory="oracle.jdbc.pool.OracleDataSourceFactory"
 type="javax.sql.DataSource"
 maxActive="100" 
 maxIdle="30" 
@@ -15,5 +14,5 @@ maxWait="10000"
 username="huckster" 
 password="19643258"
 driverClassName="oracle.jdbc.OracleDriver"
-url="jdbc:oracle:thin:@188.166.92.58:1521:orcldb"/>
+url="jdbc:oracle:thin:@188.166.92.58:1521:orcldb"/>/>
 </Context>
