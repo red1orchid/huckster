@@ -18,5 +18,7 @@ var opts = {
     $(tt).hide();
   }
 };
-var myChart = new xChart('line-dotted', data, '#chart', opts);
+var myChart1 = new xChart('line-dotted', data_inc, '#chart_inc', opts);
+var myChart2 = new xChart('line-dotted', data_ord, '#chart_ord', opts);
+var myChart3 = new xChart('line-dotted', data_cnv, '#chart_cnv', opts);
 });

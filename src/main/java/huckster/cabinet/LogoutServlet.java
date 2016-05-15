@@ -6,7 +6,7 @@ import javax.servlet.http.*;
 import java.io.IOException;
 
 /**
- * Created by PerevalovaMA on 10.05.2016.
+ * Created by Perevalova Marina on 10.05.2016.
  */
 @WebServlet(
         name = "LogoutServlet",

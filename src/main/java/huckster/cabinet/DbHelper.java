@@ -8,15 +8,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.HashMap;
 
-import static huckster.cabinet.StatisticPanel.Type;
+import static org.eclipse.jdt.internal.compiler.ast.ASTNode.Unchecked;
 
 /**
- * Created by PerevalovaMA on 11.05.2016.
+ * Created by Perevalova Marina on 11.05.2016.
  */
-public class DbHelper {
+class DbHelper {
     private DataSource pool;  // Database connection pool
+    private HashMap<Integer, String> rateContainer = new HashMap<>();
+    private HashMap<Integer, String> prcContainer = new HashMap<>();
+    private HashMap<Integer, ChartData> chartContainer = new HashMap<>();
 
     DbHelper() throws ServletException {
         try {
@@ -29,10 +32,144 @@ public class DbHelper {
         }
     }
 
+/*    private ResultSet getResult(String sql, int companyId, String period) throws SQLException {
+        try (Connection dbConnection = pool.getConnection();
+             PreparedStatement ps = dbConnection.prepareStatement(sql)) {
+            ps.setInt(1, companyId);
+            ps.setString(2, period);
+            ResultSet rs = ps.executeQuery();
+
+            return rs;
+        }
+    }*/
+
+    private void initRateContainer(int companyId, String period) throws SQLException {
+        if (rateContainer.isEmpty()) {
+            String sql = " SELECT report_id, " +
+                    "             CASE" +
+                    "               WHEN report_id IN (4, 7) THEN to_char(value, 'fm90.00')" +
+                    "               ELSE value" +
+                    "             END AS value" +
+                    "   FROM analitic.reports_data" +
+                    "  WHERE report_id IN (4, 5, 6, 7)" +
+                    "    AND company_id = ?" +
+                    "    AND decode(interval, 'ddd', 'day', 'iw', 'week', interval) = ?" +
+                    "    AND metric_name = 'curr'";
+
+            try (Connection dbConnection = pool.getConnection();
+                 PreparedStatement ps = dbConnection.prepareStatement(sql)) {
+                ps.setInt(1, companyId);
+                ps.setString(2, period);
+                ResultSet rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    rateContainer.put(rs.getInt("report_id"), rs.getString("value"));
+                }
+
+                if (rateContainer.isEmpty()) {
+                    throw new DataException("No appropriate data");
+                }
+            }
+        }
+    }
+
+    private void initPrcContainer(int companyId, String period) throws SQLException {
+        if (prcContainer.isEmpty()) {
+            String sql = "SELECT r.report_id, (CASE WHEN sign(r.value-rr.value) = 1 THEN '+' END) || " +
+                    "                       trim(to_char(round((r.value-rr.value)/decode(rr.value,0,1,rr.value)*100, 2), '9990.99')) AS value" +
+                    "  FROM analitic.reports_data r" +
+                    " INNER JOIN analitic.reports_data rr" +
+                    "    ON rr.report_id = r.report_id" +
+                    "   AND rr.company_id = r.company_id " +
+                    "   AND rr.interval = r.interval " +
+                    " WHERE r.report_id IN (4, 5, 6, 7) " +
+                    "   AND r.company_id = ? " +
+                    "   AND r.interval = decode(?, 'day', 'ddd', 'week', 'iw', 'month') " +
+                    "   AND r.metric_name = 'curr' " +
+                    "   AND rr.metric_name = 'last'";
+
+            try (Connection dbConnection = pool.getConnection();
+                 PreparedStatement ps = dbConnection.prepareStatement(sql)) {
+                ps.setInt(1, companyId);
+                ps.setString(2, period);
+                ResultSet rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    prcContainer.put(rs.getInt("report_id"), rs.getString("value"));
+                }
+
+                if (prcContainer.isEmpty()) {
+                    throw new DataException("No appropriate data");
+                }
+            }
+        }
+    }
+
+    private void initChartContainer(int companyId, String period) throws SQLException {
+        if (chartContainer.isEmpty()) {
+            String sql = "SELECT * " +
+                    "FROM (" +
+                    "  SELECT report_id, metric_name, period, CASE report_id" +
+                    "                                            WHEN 3 THEN value*1000" +
+                    "                                            ELSE to_number(value)" +
+                    "                                         END AS value" +
+                    "  FROM analitic.reports_data" +
+                    "  WHERE report_id IN (1, 2, 3)" +
+                    "        AND company_id = ?" +
+                    "        AND interval = ?)" +
+                    "  PIVOT (" +
+                    "    sum(value)" +
+                    "    FOR metric_name IN ('curr' AS curr, 'last' AS last))" +
+                    "ORDER BY report_id";
+
+            try (Connection dbConnection = pool.getConnection();
+                 PreparedStatement ps = dbConnection.prepareStatement(sql)) {
+                ps.setInt(1, companyId);
+                ps.setString(2, period);
+                ResultSet rs = ps.executeQuery();
+
+                ChartData chartData = new ChartData("time", "linear");
+                ChartLine current = new ChartLine(".current");
+                ChartLine last = new ChartLine(".last");
+                int reportId = 0;
+
+                while (rs.next()) {
+                    if (rs.getInt("report_id") != reportId) {
+                        if (reportId != 0) {
+                            chartData.addLine(current);
+                            chartData.addLine(last);
+                            chartContainer.put(reportId, chartData);
+                        }
+                        chartData = new ChartData("time", "linear");
+                        current = new ChartLine(".current");
+                        last = new ChartLine(".last");
+                    }
+                    current.addPoint(new ChartPoint(rs.getString("period"), rs.getInt("curr")));
+                    last.addPoint(new ChartPoint(rs.getString("period"), rs.getInt("last")));
+                    reportId = rs.getInt("report_id");
+                }
+                chartData.addLine(current);
+                chartData.addLine(last);
+                chartContainer.put(reportId, chartData);
+
+                if (chartContainer.isEmpty()) {
+                    throw new DataException("No appropriate data");
+                }
+            }
+        }
+    }
+
+    void refreshData() {
+        rateContainer.clear();
+        prcContainer.clear();
+        chartContainer.clear();
+    }
+
     boolean isUserExists(String username, String password) throws SQLException {
-        String sql = "select count(*) as count from users_auth " +
-                "where upper(user_name) = upper(?) " +
-                "and password = sys.hash_md5(? || id || upper(user_name))";
+        String sql = "SELECT count(*) AS count FROM users_auth " +
+                "WHERE upper(user_name) = upper(?) " +
+                "AND password = sys.hash_md5(? || id || upper(user_name))";
+
         try (Connection dbConnection = pool.getConnection();
              PreparedStatement ps = dbConnection.prepareStatement(sql)) {
             ps.setString(1, username);
@@ -51,7 +188,7 @@ public class DbHelper {
 
     int getCompanyId(String username) throws SQLException {
         try (Connection dbConnection = pool.getConnection();
-             PreparedStatement ps = dbConnection.prepareStatement("select company from users_auth where upper(user_name) = upper(?)")) {
+             PreparedStatement ps = dbConnection.prepareStatement("SELECT company FROM users_auth WHERE upper(user_name) = upper(?)")) {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
 
@@ -70,7 +207,7 @@ public class DbHelper {
 
     String getCompanyName(int companyId) throws SQLException {
         try (Connection dbConnection = pool.getConnection();
-             PreparedStatement ps = dbConnection.prepareStatement("select head_name from companies where company_id = ?")) {
+             PreparedStatement ps = dbConnection.prepareStatement("SELECT head_name FROM companies WHERE company_id = ?")) {
             ps.setInt(1, companyId);
             ResultSet rs = ps.executeQuery();
 
@@ -87,102 +224,25 @@ public class DbHelper {
         }
     }
 
-    String getRate(Type rateType, String contextType, int companyId, String period) throws SQLException {
-        String sql;
+    String getRate(StatisticPanel.Type rateType, String contextType, int companyId, String period) throws
+            SQLException {
+        int reportId = rateType.getReportId();
+
         if (contextType.equals("main")) {
-            sql = " select case" +
-                    "         when report_id in (4, 7) then to_char(value, 'fm90.00')" +
-                    "         else value" +
-                    "       end as value" +
-                    "   from analitic.reports_data" +
-                    "  where report_id = ?" +
-                    "    and company_id = ?" +
-                    "    and interval = decode(?, 'day', 'ddd', 'week', 'iw', 'month')" +
-                    "    and metric_name = 'curr'";
+            initRateContainer(companyId, period);
+            return rateContainer.get(reportId);
         } else if (contextType.equals("footer")) {
-            sql = "select (case when sign(r.value-rr.value) = 1 then '+' end) || trim(to_char(round((r.value-rr.value)/decode(rr.value,0,1,rr.value)*100, 2), '9990.99')) as value" +
-                    "  from analitic.reports_data r" +
-                    " inner join analitic.reports_data rr" +
-                    "    on rr.report_id = r.report_id" +
-                    "   and rr.company_id = r.company_id " +
-                    "   and rr.interval = r.interval " +
-                    " where r.report_id = ? " +
-                    "   and r.company_id = ? " +
-                    "   and r.interval = decode(?, 'day', 'ddd', 'week', 'iw', 'month') " +
-                    "   and r.metric_name = 'curr' " +
-                    "   and rr.metric_name = 'last'";
+            initPrcContainer(companyId, period);
+            return prcContainer.get(reportId);
         } else {
             throw new DataException("Unsupported context type");
         }
-        int reportId;
-
-        switch (rateType) {
-            case INCOME:
-                reportId = 5;
-                break;
-            case ORDERS:
-                reportId = 6;
-                break;
-            case CONVERSION:
-                reportId = 4;
-                break;
-            case COVERING:
-                reportId = 7;
-                break;
-            default:
-                throw new DataException("Unsupported rate type");
-        }
-
-        try (Connection dbConnection = pool.getConnection();
-             PreparedStatement ps = dbConnection.prepareStatement(sql)) {
-            ps.setInt(1, reportId);
-            ps.setInt(2, companyId);
-            ps.setString(3, period);
-            ResultSet rs = ps.executeQuery();
-
-            String rate = null;
-            while (rs.next()) {
-                rate = rs.getString("value");
-            }
-
-            if (rate != null) {
-                return rate;
-            } else {
-                throw new DataException("No appropriate data");
-            }
-        }
     }
 
-    ChartData getChartData(int companyId, String period, int reportId) throws SQLException {
-        String sql = "select * from (" +
-                "        select metric_name, period, value" +
-                "          from analitic.reports_data" +
-                "         where company_id = ?" +
-                "           and interval = ?" +
-                "           and report_id = ?)" +
-                " pivot(sum(value)" +
-                "   for metric_name in('curr' as curr, 'last' as last))" +
-                " order by 1";
+    ChartData getChartData(Chart.Type type, int companyId, String period) throws SQLException {
+        int reportId = type.getReportId();
 
-        try (Connection dbConnection = pool.getConnection();
-             PreparedStatement ps = dbConnection.prepareStatement(sql)) {
-            ps.setInt(1, companyId);
-            ps.setString(2, period);
-            ps.setInt(3, reportId);
-            ResultSet rs = ps.executeQuery();
-
-          // ArrayList<ChartPoint2> charData = new ArrayList<>();
-            ChartData chartData = new ChartData("time", "linear");
-            ChartLine current = new ChartLine(".current");
-            ChartLine last = new ChartLine(".last");
-            while (rs.next()) {
-                current.addPoint(new ChartPoint(rs.getString("period"), rs.getInt("curr")));
-                last.addPoint(new ChartPoint(rs.getString("period"), rs.getInt("last")));
-            }
-            chartData.addLine(current);
-            chartData.addLine(last);
-
-            return chartData;
-        }
+        initChartContainer(companyId, period);
+        return chartContainer.get(reportId);
     }
 }

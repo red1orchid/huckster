@@ -3,7 +3,7 @@ package huckster.cabinet;
 import java.util.ArrayList;
 
 /**
- * Created by PerevalovaMA on 13.05.2016.
+ * Created by Perevalova Marina on 13.05.2016.
  */
 class ChartLine {
     String className;

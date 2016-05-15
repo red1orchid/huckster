@@ -14,5 +14,6 @@ maxWait="10000"
 username="huckster" 
 password="19643258"
 driverClassName="oracle.jdbc.OracleDriver"
+initialSize="10"
 url="jdbc:oracle:thin:@188.166.92.58:1521:orcldb"/>/>
 </Context>

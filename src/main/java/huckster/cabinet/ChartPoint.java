@@ -1,7 +1,7 @@
 package huckster.cabinet;
 
 /**
- * Created by PerevalovaMA on 13.05.2016.
+ * Created by Perevalova Marina on 13.05.2016.
  */
 class ChartPoint {
     String x;

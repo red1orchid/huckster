@@ -15,87 +15,109 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Marina on 09.05.2016.
+ * Created by Perevalova Marina on 09.05.2016.
  */
 @WebServlet(
         name = "DashboardServlet",
         urlPatterns = {""}
 )
 public class DashboardServlet extends HttpServlet {
-    private static final int COOKIE_MAX_AGE = 30 * 60;
+    private static final int COOKIE_MAX_AGE = 60 * 60;
     private static final String DEFAULT_PERIOD = "week";
     //   private static int companyId;
     private static DbHelper db;
+    static long timeStone = System.currentTimeMillis();
 
     @Override
-    public void init( ) throws ServletException {
+    public void init() throws ServletException {
+        timeStone("start of init");
         db = new DbHelper();
+        timeStone("new DBHelper");
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        timeStone("start of get");
         String user = getUser(req);
         if (user != null) {
+            timeStone("start of get with login");
             try {
-                int companyId = db.getCompanyId(user);
-                String period = getPeriod(req, resp);
+                int companyId = getCompanyId(req, user);
+                String period = getPeriod(req);
+                db.refreshData();
 
-                req.setAttribute("company", db.getCompanyName(companyId));
+                req.setAttribute("company", getCompanyName(req, companyId));
                 req.setAttribute("menu", getMenu());
-                req.setAttribute("panels", getPanels(period, companyId));
+                req.setAttribute("panels", getPanels(companyId, period));
+                timeStone("get panels");
                 req.setAttribute("period", period);
-                req.setAttribute("chartData", getChart(companyId, period));
+                req.setAttribute("charts", getCharts(companyId, period));
               //  req.setAttribute("chartData", getJson());
+                timeStone("before redirect");
                 req.getRequestDispatcher("/jsp/dashboard.jsp").forward(req, resp);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         } else {
+            System.out.println("redirect to login");
             resp.sendRedirect("login");
         }
+        timeStone("end of get");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("post");
-        setPeriod(req, resp, req.getParameter("period"));
+        timeStone("post");
+        setPeriod(req, req.getParameter("period"));
         resp.sendRedirect("/");
     }
 
-    private String getPeriod(HttpServletRequest req, HttpServletResponse resp) {
-        Cookie[] cookies = req.getCookies();
-        for (Cookie c : cookies) {
-            if (c.getName().equals("period")) {
-                return c.getValue();
-            }
-        }
-        //no existing cookie
-        setPeriod(req, resp, DEFAULT_PERIOD);
-        return DEFAULT_PERIOD;
+    static void timeStone(String message) {
+        long newTimeStone = System.currentTimeMillis();
+        System.out.println(message + ": " + (newTimeStone - timeStone));
+        timeStone = newTimeStone;
     }
 
-    private void setPeriod(HttpServletRequest req, HttpServletResponse resp, String period) {
-        Cookie[] cookies = req.getCookies();
-        for (Cookie c : cookies) {
-            if (c.getName().equals("period")) {
-                c.setValue(period);
-                resp.addCookie(c);
-                return;
-            }
+    private Integer getCompanyId(HttpServletRequest req, String user) throws SQLException {
+        Integer companyId = (Integer) req.getSession().getAttribute("companyId");
+        if (companyId == null) {
+            companyId = db.getCompanyId(user);
+            req.getSession().setAttribute("companyId", companyId);
         }
+        return companyId;
+    }
 
-        //no existing cookie
-        Cookie periodCookie = new Cookie("period", period);
-        periodCookie.setMaxAge(COOKIE_MAX_AGE);
-        resp.addCookie(periodCookie);
+    private String getCompanyName(HttpServletRequest req, Integer companyId) throws SQLException {
+        String companyName = (String) req.getSession().getAttribute("companyName");
+        if (companyName == null) {
+            companyName = db.getCompanyName(companyId);
+            req.getSession().setAttribute("companyName", companyName);
+        }
+        return companyName;
+    }
+
+    private String getPeriod(HttpServletRequest req) {
+        String period = (String) req.getSession().getAttribute("period");
+        if (period == null) {
+            period = DEFAULT_PERIOD;
+            req.getSession().setAttribute("period", period);
+        }
+        return period;
+    }
+
+    private void setPeriod(HttpServletRequest req, String period) {
+        System.out.println("period " + period);
+        req.getSession().setAttribute("period", period);
     }
 
     private String getUser(HttpServletRequest req) {
         String user = null;
         Cookie[] cookies = req.getCookies();
-        for (Cookie c : cookies) {
-            if (c.getName().equals("user")) {
-                user = c.getValue();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if (c.getName().equals("user")) {
+                    user = c.getValue();
+                }
             }
         }
 
@@ -112,12 +134,12 @@ public class DashboardServlet extends HttpServlet {
         return list;
     }
 
-    private List<StatisticPanel> getPanels(String period, int companyId) {
+    private List<StatisticPanel> getPanels(int companyId, String period) {
         List<StatisticPanel> list = new ArrayList<>();
-        list.add(new StatisticPanel(db, StatisticPanel.Type.INCOME, period, companyId));
-        list.add(new StatisticPanel(db, StatisticPanel.Type.ORDERS, period, companyId));
-        list.add(new StatisticPanel(db, StatisticPanel.Type.CONVERSION, period, companyId));
-        list.add(new StatisticPanel(db, StatisticPanel.Type.COVERING, period, companyId));
+        list.add(new StatisticPanel(db, StatisticPanel.Type.INCOME, companyId, period));
+        list.add(new StatisticPanel(db, StatisticPanel.Type.ORDERS, companyId, period));
+        list.add(new StatisticPanel(db, StatisticPanel.Type.CONVERSION, companyId, period));
+        list.add(new StatisticPanel(db, StatisticPanel.Type.COVERING, companyId, period));
         return list;
     }
 
@@ -196,11 +218,11 @@ public class DashboardServlet extends HttpServlet {
         return json;
     }
 
-    private String getChart(int companyId, String period) throws SQLException {
-        ChartData chartData = db.getChartData(companyId, period, 1);
-        Gson json = new Gson();
-        System.out.println(json.toJson(chartData));
-        return json.toJson(chartData);
+    private List<Chart> getCharts(int companyId, String period) {
+        List<Chart> list = new ArrayList<>();
+        list.add(new Chart(db, Chart.Type.INCOME, companyId, period));
+        list.add(new Chart(db, Chart.Type.ORDERS, companyId, period));
+        list.add(new Chart(db, Chart.Type.CONVERSION, companyId, period));
+        return list;
     }
-
 }

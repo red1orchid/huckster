@@ -3,16 +3,16 @@ package huckster.cabinet;
 import java.sql.SQLException;
 
 /**
- * Created by PerevalovaMA on 10.05.2016.
+ * Created by Perevalova Marina on 10.05.2016.
  */
 public class StatisticPanel {
-    String content;
-    String label;
-    String icon;
-    String panelClass;
-    String footer;
+    private String content;
+    private String label;
+    private String icon;
+    private String panelClass;
+    private String footer;
 
-    public StatisticPanel(DbHelper db, Type type, String period, int companyId) {
+    StatisticPanel(DbHelper db, Type type, int companyId, String period) {
         switch (period) {
             case "day":
                 label = String.format(type.getLabel(), " за текущий день");
@@ -62,22 +62,24 @@ public class StatisticPanel {
         return panelClass;
     }
 
-    public enum Type {
-        INCOME("Доход за %s, т.р.", "доход LFL", "panel-primary", "glyphicon glyphicon-ruble"),
-        ORDERS("Заказы за %s, шт.", "заказы LFL", "panel-warning", "glyphicon glyphicon-shopping-cart"),
-        CONVERSION("Конверсия за %s, %%", "конверсия LFL", "panel-success", "glyphicon glyphicon-stats"),
-        COVERING("Покрытие за %s, %%", "покрытие LFL", "panel-danger", "glyphicon glyphicon-user");
+    enum Type {
+        INCOME("Доход за %s, т.р.", "доход LFL", "panel-primary", "glyphicon glyphicon-ruble", 5),
+        ORDERS("Заказы за %s, шт.", "заказы LFL", "panel-warning", "glyphicon glyphicon-shopping-cart", 6),
+        CONVERSION("Конверсия за %s, %%", "конверсия LFL", "panel-success", "glyphicon glyphicon-stats", 4),
+        COVERING("Покрытие за %s, %%", "покрытие LFL", "panel-danger", "glyphicon glyphicon-user", 7);
 
         private final String label;
         private final String footer;
         private final String panelClass;
         private final String icon;
+        private final int reportId;
 
-        private Type(String label, String footer, String panelClass, String icon) {
+        Type(String label, String footer, String panelClass, String icon, int reportId) {
             this.label = label;
             this.footer = footer;
             this.panelClass = panelClass;
             this.icon = icon;
+            this.reportId = reportId;
         }
 
         public String getLabel() {
@@ -94,6 +96,10 @@ public class StatisticPanel {
 
         public String getIcon() {
             return icon;
+        }
+
+        public int getReportId() {
+            return reportId;
         }
     }
 }

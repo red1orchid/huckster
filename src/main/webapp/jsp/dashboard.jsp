@@ -4,8 +4,9 @@
   Date: 09.05.2016
   Time: 16:56
   To change this template use File | Settings | File Templates.
+
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" errorPage="error.jsp" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
@@ -108,12 +109,16 @@
             </div>
 
             <%--Charts--%>
-            <div id="placeholder">
-                <figure id="chart"></figure>
-            </div>
+            <c:forEach var="chart" items="${charts}">
+                <div id="placeholder">
+                    <figure id="${chart.getId()}"></figure>
+                </div>
+            </c:forEach>
 
             <script type="text/javascript">
-                var data = ${chartData};
+                <c:forEach var="chart" items="${charts}">
+                    var ${chart.getVar()} = ${chart.getData()};
+                </c:forEach>
             </script>
         </div>
     </div>
