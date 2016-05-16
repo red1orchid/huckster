@@ -12,29 +12,31 @@ public class StatisticPanel {
     private String panelClass;
     private String footer;
 
-    StatisticPanel(DbHelper db, Type type, int companyId, String period) {
+    StatisticPanel(UserData userData, Type type) throws SQLException {
+        String period = userData.getPeriod();
+        String currency = userData.getCurrency();
         switch (period) {
             case "day":
-                label = String.format(type.getLabel(), " за текущий день");
+                label = String.format(type.getLabel(), " за текущий день", currency);
                 break;
             case "week":
-                label = String.format(type.getLabel(), " за текущую неделю");
+                label = String.format(type.getLabel(), " за текущую неделю", currency);
                 break;
             case "month":
-                label = String.format(type.getLabel(), " за текущий месяц");
+                label = String.format(type.getLabel(), " за текущий месяц", currency);
                 break;
         }
         icon = type.getIcon();
         panelClass = type.getPanelClass();
         try {
-            content = db.getRate(type, "main", companyId, period);
+            content = userData.getRate(type, "main", period);
         } catch (SQLException | DataException e) {
             content = "0";
             e.printStackTrace();
         }
         String prc;
         try {
-            prc = db.getRate(type, "footer", companyId, period);
+            prc = userData.getRate(type, "footer", period);
         } catch (SQLException | DataException e) {
             prc = "0.0";
             e.printStackTrace();
@@ -63,7 +65,7 @@ public class StatisticPanel {
     }
 
     enum Type {
-        INCOME("Доход за %s, т.р.", "доход LFL", "panel-primary", "glyphicon glyphicon-ruble", 5),
+        INCOME("Доход за %s, т.%s.", "доход LFL", "panel-primary", "glyphicon glyphicon-ruble", 5),
         ORDERS("Заказы за %s, шт.", "заказы LFL", "panel-warning", "glyphicon glyphicon-shopping-cart", 6),
         CONVERSION("Конверсия за %s, %%", "конверсия LFL", "panel-success", "glyphicon glyphicon-stats", 4),
         COVERING("Покрытие за %s, %%", "покрытие LFL", "panel-danger", "glyphicon glyphicon-user", 7);

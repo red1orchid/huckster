@@ -1,15 +1,12 @@
 /* Copyright � 2015 Oracle and/or its affiliates. All rights reserved. */
 package huckster.cabinet;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -19,13 +16,13 @@ import java.sql.SQLException;
 )
 public class LoginServlet extends HttpServlet {
     //setting cookie to expiry in 30 mins
-    private static final int COOKIE_MAX_AGE = 30 * 60;
-    private static DbHelper db;
+    private static final int COOKIE_MAX_AGE = 60 * 60;
+    private static UserData userData;
 
-    @Override
-    public void init( ) throws ServletException {
-        db = new DbHelper();
-    }
+/*    @Override
+    public void init() throws ServletException {
+        userData = new UserData();
+    }*/
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -38,7 +35,8 @@ public class LoginServlet extends HttpServlet {
         String password = req.getParameter("password");
 
         try {
-            if (db.isUserExists(username, password)) {
+            userData = new UserData(username);
+            if (userData.isUserExists(password)) {
                 Cookie loginCookie = new Cookie("user", username);
                 loginCookie.setMaxAge(COOKIE_MAX_AGE);
                 resp.addCookie(loginCookie);

@@ -20,18 +20,10 @@ public class LogoutServlet extends HttpServlet {
             if (c.getName().equals("user")) {
                 c.setMaxAge(0);
                 resp.addCookie(c);
-                System.out.println("delete cookie");
             }
         }
 
+        DashboardServlet.destoryUser();
         resp.sendRedirect("/");
     }
-
-    private boolean checkLogin(String username, String password) {
-        if (username.equals("1admin") && password.equals("nikita"))
-            return true;
-        else
-            return false;
-    }
-
 }

@@ -65,23 +65,11 @@
                                 class="btn btn-primary <c:if test="${period == 'month'}">active</c:if>">Текущий месяц
                         </button>
                     </div>
-                    <%--                    <div class="btn-group" data-toggle="buttons">
-                                            <label class="btn btn-primary">
-                                                <input type="radio" name="options" value="option1"> Текущий день
-                                            </label>
-                                            <label class="btn btn-primary">
-                                                <input type="radio" name="options" value="option2"> Текущую неделю
-                                            </label>
-                                            <label class="btn btn-primary active">
-                                                <input type="radio" name="options" value="option3"> Текущий месяц
-                                            </label>
-                                            <input type="submit" value="submit">
-                                        </div>--%>
                 </h3>
             </form>
 
-            <%--Statistic panels--%>
             <div class="row placeholders">
+                <%--Statistic panels--%>
                 <c:forEach var="panel" items="${panels}">
                     <div class="col-xs-6 col-sm-3 placeholder">
                         <div class="panel ${panel.getPanelClass()}">
@@ -106,18 +94,26 @@
                         </div>
                     </div>
                 </c:forEach>
+                <%--Charts--%>
+                <c:forEach var="chart" items="${charts}">
+                    <div class="col-xs-12 col-sm-12 placeholder">
+                        <div class="panel panel-default">
+                            <div class="panel-heading text-left"><span class="${chart.getIcon()}" aria-hidden="true"></span> ${chart.getTitle()}</div>
+                            <div class="panel-body">
+                                <figure id="${chart.getId()}"></figure>
+                            </div>
+                        </div>
+                    </div>
+                </c:forEach>
             </div>
 
-            <%--Charts--%>
-            <c:forEach var="chart" items="${charts}">
-                <div id="placeholder">
-                    <figure id="${chart.getId()}"></figure>
-                </div>
-            </c:forEach>
+            <%--                <div id="placeholder">
+                                <figure id="${chart.getId()}"></figure>
+                            </div>--%>
 
             <script type="text/javascript">
                 <c:forEach var="chart" items="${charts}">
-                    var ${chart.getVar()} = ${chart.getData()};
+                var ${chart.getVar()} = ${chart.getData()};
                 </c:forEach>
             </script>
         </div>

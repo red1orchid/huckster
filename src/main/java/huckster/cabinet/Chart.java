@@ -10,14 +10,28 @@ import java.sql.SQLException;
 public class Chart {
     private ChartData data;
     private String title;
+    private String icon;
     private Type type;
 
-    public Chart(DbHelper db, Type type, int companyId, String period) {
+    public Chart(UserData userData, Type type) throws SQLException {
+        String period = userData.getPeriod();
+        String currency = userData.getCurrency();
+        switch (period) {
+            case "day":
+                title = String.format(type.getTitle(), " за текущий день", currency);
+                break;
+            case "week":
+                title = String.format(type.getTitle(), " за текущую неделю", currency);
+                break;
+            case "month":
+                title = String.format(type.getTitle(), " за текущий месяц", currency);
+                break;
+        }
+        icon = "glyphicon glyphicon-stats";
         this.type = type;
-        title = type.getTitle();
 
         try {
-            data = db.getChartData(type, companyId, period);
+            data = userData.getChartData(type, period);
         } catch (SQLException | DataException e) {
             e.printStackTrace();
         }
@@ -32,6 +46,8 @@ public class Chart {
         return title;
     }
 
+    public String getIcon() { return icon; }
+
     public String getId() {
         return type.getId();
     }
@@ -41,9 +57,9 @@ public class Chart {
     }
 
     enum Type {
-        INCOME("Доход за %s, т.р.", 1, "chart_inc", "data_inc"),
-        ORDERS("Заказы за %s, шт.", 2, "chart_ord", "data_ord"),
-        CONVERSION("Конверсия за %s, %%", 3, "chart_cnv", "data_cnv");
+        INCOME("Доход за %s LFL, %s.", 1, "chart_inc", "data_inc"),
+        ORDERS("Заказы за %s LFL, шт.", 2, "chart_ord", "data_ord"),
+        CONVERSION("Конверсия за %s LFL, %%", 3, "chart_cnv", "data_cnv");
 
         private final String title;
         private final int reportId;

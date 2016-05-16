@@ -8,11 +8,13 @@ import java.util.ArrayList;
 class ChartData {
     private String xScale;
     private String yScale;
+    private int yMin;
     ArrayList<ChartLine> main = new ArrayList<>();
 
-    ChartData(String xScale, String yScale) {
+    ChartData(String xScale, String yScale, int yMin) {
         this.xScale = xScale;
         this.yScale = yScale;
+        this.yMin = yMin;
     }
 
     void addLine(ChartLine l) {
