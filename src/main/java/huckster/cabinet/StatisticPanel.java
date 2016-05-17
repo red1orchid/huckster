@@ -1,5 +1,8 @@
 package huckster.cabinet;
 
+import huckster.cabinet.DataException;
+import huckster.cabinet.UserData;
+
 import java.sql.SQLException;
 
 /**

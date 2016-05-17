@@ -4,11 +4,9 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.HashMap;
+import java.sql.*;
+import java.sql.Date;
+import java.util.*;
 
 /**
  * Created by Perevalova Marina on 11.05.2016.
@@ -214,27 +212,6 @@ class UserData {
         chartContainer.clear();
     }
 
-    boolean isUserExists(String password) throws SQLException {
-        String sql = "SELECT count(*) AS count FROM users_auth " +
-                "WHERE upper(user_name) = upper(?) " +
-                "AND password = sys.hash_md5(? || id || upper(user_name))";
-
-        try (Connection dbConnection = pool.getConnection();
-             PreparedStatement ps = dbConnection.prepareStatement(sql)) {
-            ps.setString(1, username);
-            ps.setString(2, password);
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                if (rs.getInt("count") > 0) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
     public String getPeriod() {
         return period;
     }
@@ -269,5 +246,65 @@ class UserData {
 
         initChartContainer(period);
         return chartContainer.get(reportId);
+    }
+
+    List<Order> getOrders() throws SQLException {
+        String sql = "select h.remote_id as order_id," +
+                "            h.rule_id," +
+                "            t.offer_id," +
+                "            f.vendor_code," +
+                "            h.phone," +
+                "            h.city," +
+                "            f.name as model," +
+                "            t.base_price," +
+                "            t.discount," +
+                "            t.end_price," +
+                "            h.ctime," +
+                "            h.id," +
+                "            decode(h.processing_status, 0, 'принят', 1, 'в работе', 2, 'обработан', 3, 'выкуплен', 4, 'отложен', 5, 'отменен') as processing_status," +
+                "            h.phrase," +
+                "            h.processing_comment" +
+                "       from analitic.orders_header h" +
+                "      inner join analitic.orders_items t" +
+                "         on h.id = t.orders_headers_id" +
+                "       left join offers f" +
+                "         on f.company_id = h.company_id" +
+                "        and f.offer_id = t.offer_id" +
+                "      where h.company_id = ?" +
+                "        and trunc(h.ctime) between trunc(sysdate) - 7 and trunc(sysdate)" +
+                "      order by h.remote_id desc";
+
+        try (Connection dbConnection = pool.getConnection();
+             PreparedStatement ps = dbConnection.prepareStatement(sql)) {
+            ps.setInt(1, companyId);
+         //   ps.setDate(2, java.sql.Date.valueOf("2015-05-10"));
+           // ps.setDate(3, java.sql.Date.valueOf("2015-05-17"));
+            ResultSet rs = ps.executeQuery();
+            List<Order> list = new ArrayList<>();
+
+            while (rs.next()) {
+                Order r = new Order();
+                r.setId(rs.getInt("order_id"));
+                r.setRuleId(rs.getInt("rule_id"));
+                r.setArticul(rs.getString("offer_id"));
+                r.setVendorCode(rs.getString("vendor_code"));
+                r.setPhone(rs.getString("phone"));
+                r.setCity(rs.getString("city"));
+                r.setModel(rs.getString("model"));
+                r.setPriceBase(rs.getDouble("base_price"));
+                r.setPriceResult(rs.getDouble("end_price"));
+                r.setDiscount(rs.getInt("discount"));
+                r.setDate(rs.getString("ctime"));
+                r.setStatus(rs.getString("processing_status"));
+                r.setPhrase(rs.getString("phrase"));
+                r.setComment(rs.getString("processing_comment"));
+                list.add(r);
+            }
+
+            if (list.isEmpty()) {
+                throw new DataException("No orders for company " + companyId);
+            }
+            return list;
+        }
     }
 }

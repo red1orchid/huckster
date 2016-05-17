@@ -10,19 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet(
-        name = "LoginServlet",
-        urlPatterns = {"/login"}
-)
+@WebServlet("/login")
 public class LoginServlet extends HttpServlet {
     //setting cookie to expiry in 30 mins
     private static final int COOKIE_MAX_AGE = 60 * 60;
-    private static UserData userData;
 
-/*    @Override
-    public void init() throws ServletException {
-        userData = new UserData();
-    }*/
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -33,13 +25,17 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
+        String rememberMe = req.getParameter("rememberMe");
 
         try {
-            userData = new UserData(username);
-            if (userData.isUserExists(password)) {
-                Cookie loginCookie = new Cookie("user", username);
-                loginCookie.setMaxAge(COOKIE_MAX_AGE);
-                resp.addCookie(loginCookie);
+            DbData db = new DbData();
+            if (db.isUserExists(username, password)) {
+                req.getSession().setAttribute("user", username);
+                if (rememberMe != null) {
+                    Cookie loginCookie = new Cookie("user", username);
+                    loginCookie.setMaxAge(COOKIE_MAX_AGE);
+                    resp.addCookie(loginCookie);
+                }
                 resp.sendRedirect("/");
             } else {
                 req.setAttribute("message", "Неправильное имя пользователя или пароль");

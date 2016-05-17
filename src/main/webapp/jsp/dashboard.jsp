@@ -27,29 +27,13 @@
     <script src='../js/charts/script.js'></script>
 </head>
 <body>
-
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">${company}</a>
-        </div>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="logout"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
-        </ul>
-    </div>
-</nav>
+<%--Top bar--%>
+<%@ include file="navbar.jsp" %>
 
 <div class="container-fluid">
     <div class="row">
         <%--Sidebar--%>
-        <div class="col-sm-3 col-md-2 sidebar">
-            <ul class="nav nav-sidebar">
-                <c:forEach var="menuItem" items="${menu}">
-                    <li><a href="${menuItem.getLink()}"><span class="${menuItem.getIcon()}"
-                                                              aria-hidden="true"></span> ${menuItem.getName()}</a></li>
-                </c:forEach>
-            </ul>
-        </div>
+        <%@ include file="sidebar.jsp" %>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <%--Period selector--%>
             <form method="post">
@@ -98,7 +82,9 @@
                 <c:forEach var="chart" items="${charts}">
                     <div class="col-xs-12 col-sm-12 placeholder">
                         <div class="panel panel-default">
-                            <div class="panel-heading text-left"><span class="${chart.getIcon()}" aria-hidden="true"></span> ${chart.getTitle()}</div>
+                            <div class="panel-heading text-left"><span class="${chart.getIcon()}"
+                                                                       aria-hidden="true"></span> ${chart.getTitle()}
+                            </div>
                             <div class="panel-body">
                                 <figure id="${chart.getId()}"></figure>
                             </div>
