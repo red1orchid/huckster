@@ -20,13 +20,13 @@ public class StatisticPanel {
         String currency = userData.getCurrency();
         switch (period) {
             case "day":
-                label = String.format(type.getLabel(), " за текущий день", currency);
+                label = String.format(type.getLabel(), " текущий день", currency);
                 break;
             case "week":
-                label = String.format(type.getLabel(), " за текущую неделю", currency);
+                label = String.format(type.getLabel(), " текущую неделю", currency);
                 break;
             case "month":
-                label = String.format(type.getLabel(), " за текущий месяц", currency);
+                label = String.format(type.getLabel(), " текущий месяц", currency);
                 break;
         }
         icon = type.getIcon();

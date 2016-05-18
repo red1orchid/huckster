@@ -12,6 +12,8 @@ import java.sql.SQLException;
  */
 @WebServlet("/orders")
 public class OrderServlet extends UserServlet {
+    static long timeStone = System.currentTimeMillis();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (auth(req, resp)) {

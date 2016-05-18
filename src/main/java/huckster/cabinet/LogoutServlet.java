@@ -15,6 +15,9 @@ import java.io.IOException;
 public class LogoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("SERVLET_GET");
+        System.out.println(req.getParameter("draw"));
+
         Cookie[] cookies = req.getCookies();
         for (Cookie c : cookies) {
             if (c.getName().equals("user")) {

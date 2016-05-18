@@ -14,19 +14,12 @@ import java.util.List;
 
 @WebServlet("")
 public class DashboardServlet extends UserServlet {
-    static long timeStone = System.currentTimeMillis();
-
-    @Override
-    public void init() throws ServletException {
-        timeStone("start of init");
-        timeStone("new DBHelper");
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (auth(req, resp)) {
             try {
-                timeStone("start");
+           //     timeStone("start");
                 UserData userData = (UserData) req.getSession().getAttribute("userData");
                 userData.refreshData();
 
@@ -34,9 +27,9 @@ public class DashboardServlet extends UserServlet {
                 req.setAttribute("period", userData.getPeriod());
                 req.setAttribute("menu", StaticElements.getMenu());
                 req.setAttribute("panels", getPanels(userData));
-                timeStone("get panels");
+          //      timeStone("get panels");
                 req.setAttribute("charts", getCharts(userData));
-                timeStone("before redirect");
+           //     timeStone("before redirect");
                 req.getRequestDispatcher("/jsp/dashboard.jsp").forward(req, resp);
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -46,16 +39,9 @@ public class DashboardServlet extends UserServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        timeStone("post");
         UserData userData = (UserData) req.getSession().getAttribute("userData");
         userData.setPeriod(req.getParameter("period"));
         resp.sendRedirect("/");
-    }
-
-    static void timeStone(String message) {
-        long newTimeStone = System.currentTimeMillis();
-        System.out.println(message + ": " + (newTimeStone - timeStone));
-        timeStone = newTimeStone;
     }
 
     private List<StatisticPanel> getPanels(UserData userData) throws SQLException {

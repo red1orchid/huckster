@@ -23,7 +23,6 @@ class UserData {
     private HashMap<Integer, ChartData> chartContainer = new HashMap<>();
 
     UserData(String user) throws ServletException {
-        System.out.println("new userdata!!");
         this.username = user;
         try {
             InitialContext ctx = new InitialContext();
@@ -248,21 +247,21 @@ class UserData {
         return chartContainer.get(reportId);
     }
 
-    List<Order> getOrders() throws SQLException {
+    ArrayList<ArrayList> getOrders() throws SQLException {
+        StaticElements.timeStone("start");
         String sql = "select h.remote_id as order_id," +
                 "            h.rule_id," +
                 "            t.offer_id," +
                 "            f.vendor_code," +
-                "            h.phone," +
-                "            h.city," +
                 "            f.name as model," +
                 "            t.base_price," +
-                "            t.discount," +
                 "            t.end_price," +
-                "            h.ctime," +
-                "            h.id," +
-                "            decode(h.processing_status, 0, 'принят', 1, 'в работе', 2, 'обработан', 3, 'выкуплен', 4, 'отложен', 5, 'отменен') as processing_status," +
+                "            t.discount," +
+                "            h.phone," +
+                "            h.city," +
+                "            to_char(h.ctime, 'DD.MM.YYYY HH24:MI')," +
                 "            h.phrase," +
+                "            decode(h.processing_status, 0, 'принят', 1, 'в работе', 2, 'обработан', 3, 'выкуплен', 4, 'отложен', 5, 'отменен') as processing_status," +
                 "            h.processing_comment" +
                 "       from analitic.orders_header h" +
                 "      inner join analitic.orders_items t" +
@@ -277,13 +276,21 @@ class UserData {
         try (Connection dbConnection = pool.getConnection();
              PreparedStatement ps = dbConnection.prepareStatement(sql)) {
             ps.setInt(1, companyId);
+            ps.setFetchSize(200);
+            StaticElements.timeStone("prepare");
          //   ps.setDate(2, java.sql.Date.valueOf("2015-05-10"));
            // ps.setDate(3, java.sql.Date.valueOf("2015-05-17"));
             ResultSet rs = ps.executeQuery();
-            List<Order> list = new ArrayList<>();
+
+            StaticElements.timeStone("execute");
+            ArrayList<ArrayList> table = new ArrayList<>();
 
             while (rs.next()) {
-                Order r = new Order();
+                ArrayList<String> row = new ArrayList<>();
+                for (int i = 1; i <= 14; i++) {
+                    row.add(rs.getString(i));
+                }
+/*                Order r = new Order();
                 r.setId(rs.getInt("order_id"));
                 r.setRuleId(rs.getInt("rule_id"));
                 r.setArticul(rs.getString("offer_id"));
@@ -298,13 +305,16 @@ class UserData {
                 r.setStatus(rs.getString("processing_status"));
                 r.setPhrase(rs.getString("phrase"));
                 r.setComment(rs.getString("processing_comment"));
-                list.add(r);
+                list.add(r);*/
+                table.add(row);
+             //   StaticElements.timeStone(rs.getString("order_id") + ": ");
             }
+            StaticElements.timeStone("get orders");
 
-            if (list.isEmpty()) {
+            if (table.isEmpty()) {
                 throw new DataException("No orders for company " + companyId);
             }
-            return list;
+            return table;
         }
     }
 }
