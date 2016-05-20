@@ -1,5 +1,7 @@
 package huckster.cabinet;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,9 @@ import java.util.List;
  */
 class StaticElements{
     static long timeStone = System.currentTimeMillis();
+    static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    static final LocalDate DEFAULT_START_DATE = LocalDate.now().minusDays(7);
+    static final LocalDate DEFAULT_END_DATE = LocalDate.now();
 
     static List<MenuItem> getMenu() {
         List<MenuItem> list = new ArrayList<>();

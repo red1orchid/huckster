@@ -15,7 +15,6 @@ public class LoginServlet extends HttpServlet {
     //setting cookie to expiry in 30 mins
     private static final int COOKIE_MAX_AGE = 60 * 60;
 
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/jsp/login.jsp").forward(req, resp);

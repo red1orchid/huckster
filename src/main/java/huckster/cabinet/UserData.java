@@ -1,5 +1,7 @@
 package huckster.cabinet;
 
+import jdk.internal.cmm.SystemResourcePressureImpl;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
@@ -247,8 +249,8 @@ class UserData {
         return chartContainer.get(reportId);
     }
 
-    ArrayList<ArrayList> getOrders() throws SQLException {
-        StaticElements.timeStone("start");
+    ArrayList<ArrayList> getOrders(Date startDate, Date endDate) throws SQLException {
+        StaticElements.timeStone("getOrders");
         String sql = "select h.remote_id as order_id," +
                 "            h.rule_id," +
                 "            t.offer_id," +
@@ -266,20 +268,19 @@ class UserData {
                 "       from analitic.orders_header h" +
                 "      inner join analitic.orders_items t" +
                 "         on h.id = t.orders_headers_id" +
-                "       left join offers f" +
+                "       left join analitic.mv_offers f" +
                 "         on f.company_id = h.company_id" +
                 "        and f.offer_id = t.offer_id" +
                 "      where h.company_id = ?" +
-                "        and trunc(h.ctime) between trunc(sysdate) - 7 and trunc(sysdate)" +
-                "      order by h.remote_id desc";
+                "        and trunc(h.ctime) between ? and ?";
 
         try (Connection dbConnection = pool.getConnection();
              PreparedStatement ps = dbConnection.prepareStatement(sql)) {
             ps.setInt(1, companyId);
-            ps.setFetchSize(200);
+            ps.setDate(2, startDate);
+            ps.setDate(3, endDate);
+            ps.setFetchSize(500);
             StaticElements.timeStone("prepare");
-         //   ps.setDate(2, java.sql.Date.valueOf("2015-05-10"));
-           // ps.setDate(3, java.sql.Date.valueOf("2015-05-17"));
             ResultSet rs = ps.executeQuery();
 
             StaticElements.timeStone("execute");
