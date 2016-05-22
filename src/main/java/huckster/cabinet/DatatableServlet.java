@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Array;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -51,6 +52,11 @@ public class DatatableServlet extends HttpServlet {
             data = userData.getOrders(Date.valueOf(startDate), Date.valueOf(endDate));
         } catch (SQLException | DataException e) {
             e.printStackTrace();
+        }
+
+        String link = "<a data-id=\"%s\" data-toggle=\"modal\" href=\"#editOrder\"><span class=\"glyphicon glyphicon-pencil\"></a>";
+        for (ArrayList row : data) {
+            row.add(0, String.format(link, row.get(0)));
         }
                 /*        int startIdx = Integer.parseInt(req.getParameter("start"));
         int endIdx = startIdx + Integer.parseInt(req.getParameter("length"));*/

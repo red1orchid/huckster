@@ -12,20 +12,20 @@
     <title>Работа с заказами</title>
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/dashboard.css" rel="stylesheet">
-    <link href="../css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="../css/table.css" rel="stylesheet">
     <link href="../css/datepicker.css" rel="stylesheet">
-    <%--    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker.css" rel="stylesheet">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker3.css" rel="stylesheet">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker.standalone.css" rel="stylesheet">--%>
+    <link rel="stylesheet" href="https://cdn.datatables.net/u/dt/dt-1.10.12,cr-1.3.2/datatables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
 
-    <%--
-    <link href="https://cdn.datatables.net/1.10.11/css/dataTables.bootstrap.min.css" rel="stylesheet">--%>
-
-    <script src="../js/jquery-1.9.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.11/js/dataTables.bootstrap.min.js"></script>
+    <script src="../js/jquery-2.2.4.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <script src="https://cdn.datatables.net/u/dt/dt-1.10.12,cr-1.3.2/datatables.min.js"></script>
     <script src="../js/bootstrap-datepicker.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/i18n/defaults-*.min.js"></script>
+
 </head>
 <body>
 <%--Top bar--%>
@@ -41,6 +41,30 @@
                 support@hucksterbot.ru</h5>
 
             <div class="row placeholders">
+                <!-- Modal -->
+                <div class="modal fade" id="editOrder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title" id="orderTitle"></h4>
+                            </div>
+                            <div class="modal-body">
+                                    <select class="selectpicker">
+                                        <option>Mustard</option>
+                                        <option>Ketchup</option>
+                                        <option>Relish</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                                <button type="button" class="btn btn-primary">Сохранить</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <form method="post">
                     <div class="col-sm-2 form-group">
                         <input id="startdate" type="text" name="startDate" value="${startDate}" class="span2"
@@ -58,6 +82,7 @@
                 <table id="example" class="table table-hover table-bordered" cellspacing="0" width="100%">
                     <thead>
                     <tr>
+                        <th></th>
                         <th>заказ</th>
                         <th>правило</th>
                         <th>артикул</th>
@@ -110,8 +135,13 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $('#example').DataTable({
+            colReorder: true,
+            "iDisplayLength": 25,
+            "order": [[1, 'desc']],
+            "columnDefs": [
+                {"orderable": false, "targets": 0}
+            ],
             "language": {
-                "order": [[ 0, 'desc' ]],
                 "lengthMenu": "Показать _MENU_ записей",
                 "zeroRecords": "По Вашему запросу ничего не найдено",
                 "search": "Поиск:",
@@ -149,6 +179,12 @@
         }).on('changeDate', function (ev) {
             checkout.hide();
         }).data('datepicker');
+
+        $('#editOrder').on('show.bs.modal', function(e) {
+            var bookId = $(e.relatedTarget).data('id');
+            document.getElementById('orderTitle').innerHTML = "Заказ №".concat(bookId);
+        });
+
     });
 
     /*{

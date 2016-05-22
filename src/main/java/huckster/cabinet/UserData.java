@@ -1,7 +1,5 @@
 package huckster.cabinet;
 
-import jdk.internal.cmm.SystemResourcePressureImpl;
-
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
