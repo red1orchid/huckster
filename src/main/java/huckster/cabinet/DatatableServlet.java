@@ -46,7 +46,7 @@ public class DatatableServlet extends HttpServlet {
         }
 
         Gson json = new Gson();
-        HashMap map = new HashMap<>();
+        HashMap<String, List> map = new HashMap<>();
         List<ArrayList> data = new ArrayList<>();
         try {
             data = userData.getOrders(Date.valueOf(startDate), Date.valueOf(endDate));
@@ -54,9 +54,11 @@ public class DatatableServlet extends HttpServlet {
             e.printStackTrace();
         }
 
-        String link = "<a data-id=\"%s\" data-toggle=\"modal\" href=\"#editOrder\"><span class=\"glyphicon glyphicon-pencil\"></a>";
+        String link = "<a data-id=\"%s\" data-status=\"%s\" data-comment=\"%s\" data-toggle=\"modal\" href=\"#editOrder\"><span class=\"glyphicon glyphicon-pencil\"></a>";
         for (ArrayList row : data) {
-            row.add(0, String.format(link, row.get(0)));
+            //order id, status, comment
+            row.add(0, String.format(link, row.get(0), row.get(14), row.get(13)));
+            row.remove(15);
         }
                 /*        int startIdx = Integer.parseInt(req.getParameter("start"));
         int endIdx = startIdx + Integer.parseInt(req.getParameter("length"));*/

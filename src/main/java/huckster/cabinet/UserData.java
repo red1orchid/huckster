@@ -5,8 +5,8 @@ import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.sql.DataSource;
 import java.sql.*;
-import java.sql.Date;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Perevalova Marina on 11.05.2016.
@@ -262,7 +262,8 @@ class UserData {
                 "            to_char(h.ctime, 'DD.MM.YYYY HH24:MI')," +
                 "            h.phrase," +
                 "            decode(h.processing_status, 0, 'принят', 1, 'в работе', 2, 'обработан', 3, 'выкуплен', 4, 'отложен', 5, 'отменен') as processing_status," +
-                "            h.processing_comment" +
+                "            h.processing_comment," +
+                "            h.processing_status" +
                 "       from analitic.orders_header h" +
                 "      inner join analitic.orders_items t" +
                 "         on h.id = t.orders_headers_id" +
@@ -278,15 +279,13 @@ class UserData {
             ps.setDate(2, startDate);
             ps.setDate(3, endDate);
             ps.setFetchSize(500);
-            StaticElements.timeStone("prepare");
             ResultSet rs = ps.executeQuery();
 
-            StaticElements.timeStone("execute");
             ArrayList<ArrayList> table = new ArrayList<>();
 
             while (rs.next()) {
                 ArrayList<String> row = new ArrayList<>();
-                for (int i = 1; i <= 14; i++) {
+                for (int i = 1; i <= 15; i++) {
                     row.add(rs.getString(i));
                 }
 /*                Order r = new Order();
@@ -306,10 +305,8 @@ class UserData {
                 r.setComment(rs.getString("processing_comment"));
                 list.add(r);*/
                 table.add(row);
-             //   StaticElements.timeStone(rs.getString("order_id") + ": ");
+                //   StaticElements.timeStone(rs.getString("order_id") + ": ");
             }
-            StaticElements.timeStone("get orders");
-
             if (table.isEmpty()) {
                 throw new DataException("No orders for company " + companyId);
             }
