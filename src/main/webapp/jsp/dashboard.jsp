@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 
 --%>
-<%@ page contentType="text/html; charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
@@ -38,17 +38,7 @@
             <%--Period selector--%>
             <form method="post">
                 <h3 class="page-header">Показать данные за
-                    <div class="btn-group">
-                        <button type="submit" name="period" value="day"
-                                class="btn btn-primary <c:if test="${period == 'day'}">active</c:if>">Текущий день
-                        </button>
-                        <button type="submit" name="period" value="week"
-                                class="btn btn-primary <c:if test="${period == 'week'}">active</c:if>">Текущую неделю
-                        </button>
-                        <button type="submit" name="period" value="month"
-                                class="btn btn-primary <c:if test="${period == 'month'}">active</c:if>">Текущий месяц
-                        </button>
-                    </div>
+                    <%@ include file="period.jsp" %>
                 </h3>
             </form>
 
@@ -78,6 +68,7 @@
                         </div>
                     </div>
                 </c:forEach>
+
                 <%--Charts--%>
                 <c:forEach var="chart" items="${charts}">
                     <div class="col-xs-12 col-sm-12 placeholder">
@@ -93,10 +84,6 @@
                 </c:forEach>
             </div>
 
-            <%--                <div id="placeholder">
-                                <figure id="${chart.getId()}"></figure>
-                            </div>--%>
-
             <script type="text/javascript">
                 <c:forEach var="chart" items="${charts}">
                 var ${chart.getVar()} = ${chart.getData()};
@@ -105,13 +92,6 @@
         </div>
     </div>
 </div>
-
-
-<%--
-
-<script src="../js/bootstrap.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
---%>
 
 </body>
 </html>

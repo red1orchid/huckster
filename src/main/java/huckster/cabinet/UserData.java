@@ -34,20 +34,30 @@ class UserData {
         }
     }
 
-/*    private ResultSet getResult(String sql, int companyId, String period) throws SQLException {
+    private void select(String sql,
+                        Integer fetchSize,
+                        ResultSetProcessor processor,
+                        Object... params) throws SQLException {
         try (Connection dbConnection = pool.getConnection();
              PreparedStatement ps = dbConnection.prepareStatement(sql)) {
-            ps.setInt(1, companyId);
-            ps.setString(2, period);
-            ResultSet rs = ps.executeQuery();
+            int cnt = 0;
+            for (Object param : params) {
+                ps.setObject(++cnt, param);
+            }
+            if (fetchSize != null) {
+                ps.setFetchSize(fetchSize);
+            }
 
-            return rs;
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    processor.process(rs);
+                }
+            }
         }
-    }*/
+    }
 
     public void setPeriod(String period) {
         this.period = period;
-        System.out.println("set period " + period);
     }
 
     public void setUser(String username) {
@@ -71,19 +81,12 @@ class UserData {
                     "    AND decode(interval, 'ddd', 'day', 'iw', 'week', interval) = ?" +
                     "    AND metric_name = 'curr'";
 
-            try (Connection dbConnection = pool.getConnection();
-                 PreparedStatement ps = dbConnection.prepareStatement(sql)) {
-                ps.setInt(1, companyId);
-                ps.setString(2, period);
-                ResultSet rs = ps.executeQuery();
+            select(sql, null, (rs) -> {
+                rateContainer.put(rs.getInt("report_id"), rs.getString("value"));
+            }, companyId, period);
 
-                while (rs.next()) {
-                    rateContainer.put(rs.getInt("report_id"), rs.getString("value"));
-                }
-
-                if (rateContainer.isEmpty()) {
-                    throw new DataException("No appropriate data");
-                }
+            if (rateContainer.isEmpty()) {
+                throw new DataException("No appropriate data");
             }
         }
     }
@@ -103,19 +106,12 @@ class UserData {
                     "   AND r.metric_name = 'curr' " +
                     "   AND rr.metric_name = 'last'";
 
-            try (Connection dbConnection = pool.getConnection();
-                 PreparedStatement ps = dbConnection.prepareStatement(sql)) {
-                ps.setInt(1, companyId);
-                ps.setString(2, period);
-                ResultSet rs = ps.executeQuery();
+            select(sql, null, (rs) -> {
+                prcContainer.put(rs.getInt("report_id"), rs.getString("value"));
+            }, companyId, period);
 
-                while (rs.next()) {
-                    prcContainer.put(rs.getInt("report_id"), rs.getString("value"));
-                }
-
-                if (prcContainer.isEmpty()) {
-                    throw new DataException("No appropriate data");
-                }
+            if (prcContainer.isEmpty()) {
+                throw new DataException("No appropriate data");
             }
         }
     }
@@ -176,31 +172,21 @@ class UserData {
 
     private void initCompanyInfo() throws SQLException {
         if (companyId == 0) {
-            try (Connection dbConnection = pool.getConnection();
-                 PreparedStatement ps = dbConnection.prepareStatement("SELECT company FROM users_auth WHERE upper(user_name) = upper(?)")) {
-                ps.setString(1, username);
-                ResultSet rs = ps.executeQuery();
+            select("SELECT company FROM users_auth WHERE upper(user_name) = upper(?)", null, (rs) -> {
+                companyId = rs.getInt("company");
+            }, username);
 
-                while (rs.next()) {
-                    companyId = rs.getInt("company");
-                }
-                if (companyId == 0) {
-                    throw new DataException("Company not found for user " + username);
-                }
+            if (companyId == 0) {
+                throw new DataException("Company not found for user " + username);
             }
 
-            try (Connection dbConnection = pool.getConnection();
-                 PreparedStatement ps = dbConnection.prepareStatement("SELECT head_name, price_cur FROM companies WHERE company_id = ?")) {
-                ps.setInt(1, companyId);
-                ResultSet rs = ps.executeQuery();
+            select("SELECT head_name, price_cur FROM companies WHERE company_id = ?", null, (rs) -> {
+                companyName = rs.getString("head_name");
+                currency = rs.getString("price_cur");
+            }, companyId);
 
-                while (rs.next()) {
-                    companyName = rs.getString("head_name");
-                    currency = rs.getString("price_cur");
-                }
-                if (companyName == null) {
-                    throw new DataException("Company " + companyId + " not exists");
-                }
+            if (companyName == null) {
+                throw new DataException("Company " + companyId + " not exists");
             }
         }
     }
@@ -248,7 +234,6 @@ class UserData {
     }
 
     ArrayList<ArrayList> getOrders(Date startDate, Date endDate) throws SQLException {
-        StaticElements.timeStone("getOrders");
         String sql = "select h.remote_id as order_id," +
                 "            h.rule_id," +
                 "            t.offer_id," +
@@ -273,44 +258,53 @@ class UserData {
                 "      where h.company_id = ?" +
                 "        and trunc(h.ctime) between ? and ?";
 
-        try (Connection dbConnection = pool.getConnection();
-             PreparedStatement ps = dbConnection.prepareStatement(sql)) {
-            ps.setInt(1, companyId);
-            ps.setDate(2, startDate);
-            ps.setDate(3, endDate);
-            ps.setFetchSize(500);
-            ResultSet rs = ps.executeQuery();
+        ArrayList<ArrayList> table = new ArrayList<>();
 
-            ArrayList<ArrayList> table = new ArrayList<>();
+        select(sql, 500, (rs) -> {
+            ArrayList<String> row = new ArrayList<>();
+            for (int i = 1; i <= 15; i++) {
+                row.add(rs.getString(i));
+            }
+            table.add(row);
+        }, companyId, startDate, endDate);
 
-            while (rs.next()) {
-                ArrayList<String> row = new ArrayList<>();
-                for (int i = 1; i <= 15; i++) {
-                    row.add(rs.getString(i));
-                }
-/*                Order r = new Order();
-                r.setId(rs.getInt("order_id"));
-                r.setRuleId(rs.getInt("rule_id"));
-                r.setArticul(rs.getString("offer_id"));
-                r.setVendorCode(rs.getString("vendor_code"));
-                r.setPhone(rs.getString("phone"));
-                r.setCity(rs.getString("city"));
-                r.setModel(rs.getString("model"));
-                r.setPriceBase(rs.getDouble("base_price"));
-                r.setPriceResult(rs.getDouble("end_price"));
-                r.setDiscount(rs.getInt("discount"));
-                r.setDate(rs.getString("ctime"));
-                r.setStatus(rs.getString("processing_status"));
-                r.setPhrase(rs.getString("phrase"));
-                r.setComment(rs.getString("processing_comment"));
-                list.add(r);*/
-                table.add(row);
-                //   StaticElements.timeStone(rs.getString("order_id") + ": ");
-            }
-            if (table.isEmpty()) {
-                throw new DataException("No orders for company " + companyId);
-            }
-            return table;
+        if (table.isEmpty()) {
+            throw new DataException("No orders for company " + companyId);
         }
+        return table;
+    }
+
+    ArrayList<ArrayList> getGoods() throws SQLException {
+        String sql = String.format("select t.offer_id," +
+                "       t.name," +
+                "       t.category_name as category," +
+                "       t.vendor," +
+                "       t.uniq_clients_views_%1$s as views," +
+                "       t.uniq_clients_widget_%1$s as cnt," +
+                "       t.orders_basket_%1$s as orders_basket," +
+                "       t.orders1_%1$s as orders1," +
+                "       t.orders2_%1$s as orders2," +
+                "       t.orders3_%1$s as orders3," +
+                "       nvl(t.image_info, t.reco) as reco" +
+                "  from analitic.offers_stats t" +
+                " where t.company_id = ?" +
+                "   and rownum < 100" +
+                " order by t.uniq_clients_widget_%1$s desc", period);
+        System.out.println(sql);
+
+        ArrayList<ArrayList> table = new ArrayList<>();
+
+        select(sql, 100, (rs) -> {
+            ArrayList<String> row = new ArrayList<>();
+            for (int i = 1; i <= 11; i++) {
+                row.add(rs.getString(i));
+            }
+            table.add(row);
+        }, companyId);
+
+        if (table.isEmpty()) {
+            throw new DataException("No goods for company " + companyId);
+        }
+        return table;
     }
 }

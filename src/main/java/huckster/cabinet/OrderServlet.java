@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.IntSummaryStatistics;
 
 import static huckster.cabinet.StaticElements.*;
 
@@ -19,8 +18,8 @@ import static huckster.cabinet.StaticElements.*;
 public class OrderServlet extends UserServlet {
     static long timeStone = System.currentTimeMillis();
 
-    private void initContent(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        UserData userData = (UserData) req.getSession().getAttribute("userData");
+    @Override
+    void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException {
         LocalDate startDate = (LocalDate) req.getSession().getAttribute("startDate");
         LocalDate endDate = (LocalDate) req.getSession().getAttribute("endDate");
         if (startDate == null) {
@@ -30,23 +29,10 @@ public class OrderServlet extends UserServlet {
             endDate = DEFAULT_END_DATE;
         }
 
-        try {
-            req.setAttribute("company", userData.getCompanyName());
-            req.setAttribute("menu", StaticElements.getMenu());
-            req.setAttribute("startDate", startDate.format(FORMATTER));
-            req.setAttribute("endDate", endDate.format(FORMATTER));
-            req.setAttribute("statuses", getOrderStatuses());
-            req.getRequestDispatcher("/jsp/orders.jsp").forward(req, resp);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (auth(req, resp)) {
-            initContent(req, resp);
-        }
+        req.setAttribute("startDate", startDate.format(FORMATTER));
+        req.setAttribute("endDate", endDate.format(FORMATTER));
+        req.setAttribute("statuses", getOrderStatuses());
+        req.getRequestDispatcher("/jsp/orders.jsp").forward(req, resp);
     }
 
     @Override
@@ -59,9 +45,9 @@ public class OrderServlet extends UserServlet {
             } catch (SQLException e) {
                 e.printStackTrace();
                 req.setAttribute("error", "Сохранение невозможно в данный момент. Попробуйте еще раз позднее");
-                initContent(req, resp);
+                //TODO: something!  initDataGet(req, resp);
             }
-         //   System.out.println(req.getParameter("comment"));
+            //   System.out.println(req.getParameter("comment"));
         } else {
             String startDateStr = req.getParameter("startDate");
             String endDateStr = req.getParameter("endDate");

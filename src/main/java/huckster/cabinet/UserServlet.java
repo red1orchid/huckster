@@ -10,6 +10,23 @@ import java.sql.SQLException;
  * Created by PerevalovaMA on 17.05.2016.
  */
 abstract class UserServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (auth(req, resp)) {
+            UserData userData = (UserData) req.getSession().getAttribute("userData");
+            try {
+                req.setAttribute("company", userData.getCompanyName());
+                initDataGet(req, resp, userData);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                req.getRequestDispatcher("/jsp/error.jsp").forward(req, resp);
+            }
+        }
+    }
+
+    abstract void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException;
+
     private String getUser(HttpServletRequest req) {
         String user = (String) req.getSession().getAttribute("user");
         if (user == null) {

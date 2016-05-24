@@ -5,7 +5,7 @@
   Time: 12:38
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <html>
@@ -24,7 +24,7 @@
 </head>
 <body>
 
-<fmt:requestEncoding value="UTF-8" />
+<fmt:requestEncoding value="UTF-8"/>
 
 <%--Top bar--%>
 <%@ include file="navbar.jsp" %>
@@ -44,8 +44,9 @@
 
             <div class="row placeholders">
                 <!-- Modal -->
-                <form method="post" class="modal fade" id="editOrder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                     aria-hidden="true">
+                <form method="post" class="modal fade" id="editOrder" tabindex="-1" role="dialog"
+                      aria-labelledby="myModalLabel"
+                      aria-hidden="true">
                     <div class="modal-dialog modal-sm">
                         <div class="modal-content">
                             <div class="modal-header" align="center">
@@ -60,7 +61,8 @@
                                         <label for="statuses">Статус:</label>
                                         <select name="status" class="form-control" id="statuses">
                                             <c:forEach var="entry" items="${statuses}">
-                                                <option value="<c:out value="${entry.key}"/>"><c:out value="${entry.value}"/></option>
+                                                <option value="<c:out value="${entry.key}"/>"><c:out
+                                                        value="${entry.value}"/></option>
                                             </c:forEach>
                                         </select>
                                     </div>
@@ -92,7 +94,7 @@
                     </div>
                 </form>
 
-                <table id="example" class="table table-hover table-bordered" cellspacing="0" width="100%">
+                <table id="orders" class="table table-hover table-bordered" cellspacing="0" width="100%">
                     <thead>
                     <tr>
                         <th></th>
@@ -114,6 +116,7 @@
                     </thead>
                     <tfoot>
                     </tfoot>
+                    <tbody>
                     </tbody>
                 </table>
             </div>
@@ -123,7 +126,7 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#example').DataTable({
+        $('#orders').DataTable({
             colReorder: true,
             "iDisplayLength": 25,
             "order": [[1, 'desc']],
@@ -147,7 +150,9 @@
             },
             "ajax": {
                 "url": "/datatable",
-                "dataSrc": "data"
+                "data" : {
+                    "type" : "orders"
+                }
             }
         });
 

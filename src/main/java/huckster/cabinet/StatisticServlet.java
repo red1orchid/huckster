@@ -19,18 +19,8 @@ import static huckster.cabinet.StaticElements.FORMATTER;
 public class StatisticServlet extends UserServlet {
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        if (auth(req, resp)) {
-            UserData userData = (UserData) req.getSession().getAttribute("userData");
-
-            req.setAttribute("menu", StaticElements.getMenu());
-            try {
-                req.setAttribute("company", userData.getCompanyName());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            req.getRequestDispatcher("/jsp/statistic.jsp").forward(req, resp);
-        }
+    void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException {
+        req.setAttribute("period", userData.getPeriod());
+        req.getRequestDispatcher("/jsp/statistic.jsp").forward(req, resp);
     }
 }

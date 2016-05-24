@@ -25,14 +25,39 @@ import static huckster.cabinet.StaticElements.DEFAULT_START_DATE;
 public class DatatableServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+        System.out.println(req.getParameter("type"));
+
         UserData userData = (UserData) req.getSession().getAttribute("userData");
+        String data = "";
+        switch (req.getParameter("type")) {
+            case "orders":
+                data = getOrders(req, userData);
+                break;
+            case "goods":
+                data = getGoods(req, userData);
+                break;
+        }
 
         resp.setContentType("application/json; charset=utf-8");
         try {
-            resp.getWriter().print(getOrders(req, userData));
+            resp.getWriter().print(data);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private String getGoods(HttpServletRequest req, UserData userData) {
+        Gson json = new Gson();
+        HashMap<String, List> map = new HashMap<>();
+        List<ArrayList> data = new ArrayList<>();
+        try {
+            data = userData.getGoods();
+        } catch (SQLException | DataException e) {
+            e.printStackTrace();
+        }
+
+        map.put("data", data);
+        return json.toJson(map);
     }
 
     private String getOrders(HttpServletRequest req, UserData userData) {
@@ -60,14 +85,6 @@ public class DatatableServlet extends HttpServlet {
             row.add(0, String.format(link, row.get(0), row.get(14), row.get(13)));
             row.remove(15);
         }
-                /*        int startIdx = Integer.parseInt(req.getParameter("start"));
-        int endIdx = startIdx + Integer.parseInt(req.getParameter("length"));*/
-/*        int totalSize = data.size();
-        data = data.subList(startIdx, endIdx);
-
-        map.put("draw", req.getParameter("draw"));
-        map.put("recordsTotal", totalSize);
-        map.put("recordsFiltered", totalSize);*/
 
         map.put("data", data);
         return json.toJson(map);
