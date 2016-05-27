@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by PerevalovaMA on 17.05.2016.
  */
-class StaticElements{
+public class StaticElements{
     static long timeStone = System.currentTimeMillis();
     static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     static final LocalDate DEFAULT_START_DATE = LocalDate.now().minusDays(7);
@@ -24,7 +24,7 @@ class StaticElements{
         return list;
     }
 
-    static void timeStone(String message) {
+    public static void timeStone(String message) {
         long newTimeStone = System.currentTimeMillis();
         System.out.println(message + ": " + (newTimeStone - timeStone));
         timeStone = newTimeStone;

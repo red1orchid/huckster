@@ -1,30 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3ad439bc-4fd2-404c-b2c0-ff0bafae1d5f" name="Default" comment="Orders server-side">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/jsp/order_edit.jsp" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterPath="" />
+    <list default="true" id="3ad439bc-4fd2-404c-b2c0-ff0bafae1d5f" name="Default" comment="Orders responsive to dates">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/js/jquery-2.2.4.min.js" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/META-INF/resources/jsp/list-employees.jsp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/classes/META-INF/resources/jsp/new-employee.jsp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/META-INF/resources/jsp/list-employees.jsp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/META-INF/resources/jsp/new-employee.jsp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/employees-app/jsp/list-employees.jsp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/target/employees-app/jsp/new-employee.jsp" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/huckster/cabinet/DashboardServlet.class" afterPath="$PROJECT_DIR$/target/classes/huckster/cabinet/DashboardServlet.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/huckster/cabinet/DatatableServlet.class" afterPath="$PROJECT_DIR$/target/classes/huckster/cabinet/DatatableServlet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/huckster/cabinet/LoginServlet.class" afterPath="$PROJECT_DIR$/target/classes/huckster/cabinet/LoginServlet.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/huckster/cabinet/DbData.class" afterPath="$PROJECT_DIR$/target/classes/huckster/cabinet/DbData.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/huckster/cabinet/Order.class" afterPath="$PROJECT_DIR$/target/classes/huckster/cabinet/Order.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/huckster/cabinet/OrderServlet.class" afterPath="$PROJECT_DIR$/target/classes/huckster/cabinet/OrderServlet.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/huckster/cabinet/StaticElements.class" afterPath="$PROJECT_DIR$/target/classes/huckster/cabinet/StaticElements.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/huckster/cabinet/StatisticPanel.class" afterPath="$PROJECT_DIR$/target/classes/huckster/cabinet/StatisticPanel.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/huckster/cabinet/UserData.class" afterPath="$PROJECT_DIR$/target/classes/huckster/cabinet/UserData.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/huckster/cabinet/UserServlet.class" afterPath="$PROJECT_DIR$/target/classes/huckster/cabinet/UserServlet.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app.war" afterPath="$PROJECT_DIR$/target/employees-app.war" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/DashboardServlet.class" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/DashboardServlet.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/DatatableServlet.class" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/DatatableServlet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/LoginServlet.class" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/LoginServlet.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/DbData.class" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/DbData.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/Order.class" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/Order.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/OrderServlet.class" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/OrderServlet.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/StaticElements.class" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/StaticElements.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/StatisticPanel.class" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/StatisticPanel.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/UserData.class" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/UserData.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/UserServlet.class" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/huckster/cabinet/UserServlet.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/huckster.iml" afterPath="$PROJECT_DIR$/.idea/huckster.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/huckster/cabinet/DatatableServlet.java" afterPath="$PROJECT_DIR$/src/main/java/huckster/cabinet/DatatableServlet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/huckster/cabinet/DbData.java" afterPath="$PROJECT_DIR$/src/main/java/huckster/cabinet/DbData.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/huckster/cabinet/OrderServlet.java" afterPath="$PROJECT_DIR$/src/main/java/huckster/cabinet/OrderServlet.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/huckster/cabinet/StaticElements.java" afterPath="$PROJECT_DIR$/src/main/java/huckster/cabinet/StaticElements.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/huckster/cabinet/StatisticServlet.java" afterPath="$PROJECT_DIR$/src/main/java/huckster/cabinet/StatisticServlet.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/huckster/cabinet/UserData.java" afterPath="$PROJECT_DIR$/src/main/java/huckster/cabinet/UserData.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/jsp/dashboard.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/jsp/dashboard.jsp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/jsp/orders.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/jsp/orders.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/jsp/statistic.jsp" afterPath="$PROJECT_DIR$/src/main/webapp/jsp/statistic.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/META-INF/resources/css/dashboard.css" afterPath="$PROJECT_DIR$/target/classes/META-INF/resources/css/dashboard.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/META-INF/resources/jsp/dashboard.jsp" afterPath="$PROJECT_DIR$/target/classes/META-INF/resources/jsp/dashboard.jsp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/META-INF/resources/jsp/orders.jsp" afterPath="$PROJECT_DIR$/target/classes/META-INF/resources/jsp/orders.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/META-INF/resources/jsp/sidebar.jsp" afterPath="$PROJECT_DIR$/target/classes/META-INF/resources/jsp/sidebar.jsp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/META-INF/MANIFEST.MF" afterPath="$PROJECT_DIR$/target/employees-app/META-INF/MANIFEST.MF" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/META-INF/resources/css/dashboard.css" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/META-INF/resources/css/dashboard.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/META-INF/resources/jsp/dashboard.jsp" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/META-INF/resources/jsp/dashboard.jsp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/META-INF/resources/jsp/orders.jsp" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/META-INF/resources/jsp/orders.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/META-INF/resources/jsp/sidebar.jsp" afterPath="$PROJECT_DIR$/target/employees-app/WEB-INF/classes/META-INF/resources/jsp/sidebar.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/css/dashboard.css" afterPath="$PROJECT_DIR$/target/employees-app/css/dashboard.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/jsp/dashboard.jsp" afterPath="$PROJECT_DIR$/target/employees-app/jsp/dashboard.jsp" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/jsp/orders.jsp" afterPath="$PROJECT_DIR$/target/employees-app/jsp/orders.jsp" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/employees-app/jsp/sidebar.jsp" afterPath="$PROJECT_DIR$/target/employees-app/jsp/sidebar.jsp" />
     </list>
     <ignored path="huckster.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -60,14 +88,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="orders.jsp" pinned="false" current-in-tab="true">
+      <file leaf-file-name="orders.jsp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/orders.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="151">
-              <caret line="51" column="52" selection-start-line="51" selection-start-column="52" selection-end-line="51" selection-end-column="52" />
-              <folding>
-                <marker date="1463953405541" expanded="true" signature="2929:3176" placeholder="..." />
-              </folding>
+            <state relative-caret-position="1063">
+              <caret line="131" column="29" selection-start-line="131" selection-start-column="29" selection-end-line="131" selection-end-column="29" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -75,28 +101,8 @@
       <file leaf-file-name="dashboard.jsp" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/dashboard.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="335">
-              <caret line="54" column="42" selection-start-line="54" selection-start-column="12" selection-end-line="54" selection-end-column="42" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="navbar.jsp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/navbar.jsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" column="43" selection-start-line="11" selection-start-column="43" selection-end-line="11" selection-end-column="43" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="sidebar.jsp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/sidebar.jsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="12" column="106" selection-start-line="11" selection-start-column="16" selection-end-line="12" selection-end-column="106" />
+            <state relative-caret-position="304">
+              <caret line="50" column="26" selection-start-line="50" selection-start-column="26" selection-end-line="50" selection-end-column="26" />
               <folding />
             </state>
           </provider>
@@ -105,30 +111,28 @@
       <file leaf-file-name="DatatableServlet.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/DatatableServlet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="66">
-              <caret line="49" column="49" selection-start-line="49" selection-start-column="49" selection-end-line="49" selection-end-column="49" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="order_edit.jsp" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/order_edit.jsp">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
+            <state relative-caret-position="-16">
+              <caret line="70" column="39" selection-start-line="70" selection-start-column="39" selection-end-line="70" selection-end-column="39" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MenuItem.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/MenuItem.java">
+      <file leaf-file-name="StatisticServlet.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/StatisticServlet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="7" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
+            <state relative-caret-position="272">
+              <caret line="26" column="74" selection-start-line="26" selection-start-column="74" selection-end-line="26" selection-end-column="74" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="period.jsp" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/period.jsp">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="19" selection-end-column="6" />
               <folding />
             </state>
           </provider>
@@ -137,8 +141,8 @@
       <file leaf-file-name="OrderServlet.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/OrderServlet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="536">
-              <caret line="49" column="13" selection-start-line="49" selection-start-column="13" selection-end-line="49" selection-end-column="13" />
+            <state relative-caret-position="935">
+              <caret line="64" column="70" selection-start-line="64" selection-start-column="70" selection-end-line="64" selection-end-column="70" />
               <folding />
             </state>
           </provider>
@@ -147,29 +151,52 @@
       <file leaf-file-name="UserData.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/UserData.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-4719">
-              <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+            <state relative-caret-position="1079">
+              <caret line="293" column="49" selection-start-line="293" selection-start-column="49" selection-end-line="293" selection-end-column="49" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <marker date="1463828949462" expanded="true" signature="2009:2567" placeholder="SELECT repor... " />
-                <marker date="1463828949462" expanded="true" signature="3287:4110" placeholder="SELECT r.rep... " />
-                <marker date="1463828949462" expanded="true" signature="4832:5617" placeholder="SELECT * FRO... report_id" />
-                <marker date="1463828949462" expanded="true" signature="4899:5419" placeholder="SELECT repor... " />
-                <marker date="1463828949462" expanded="true" signature="7478:7542" placeholder="SELECT compa... users_auth" />
-                <marker date="1463828949462" expanded="true" signature="8044:8107" placeholder="SELECT head_... companies" />
-                <marker date="1463828949462" expanded="true" signature="9859:11088" placeholder="select h.rem... orders_header" />
+                <marker date="1464274034945" expanded="true" signature="2307:2865" placeholder="SELECT repor... " />
+                <marker date="1464274034945" expanded="true" signature="3300:4123" placeholder="SELECT r.rep... " />
+                <marker date="1464274034945" expanded="true" signature="4560:5345" placeholder="SELECT * FRO... report_id" />
+                <marker date="1464274034945" expanded="true" signature="4627:5147" placeholder="SELECT repor... " />
+                <marker date="1464274034945" expanded="true" signature="9037:9461" placeholder="select h.rem... " />
+                <marker date="1464274034945" expanded="true" signature="9037:10313" placeholder="select h.rem... orders_header" />
+                <marker date="1464274034945" expanded="true" signature="9037:10314" placeholder="select h.rem... orders_header" />
+                <marker date="1464274034945" expanded="true" signature="10669:11397" placeholder="select t.off... " />
+                <marker date="1464274034945" expanded="true" signature="10669:11400" placeholder="select t.off... " />
+                <marker date="1464274034945" expanded="true" signature="10669:11596" placeholder="select h.rem... orders_header" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UserServlet.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/UserServlet.java">
+      <file leaf-file-name="statistic.jsp" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/statistic.jsp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
+            <state relative-caret-position="213">
+              <caret line="34" column="19" selection-start-line="34" selection-start-column="19" selection-end-line="34" selection-end-column="19" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="34">
+              <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DbData.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/DbData.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="525">
+              <caret line="47" column="5" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
               <folding>
-                <element signature="imports" expanded="false" />
+                <marker date="1464184663416" expanded="true" signature="879:1052" placeholder="SELECT count... " />
+                <marker date="1464184663416" expanded="true" signature="1611:1799" placeholder="update anali... " />
               </folding>
             </state>
           </provider>
@@ -180,8 +207,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Jsp File" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -214,29 +241,36 @@
         <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/ChartData.java" />
         <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/DbHelper.java" />
         <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/Chart.java" />
-        <option value="$PROJECT_DIR$/src/main/webapp/jsp/dashboard.jsp" />
         <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/AuthServlet.java" />
-        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/DbData.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/jsp/login.jsp" />
-        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/UserServlet.java" />
-        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/LoginServlet.java" />
-        <option value="$PROJECT_DIR$/src/main/webapp/jsp/navbar.jsp" />
         <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/elements/MenuItem.java" />
         <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/elements/StatisticPanel.java" />
         <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/elements/ChartPoint.java" />
         <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/elements/Order.java" />
         <option value="$APPLICATION_CONFIG_DIR$/consoles/db/aaf48871-5821-4e8a-a81c-b999c96d9dc7/console.sql" />
-        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/Order.java" />
         <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/LogoutServlet.java" />
-        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/StaticElements.java" />
-        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/DashboardServlet.java" />
         <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/StatisticPanel.java" />
-        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/OrderServlet.java" />
-        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/UserData.java" />
-        <option value="$PROJECT_DIR$/src/main/webapp/jsp/sidebar.jsp" />
+        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/Order.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/jsp/order_edit.jsp" />
+        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/LoginServlet.java" />
+        <option value="$PROJECT_DIR$/src/main/webapp/jsp/error_msg.jsp" />
+        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/UserServlet.java" />
+        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/DashboardServlet.java" />
+        <option value="$PROJECT_DIR$/src/main/webapp/jsp/sidebar.jsp" />
+        <option value="$PROJECT_DIR$/src/main/webapp/jsp/navbar.jsp" />
+        <option value="$PROJECT_DIR$/src/main/webapp/jsp/error.jsp" />
+        <option value="$PROJECT_DIR$/src/main/webapp/jsp/period.jsp" />
+        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/ResultSetProcessor.java" />
+        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/StaticElements.java" />
+        <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/DbData.java" />
+        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/OrderServlet.java" />
+        <option value="$PROJECT_DIR$/src/main/webapp/jsp/dashboard.jsp" />
+        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/UserData.java" />
+        <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/StatisticServlet.java" />
         <option value="$PROJECT_DIR$/src/main/java/huckster/cabinet/DatatableServlet.java" />
         <option value="$PROJECT_DIR$/src/main/webapp/jsp/orders.jsp" />
+        <option value="$PROJECT_DIR$/src/main/webapp/jsp/statistic.jsp" />
       </list>
     </option>
   </component>
@@ -260,10 +294,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
+    <option name="x" value="-1928" />
     <option name="y" value="-8" />
-    <option name="width" value="1382" />
-    <option name="height" value="754" />
+    <option name="width" value="1936" />
+    <option name="height" value="1096" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -292,7 +326,6 @@
     <panes>
       <pane id="PackagesPane" />
       <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -421,7 +454,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="jsp" />
+              <option name="myItemId" value="less" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -440,6 +473,14 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="main" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webapp" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="jsp" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -479,30 +520,25 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
+              <option name="myItemId" value=".idea" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="aspect.path.notification.shown" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$APPLICATION_CONFIG_DIR$/jdbc-drivers/ojdbc6-12.1.0.2.jar!/" />
-    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../topjava" />
+    <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.4" />
     <property name="com.intellij.database.dataSource.DataSourceTemplate" value="Oracle" />
+    <property name="settings.editor.selected.configurable" value="File.Encoding" />
+    <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RunManager" selected="Tomcat Server.Unnamed">
     <configuration default="true" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" ALTERNATIVE_JRE_ENABLED="false">
@@ -1012,6 +1048,10 @@
       <workItem from="1462866685933" duration="40338000" />
       <workItem from="1463387961014" duration="58158000" />
       <workItem from="1463828817699" duration="22462000" />
+      <workItem from="1463989306335" duration="40497000" />
+      <workItem from="1464184111875" duration="19000" />
+      <workItem from="1464184158650" duration="1799000" />
+      <workItem from="1464248737518" duration="20344000" />
     </task>
     <task id="LOCAL-00001" summary="+Login&#10;+Logout&#10;+Panels on a dashboard">
       <created>1462898399178</created>
@@ -1041,11 +1081,25 @@
       <option name="project" value="LOCAL" />
       <updated>1463586421647</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Save order status changes">
+      <created>1464019734658</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1464019734658</updated>
+    </task>
+    <task id="LOCAL-00006" summary="+Statistic -&gt; goods (without periods)">
+      <created>1464106177066</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1464106177066</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="139371000" />
+    <option name="totallyTimeSpent" value="202869000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1057,31 +1111,31 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
+    <frame x="-1928" y="-8" width="1936" height="1096" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.49573562" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3279743" sideWeight="0.52118003" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32883817" sideWeight="0.46002132" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21382637" sideWeight="0.34039333" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21161826" sideWeight="0.13859275" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32868218" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.4978678" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21382637" sideWeight="0.65960664" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21161826" sideWeight="0.8614072" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32987553" sideWeight="0.4978678" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1785174" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27558637" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Web" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14220877" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14552239" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39937758" sideWeight="0.67697227" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39937758" sideWeight="0.67164177" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -1107,11 +1161,13 @@
     <MESSAGE value="DbHelper -&gt; UserData" />
     <MESSAGE value="Orders" />
     <MESSAGE value="Orders server-side" />
-    <option name="LAST_COMMIT_MESSAGE" value="Orders server-side" />
+    <MESSAGE value="Save order status changes" />
+    <MESSAGE value="+Statistic -&gt; goods (without periods)" />
+    <option name="LAST_COMMIT_MESSAGE" value="+Statistic -&gt; goods (without periods)" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="16" />
+      <option name="time" value="17" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1120,74 +1176,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/META-INF/context.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/Employee.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/index.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/list-employees.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/LoginServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="697">
-          <caret line="52" column="77" selection-start-line="52" selection-start-column="77" selection-end-line="52" selection-end-column="77" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/META-INF/context.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/Employee.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/new-employee.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="153">
-          <caret line="9" column="25" selection-start-line="9" selection-start-column="25" selection-end-line="9" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/list-employees.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="833">
-          <caret line="49" column="42" selection-start-line="49" selection-start-column="38" selection-end-line="49" selection-end-column="42" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/EmployeeList.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/Employee.java" />
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/index.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="21" selection-start-line="2" selection-start-column="21" selection-end-line="2" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/EmployeeService.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/ChartDto.java" />
     <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/ChartModel.java" />
@@ -1227,15 +1215,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/error.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1243,7 +1222,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="9" column="13" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1251,7 +1229,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="6" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1259,96 +1236,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
           <caret line="4" column="10" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/Order.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="110" column="17" selection-start-line="110" selection-start-column="17" selection-end-line="110" selection-end-column="17" />
-          <folding>
-            <element signature="e#504#505#0" expanded="false" />
-            <element signature="e#532#533#0" expanded="false" />
-            <element signature="e#573#574#0" expanded="false" />
-            <element signature="e#609#610#0" expanded="false" />
-            <element signature="e#655#656#0" expanded="false" />
-            <element signature="e#693#694#0" expanded="false" />
-            <element signature="e#745#746#0" expanded="false" />
-            <element signature="e#789#790#0" expanded="false" />
-            <element signature="e#831#832#0" expanded="false" />
-            <element signature="e#865#866#0" expanded="false" />
-            <element signature="e#915#916#0" expanded="false" />
-            <element signature="e#957#958#0" expanded="false" />
-            <element signature="e#1011#1012#0" expanded="false" />
-            <element signature="e#1057#1058#0" expanded="false" />
-            <element signature="e#1102#1103#0" expanded="false" />
-            <element signature="e#1142#1143#0" expanded="false" />
-            <element signature="e#1184#1185#0" expanded="false" />
-            <element signature="e#1218#1219#0" expanded="false" />
-            <element signature="e#1258#1259#0" expanded="false" />
-            <element signature="e#1290#1291#0" expanded="false" />
-            <element signature="e#1330#1331#0" expanded="false" />
-            <element signature="e#1362#1363#0" expanded="false" />
-            <element signature="e#1406#1407#0" expanded="false" />
-            <element signature="e#1442#1443#0" expanded="false" />
-            <element signature="e#1486#1487#0" expanded="false" />
-            <element signature="e#1522#1523#0" expanded="false" />
-            <element signature="e#1568#1569#0" expanded="false" />
-            <element signature="e#1606#1607#0" expanded="false" />
-            <element signature="e#1688#1689#0" expanded="false" />
-            <element signature="e#1717#1718#0" expanded="false" />
-            <element signature="e#1751#1752#0" expanded="false" />
-            <element signature="e#1781#1782#0" expanded="false" />
-            <element signature="e#1818#1819#0" expanded="false" />
-            <element signature="e#1851#1852#0" expanded="false" />
-            <element signature="e#1883#1884#0" expanded="false" />
-            <element signature="e#1911#1912#0" expanded="false" />
-            <element signature="e#1947#1948#0" expanded="false" />
-            <element signature="e#1979#1980#0" expanded="false" />
-            <element signature="e#2017#2018#0" expanded="false" />
-            <element signature="e#2051#2052#0" expanded="false" />
-            <element signature="e#2083#2084#0" expanded="false" />
-            <element signature="e#2114#2115#0" expanded="false" />
-            <element signature="e#2146#2147#0" expanded="false" />
-            <element signature="e#2174#2175#0" expanded="false" />
-            <element signature="e#2205#2206#0" expanded="false" />
-            <element signature="e#2232#2233#0" expanded="false" />
-            <element signature="e#2263#2264#0" expanded="false" />
-            <element signature="e#2290#2291#0" expanded="false" />
-            <element signature="e#2323#2324#0" expanded="false" />
-            <element signature="e#2352#2353#0" expanded="false" />
-            <element signature="e#2385#2386#0" expanded="false" />
-            <element signature="e#2414#2415#0" expanded="false" />
-            <element signature="e#2448#2449#0" expanded="false" />
-            <element signature="e#2478#2479#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/DbData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="663">
-          <caret line="41" column="45" selection-start-line="41" selection-start-column="45" selection-end-line="41" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/login.jsp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="491">
-          <caret line="33" column="67" selection-start-line="33" selection-start-column="67" selection-end-line="33" selection-end-column="67" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/LogoutServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="13" column="0" selection-start-line="13" selection-start-column="0" selection-end-line="31" selection-end-column="1" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1356,7 +1243,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="6" selection-start-line="5" selection-start-column="6" selection-end-line="5" selection-end-column="6" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1364,53 +1250,29 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="6" selection-start-line="7" selection-start-column="6" selection-end-line="7" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/DashboardServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="28" column="38" selection-start-line="28" selection-start-column="38" selection-end-line="28" selection-end-column="38" />
-          <folding>
-            <marker date="1463828763643" expanded="true" signature="1634:1641" placeholder="{...}" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/StatisticPanel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
+        <state relative-caret-position="425">
           <caret line="28" column="57" selection-start-line="28" selection-start-column="57" selection-end-line="28" selection-end-column="57" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/StaticElements.java">
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/order_edit.jsp" />
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/list-employees.jsp" />
+    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/Order.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="31" column="1" selection-start-line="31" selection-start-column="1" selection-end-line="31" selection-end-column="1" />
-          <folding />
+        <state relative-caret-position="119">
+          <caret line="7" column="23" selection-start-line="7" selection-start-column="23" selection-end-line="7" selection-end-column="23" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/LoginServlet.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="11" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/UserServlet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
+        <state relative-caret-position="85">
+          <caret line="7" column="13" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -1418,84 +1280,219 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="5" column="7" selection-start-line="5" selection-start-column="7" selection-end-line="5" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/UserServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="22" column="51" selection-start-line="22" selection-start-column="51" selection-end-line="22" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/LoginServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/UserData.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/LogoutServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-4719">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <marker date="1463828949462" expanded="true" signature="2009:2567" placeholder="SELECT repor... " />
-            <marker date="1463828949462" expanded="true" signature="3287:4110" placeholder="SELECT r.rep... " />
-            <marker date="1463828949462" expanded="true" signature="4832:5617" placeholder="SELECT * FRO... report_id" />
-            <marker date="1463828949462" expanded="true" signature="4899:5419" placeholder="SELECT repor... " />
-            <marker date="1463828949462" expanded="true" signature="7478:7542" placeholder="SELECT compa... users_auth" />
-            <marker date="1463828949462" expanded="true" signature="8044:8107" placeholder="SELECT head_... companies" />
-            <marker date="1463828949462" expanded="true" signature="9859:11088" placeholder="select h.rem... orders_header" />
-          </folding>
+        <state relative-caret-position="425">
+          <caret line="31" column="1" selection-start-line="31" selection-start-column="1" selection-end-line="31" selection-end-column="1" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/dashboard.jsp">
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/error_msg.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="54" column="42" selection-start-line="54" selection-start-column="12" selection-end-line="54" selection-end-column="42" />
+        <state relative-caret-position="170">
+          <caret line="10" column="16" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/login.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="23" selection-end-column="11" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/navbar.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" column="43" selection-start-line="11" selection-start-column="43" selection-end-line="11" selection-end-column="43" />
+        <state relative-caret-position="119">
+          <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/order_edit.jsp">
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/sidebar.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/ResultSetProcessor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="9" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/error.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="32" selection-start-line="7" selection-start-column="32" selection-end-line="7" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/DashboardServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="697">
+          <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="53" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/StaticElements.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="391">
+          <caret line="26" column="11" selection-start-line="26" selection-start-column="11" selection-end-line="26" selection-end-column="11" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/compiler.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/dataSources.local.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/dataSources.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/vcs.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/period.jsp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
-          <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
+          <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="19" selection-end-column="6" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/DbData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="525">
+          <caret line="47" column="5" selection-start-line="47" selection-start-column="5" selection-end-line="47" selection-end-column="5" />
+          <folding>
+            <marker date="1464184663416" expanded="true" signature="879:1052" placeholder="SELECT count... " />
+            <marker date="1464184663416" expanded="true" signature="1611:1799" placeholder="update anali... " />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/OrderServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="536">
-          <caret line="49" column="13" selection-start-line="49" selection-start-column="13" selection-end-line="49" selection-end-column="13" />
+        <state relative-caret-position="935">
+          <caret line="64" column="70" selection-start-line="64" selection-start-column="70" selection-end-line="64" selection-end-column="70" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/UserData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1079">
+          <caret line="293" column="49" selection-start-line="293" selection-start-column="49" selection-end-line="293" selection-end-column="49" />
+          <folding>
+            <marker date="1464274034945" expanded="true" signature="2307:2865" placeholder="SELECT repor... " />
+            <marker date="1464274034945" expanded="true" signature="3300:4123" placeholder="SELECT r.rep... " />
+            <marker date="1464274034945" expanded="true" signature="4560:5345" placeholder="SELECT * FRO... report_id" />
+            <marker date="1464274034945" expanded="true" signature="4627:5147" placeholder="SELECT repor... " />
+            <marker date="1464274034945" expanded="true" signature="9037:9461" placeholder="select h.rem... " />
+            <marker date="1464274034945" expanded="true" signature="9037:10313" placeholder="select h.rem... orders_header" />
+            <marker date="1464274034945" expanded="true" signature="9037:10314" placeholder="select h.rem... orders_header" />
+            <marker date="1464274034945" expanded="true" signature="10669:11397" placeholder="select t.off... " />
+            <marker date="1464274034945" expanded="true" signature="10669:11400" placeholder="select t.off... " />
+            <marker date="1464274034945" expanded="true" signature="10669:11596" placeholder="select h.rem... orders_header" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/StatisticServlet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="26" column="74" selection-start-line="26" selection-start-column="74" selection-end-line="26" selection-end-column="74" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/huckster/cabinet/DatatableServlet.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="49" column="49" selection-start-line="49" selection-start-column="49" selection-end-line="49" selection-end-column="49" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state relative-caret-position="-16">
+          <caret line="70" column="39" selection-start-line="70" selection-start-column="39" selection-end-line="70" selection-end-column="39" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/sidebar.jsp">
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/dashboard.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="106" selection-start-line="11" selection-start-column="16" selection-end-line="12" selection-end-column="106" />
+        <state relative-caret-position="304">
+          <caret line="50" column="26" selection-start-line="50" selection-start-column="26" selection-end-line="50" selection-end-column="26" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/orders.jsp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="151">
-          <caret line="51" column="52" selection-start-line="51" selection-start-column="52" selection-end-line="51" selection-end-column="52" />
-          <folding>
-            <marker date="1463953405541" expanded="true" signature="2929:3176" placeholder="..." />
-          </folding>
+        <state relative-caret-position="1063">
+          <caret line="131" column="29" selection-start-line="131" selection-start-column="29" selection-end-line="131" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/webapp/jsp/statistic.jsp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="213">
+          <caret line="34" column="19" selection-start-line="34" selection-start-column="19" selection-end-line="34" selection-end-column="19" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1530,6 +1527,7 @@
       </state>
       <state key="GlobalLibrariesConfigurable.UI">
         <settings>
+          <last-edited>datatables</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

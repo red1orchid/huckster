@@ -41,6 +41,8 @@
             </c:if>
             <h5 class="page-header">Если вам необходимо выгружать заказы по API - напишите нам на
                 support@hucksterbot.ru</h5>
+            ${sessionScope.activeTab}
+            <c:if test="${sessionScope.activeTab == 'yml'}">in active</c:if>
 
             <div class="row placeholders">
                 <!-- Modal -->
@@ -150,8 +152,8 @@
             },
             "ajax": {
                 "url": "/datatable",
-                "data" : {
-                    "type" : "orders"
+                "data": {
+                    "type": "orders"
                 }
             }
         });

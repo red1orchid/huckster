@@ -234,7 +234,7 @@ class UserData {
     }
 
     ArrayList<ArrayList> getOrders(Date startDate, Date endDate) throws SQLException {
-        String sql = "select h.remote_id as order_id," +
+        String sql = "SELECT h.remote_id as order_id," +
                 "            h.rule_id," +
                 "            t.offer_id," +
                 "            f.vendor_code," +
@@ -249,24 +249,16 @@ class UserData {
                 "            decode(h.processing_status, 0, 'принят', 1, 'в работе', 2, 'обработан', 3, 'выкуплен', 4, 'отложен', 5, 'отменен') as processing_status," +
                 "            h.processing_comment," +
                 "            h.processing_status" +
-                "       from analitic.orders_header h" +
-                "      inner join analitic.orders_items t" +
-                "         on h.id = t.orders_headers_id" +
-                "       left join analitic.mv_offers f" +
-                "         on f.company_id = h.company_id" +
-                "        and f.offer_id = t.offer_id" +
-                "      where h.company_id = ?" +
-                "        and trunc(h.ctime) between ? and ?";
+                "       FROM analitic.orders_header h" +
+                "      INNER JOIN analitic.orders_items t" +
+                "         ON h.id = t.orders_headers_id" +
+                "       LEFT JOIN analitic.mv_offers f" +
+                "         ON f.company_id = h.company_id" +
+                "        AND f.offer_id = t.offer_id" +
+                "      WHERE h.company_id = ?" +
+                "        AND trunc(h.ctime) BETWEEN ? AND ?";
 
-        ArrayList<ArrayList> table = new ArrayList<>();
-
-        select(sql, 500, (rs) -> {
-            ArrayList<String> row = new ArrayList<>();
-            for (int i = 1; i <= 15; i++) {
-                row.add(rs.getString(i));
-            }
-            table.add(row);
-        }, companyId, startDate, endDate);
+        ArrayList<ArrayList> table = makeTable(sql, 500, 15, companyId, startDate, endDate);
 
         if (table.isEmpty()) {
             throw new DataException("No orders for company " + companyId);
@@ -274,37 +266,55 @@ class UserData {
         return table;
     }
 
-    ArrayList<ArrayList> getGoods() throws SQLException {
-        String sql = String.format("select t.offer_id," +
-                "       t.name," +
-                "       t.category_name as category," +
-                "       t.vendor," +
-                "       t.uniq_clients_views_%1$s as views," +
-                "       t.uniq_clients_widget_%1$s as cnt," +
-                "       t.orders_basket_%1$s as orders_basket," +
-                "       t.orders1_%1$s as orders1," +
-                "       t.orders2_%1$s as orders2," +
-                "       t.orders3_%1$s as orders3," +
-                "       nvl(t.image_info, t.reco) as reco" +
-                "  from analitic.offers_stats t" +
-                " where t.company_id = ?" +
-                "   and rownum < 100" +
-                " order by t.uniq_clients_widget_%1$s desc", period);
-        System.out.println(sql);
+    ArrayList<ArrayList> getGoods(String period) throws SQLException {
+        String sql = String.format("SELECT t.offer_id," +
+                "                          t.name," +
+                "                          t.category_name," +
+                "                          t.vendor," +
+                "                          t.uniq_clients_views_%1$s," +
+                "                          t.uniq_clients_widget_%1$s," +
+                "                          t.orders_basket_%1$s," +
+                "                          t.orders1_%1$s," +
+                "                          t.orders2_%1$s," +
+                "                          t.orders3_%1$s," +
+                "                          nvl(t.image_info, t.reco)" +
+                "                     FROM analitic.offers_stats t" +
+                "                    WHERE t.company_id = ?" +
+                "                      AND rownum < 100" +
+                "                    ORDER BY t.uniq_clients_widget_%1$s DESC", period);
 
-        ArrayList<ArrayList> table = new ArrayList<>();
-
-        select(sql, 100, (rs) -> {
-            ArrayList<String> row = new ArrayList<>();
-            for (int i = 1; i <= 11; i++) {
-                row.add(rs.getString(i));
-            }
-            table.add(row);
-        }, companyId);
+        ArrayList<ArrayList> table = makeTable(sql, 100, 11, companyId);
 
         if (table.isEmpty()) {
             throw new DataException("No goods for company " + companyId);
         }
+        return table;
+    }
+
+    ArrayList<ArrayList> getTraffic(String period) throws SQLException {
+        String sql = String.format("SELECT t.rule, t.ords_%1$s, t.trfc_%1$s, t.conv_%1$s, t.disc_%1$s" +
+                "                     FROM analitic.mv_traffic_rules t" +
+                "                    WHERE t.company_id = ?", period);
+
+        ArrayList<ArrayList> table = makeTable(sql, null, 5, companyId);
+
+        if (table.isEmpty()) {
+            throw new DataException("No traffic for company " + companyId);
+        }
+        return table;
+    }
+
+    private ArrayList<ArrayList> makeTable(String sql, Integer fetchSize, int columns, Object... params) throws SQLException {
+        ArrayList<ArrayList> table = new ArrayList<>();
+
+        select(sql, fetchSize, (rs) -> {
+            ArrayList<String> row = new ArrayList<>();
+            for (int i = 1; i <= columns; i++) {
+                row.add(rs.getString(i));
+            }
+            table.add(row);
+        }, params);
+
         return table;
     }
 }

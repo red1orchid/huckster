@@ -25,8 +25,6 @@ import static huckster.cabinet.StaticElements.DEFAULT_START_DATE;
 public class DatatableServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
-        System.out.println(req.getParameter("type"));
-
         UserData userData = (UserData) req.getSession().getAttribute("userData");
         String data = "";
         switch (req.getParameter("type")) {
@@ -35,6 +33,9 @@ public class DatatableServlet extends HttpServlet {
                 break;
             case "goods":
                 data = getGoods(req, userData);
+                break;
+            case "traffic":
+                data = getTraffic(req, userData);
                 break;
         }
 
@@ -47,11 +48,27 @@ public class DatatableServlet extends HttpServlet {
     }
 
     private String getGoods(HttpServletRequest req, UserData userData) {
+        StaticElements.timeStone("stat get goods");
         Gson json = new Gson();
         HashMap<String, List> map = new HashMap<>();
         List<ArrayList> data = new ArrayList<>();
         try {
-            data = userData.getGoods();
+            data = userData.getGoods((String) req.getSession().getAttribute("periodGoods"));
+        } catch (SQLException | DataException e) {
+            e.printStackTrace();
+        }
+
+        map.put("data", data);
+        StaticElements.timeStone("stat get goods done");
+        return json.toJson(map);
+    }
+
+    private String getTraffic(HttpServletRequest req, UserData userData) {
+        Gson json = new Gson();
+        HashMap<String, List> map = new HashMap<>();
+        List<ArrayList> data = new ArrayList<>();
+        try {
+            data = userData.getTraffic((String) req.getSession().getAttribute("periodTraffic"));
         } catch (SQLException | DataException e) {
             e.printStackTrace();
         }

@@ -78,6 +78,7 @@
                         </div>
                     </div>
                 </c:forEach>
+
                 <%--Charts--%>
                 <c:forEach var="chart" items="${charts}">
                     <div class="col-xs-12 col-sm-12 placeholder">
@@ -93,10 +94,6 @@
                 </c:forEach>
             </div>
 
-            <%--                <div id="placeholder">
-                                <figure id="${chart.getId()}"></figure>
-                            </div>--%>
-
             <script type="text/javascript">
                 <c:forEach var="chart" items="${charts}">
                 var ${chart.getVar()} = ${chart.getData()};
@@ -105,13 +102,6 @@
         </div>
     </div>
 </div>
-
-
-<%--
-
-<script src="../js/bootstrap.min.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
---%>
 
 </body>
 </html>

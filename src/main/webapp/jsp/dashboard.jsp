@@ -38,7 +38,17 @@
             <%--Period selector--%>
             <form method="post">
                 <h3 class="page-header">Показать данные за
-                    <%@ include file="period.jsp" %>
+                    <div class="btn-group">
+                        <button type="submit" name="period" value="day"
+                                class="btn btn-primary <c:if test="${period == 'day'}">active</c:if>">Текущий день
+                        </button>
+                        <button type="submit" name="period" value="week"
+                                class="btn btn-primary <c:if test="${period == 'week'}">active</c:if>">Текущую неделю
+                        </button>
+                        <button type="submit" name="period" value="month"
+                                class="btn btn-primary <c:if test="${period == 'month'}">active</c:if>">Текущий месяц
+                        </button>
+                    </div>
                 </h3>
             </form>
 

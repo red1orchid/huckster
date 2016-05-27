@@ -32,13 +32,15 @@ public class OrderServlet extends UserServlet {
         req.setAttribute("startDate", startDate.format(FORMATTER));
         req.setAttribute("endDate", endDate.format(FORMATTER));
         req.setAttribute("statuses", getOrderStatuses());
+
+        StaticElements.timeStone("orders start forward");
         req.getRequestDispatcher("/jsp/orders.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
         if (req.getParameter("orderId") != null) {
-            req.setCharacterEncoding("UTF-8");
             DbData db = new DbData();
             try {
                 db.updateOrder(Integer.parseInt(req.getParameter("orderId")), Integer.parseInt(req.getParameter("status")), req.getParameter("comment"));
@@ -68,9 +70,8 @@ public class OrderServlet extends UserServlet {
 
             req.getSession().setAttribute("startDate", startDate);
             req.getSession().setAttribute("endDate", endDate);
-
-            resp.sendRedirect("/orders");
         }
+        resp.sendRedirect("/orders");
     }
 
     private HashMap<Integer, String> getOrderStatuses() {

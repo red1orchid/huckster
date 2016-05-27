@@ -54,14 +54,12 @@ public class DbData {
                 "             processing_comment = ?" +
                 "       where remote_id = ?";
 
-        throw new SQLException();
-
-/*        try (Connection dbConnection = pool.getConnection();
+        try (Connection dbConnection = pool.getConnection();
              PreparedStatement ps = dbConnection.prepareStatement(sql)) {
             ps.setInt(1, status);
             ps.setString(2, comment);
             ps.setInt(3, orderId);
             ps.executeQuery();
-        }*/
+        }
     }
 }
