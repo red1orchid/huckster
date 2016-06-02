@@ -47,7 +47,6 @@ public class DbData {
         }
     }
 
-
     void updateOrder(int orderId, int status, String comment) throws SQLException {
         String sql = " update analitic.orders_header" +
                 "         set processing_status = ?," +

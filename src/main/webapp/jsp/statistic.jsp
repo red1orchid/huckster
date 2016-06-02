@@ -29,7 +29,7 @@
 <div class="container-fluid">
     <div class="row">
         <%--Sidebar--%>
-        <%@ include file="sidebar.jsp" %>
+        <%@ include file="menu.jsp" %>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <ul class="nav nav-tabs" id="tabs">
                 <li><a data-toggle="tab" href="#goods">Товары и рекомендации</a></li>
@@ -135,13 +135,33 @@
                         <tfoot>
                         </tfoot>
                         <tbody>
+                        <c:forEach var="tRow" items="${traffic}">
+                            <tr><c:forEach var="tCell" items="${tRow}">
+                                <td>${tCell}</td>
+                            </c:forEach>
+                            </tr>
+                        </c:forEach>
                         </tbody>
                     </table>
                 </div>
                 <div id="yml" class="tab-pane fade">
-                    <h3>Menu 2</h3>
-                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium,
-                        totam rem aperiam.</p>
+                    <br>
+                    <div class="col-sm-4">
+                        <table class="table table-hover table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                            </thead>
+                            <tfoot>
+                            </tfoot>
+                            <tbody>
+                            <c:forEach var="yRow" items="${yml}">
+                                <tr>
+                                    <td>${yRow.key}</td>
+                                    <td>${yRow.value}</td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -167,12 +187,14 @@
 
     $(document).ready(function () {
         // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line
-        $('a[data-toggle="tab"]').on('show.bs.tab', function(e) {
+        $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
             localStorage.setItem('activeTab', $(e.target).attr('href'));
         });
         var activeTab = localStorage.getItem('activeTab');
-        if(activeTab){
+        if (activeTab) {
             $('a[href="' + activeTab + '"]').tab('show');
+        } else {
+            $('.nav-tabs a:first').tab('show');
         }
 
         $('#goodsTbl').DataTable({
@@ -196,13 +218,13 @@
             colReorder: true,
             ordering: false,
             paging: false,
-            language: language,
-            ajax: {
-                url: "/datatable",
-                data: {
-                    "type": "traffic"
-                }
-            }
+            language: language/*,
+             ajax: {
+             url: "/datatable",
+             data: {
+             "type": "traffic"
+             }
+             }*/
         });
     });
 </script>

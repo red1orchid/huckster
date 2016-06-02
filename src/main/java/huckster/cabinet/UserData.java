@@ -5,8 +5,8 @@ import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.sql.Date;
+import java.util.*;
 
 /**
  * Created by Perevalova Marina on 11.05.2016.
@@ -94,7 +94,7 @@ class UserData {
     private void initPrcContainer(String period) throws SQLException {
         if (prcContainer.isEmpty()) {
             String sql = "SELECT r.report_id, (CASE WHEN sign(r.value-rr.value) = 1 THEN '+' END) || " +
-                    "                       trim(to_char(round((r.value-rr.value)/decode(rr.value,0,1,rr.value)*100, 2), '9990.99')) AS value" +
+                    "                       trim(to_char(round((r.value-rr.value)/decode(rr.value,0,1,rr.value)*100, 2), '999990.99')) AS value" +
                     "  FROM analitic.reports_data r" +
                     " INNER JOIN analitic.reports_data rr" +
                     "    ON rr.report_id = r.report_id" +
@@ -233,7 +233,7 @@ class UserData {
         return chartContainer.get(reportId);
     }
 
-    ArrayList<ArrayList> getOrders(Date startDate, Date endDate) throws SQLException {
+    List<List> getOrders(Date startDate, Date endDate) throws SQLException {
         String sql = "SELECT h.remote_id as order_id," +
                 "            h.rule_id," +
                 "            t.offer_id," +
@@ -258,7 +258,7 @@ class UserData {
                 "      WHERE h.company_id = ?" +
                 "        AND trunc(h.ctime) BETWEEN ? AND ?";
 
-        ArrayList<ArrayList> table = makeTable(sql, 500, 15, companyId, startDate, endDate);
+        List<List> table = makeTable(sql, 500, 15, companyId, startDate, endDate);
 
         if (table.isEmpty()) {
             throw new DataException("No orders for company " + companyId);
@@ -266,7 +266,7 @@ class UserData {
         return table;
     }
 
-    ArrayList<ArrayList> getGoods(String period) throws SQLException {
+    List<List> getGoods(String period) throws SQLException {
         String sql = String.format("SELECT t.offer_id," +
                 "                          t.name," +
                 "                          t.category_name," +
@@ -283,7 +283,7 @@ class UserData {
                 "                      AND rownum < 100" +
                 "                    ORDER BY t.uniq_clients_widget_%1$s DESC", period);
 
-        ArrayList<ArrayList> table = makeTable(sql, 100, 11, companyId);
+        List<List> table = makeTable(sql, 100, 11, companyId);
 
         if (table.isEmpty()) {
             throw new DataException("No goods for company " + companyId);
@@ -291,12 +291,12 @@ class UserData {
         return table;
     }
 
-    ArrayList<ArrayList> getTraffic(String period) throws SQLException {
+    List<List> getTraffic(String period) throws SQLException {
         String sql = String.format("SELECT t.rule, t.ords_%1$s, t.trfc_%1$s, t.conv_%1$s, t.disc_%1$s" +
                 "                     FROM analitic.mv_traffic_rules t" +
                 "                    WHERE t.company_id = ?", period);
 
-        ArrayList<ArrayList> table = makeTable(sql, null, 5, companyId);
+        List<List> table = makeTable(sql, null, 5, companyId);
 
         if (table.isEmpty()) {
             throw new DataException("No traffic for company " + companyId);
@@ -304,11 +304,11 @@ class UserData {
         return table;
     }
 
-    private ArrayList<ArrayList> makeTable(String sql, Integer fetchSize, int columns, Object... params) throws SQLException {
-        ArrayList<ArrayList> table = new ArrayList<>();
+    private List<List> makeTable(String sql, Integer fetchSize, int columns, Object... params) throws SQLException {
+        List<List> table = new ArrayList<>();
 
         select(sql, fetchSize, (rs) -> {
-            ArrayList<String> row = new ArrayList<>();
+            List<String> row = new ArrayList<>();
             for (int i = 1; i <= columns; i++) {
                 row.add(rs.getString(i));
             }
@@ -316,5 +316,51 @@ class UserData {
         }, params);
 
         return table;
+    }
+
+    Map<String, String> getYml() throws SQLException {
+        String sql = "SELECT id," +
+                "            head_company," +
+                "            head_url," +
+                "            to_char(ctime, 'DD.MM.YYYY') as ctime," +
+                "            to_char(feed_date, 'DD.MM.YYYY HH24:MI') as feed_date," +
+                "            to_char(get_time, 'DD.MM.YYYY HH24:MI') as get_time," +
+                "            offers," +
+                "            offers24," +
+                "            offers168" +
+                "       FROM analitic.yml_stats" +
+                "      WHERE id = ?";
+
+        Map<String, String> map = new LinkedHashMap<>();
+
+        select(sql, null, (rs) -> {
+            map.put("Идентификатор", rs.getString("id"));
+            map.put("Компания", "<strong>" + rs.getString("head_company") + "</strong>");
+            map.put("Адрес сайта", "<strong>" + rs.getString("head_url") + "</strong>");
+            map.put("Дата регистрации", rs.getString("ctime"));
+            map.put("Дата в текущем YML", rs.getString("feed_date"));
+            map.put("Дата обновления YML", rs.getString("get_time"));
+            map.put("Товаров в YML", "<strong>" + rs.getString("offers") + "</strong>");
+            map.put("YML прошлый день", rs.getString("offers24"));
+            map.put("YML прошлая неделя", rs.getString("offers168"));
+        }, companyId);
+
+        return map;
+    }
+
+    Map<Integer, JsonTreeNode> getTree() throws SQLException {
+        String sql = " SELECT id, title, parent_id" +
+                "        FROM analitic.cidr_tree";
+/*                "       START WITH parent_id IS NULL" +
+                "     CONNECT BY PRIOR id = parent_id" +
+                "       ORDER BY level DESC, id";*/
+
+        Map<Integer, JsonTreeNode> map = new HashMap<>();
+        select(sql, 1000, (rs) -> {
+            map.put(rs.getInt("id"), new JsonTreeNode(rs.getInt("id"), rs.getString("title"), rs.getInt("parent_id"), null));
+          //  list.add(new TreeNode(rs.getInt("id"), rs.getInt("parent_id"), rs.getInt("level"), rs.getString("title")));
+        });
+
+        return map;
     }
 }

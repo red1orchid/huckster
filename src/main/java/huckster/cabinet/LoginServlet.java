@@ -26,23 +26,28 @@ public class LoginServlet extends HttpServlet {
         String password = req.getParameter("password");
         String rememberMe = req.getParameter("rememberMe");
 
-        try {
-            DbData db = new DbData();
-            if (db.isUserExists(username, password)) {
-                req.getSession().setAttribute("user", username);
-                if (rememberMe != null) {
-                    Cookie loginCookie = new Cookie("user", username);
-                    loginCookie.setMaxAge(COOKIE_MAX_AGE);
-                    resp.addCookie(loginCookie);
+        if (username == null || password == null) {
+            req.setAttribute("message", "Заполните имя пользователя и пароль");
+            req.getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
+        } else {
+            try {
+                DbData db = new DbData();
+                if (db.isUserExists(username, password)) {
+                    req.getSession().setAttribute("user", username);
+                    if (rememberMe != null) {
+                        Cookie loginCookie = new Cookie("user", username);
+                        loginCookie.setMaxAge(COOKIE_MAX_AGE);
+                        resp.addCookie(loginCookie);
+                    }
+                    resp.sendRedirect("/");
+                } else {
+                    req.setAttribute("message", "Неправильное имя пользователя или пароль");
+                    req.getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
                 }
-                resp.sendRedirect("/");
-            } else {
-                req.setAttribute("message", "Неправильное имя пользователя или пароль");
-                req.getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                resp.sendRedirect("/jsp/error.jsp");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            resp.sendRedirect("/jsp/error.jsp");
         }
     }
 }
