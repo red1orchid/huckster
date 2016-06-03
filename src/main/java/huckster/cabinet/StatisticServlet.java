@@ -6,14 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-
-import static huckster.cabinet.StaticElements.DEFAULT_END_DATE;
-import static huckster.cabinet.StaticElements.DEFAULT_START_DATE;
-import static huckster.cabinet.StaticElements.FORMATTER;
 
 /**
  * Created by PerevalovaMA on 23.05.2016.

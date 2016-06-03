@@ -14,18 +14,15 @@
     <link href="../css/dashboard.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
     <link href="../css/table.css" rel="stylesheet">
-    <link rel="stylesheet"
-          href="https://cdn.datatables.net/u/bs/dt-1.10.12,cr-1.3.2,b-1.2.0/datatables.min.css">
+    <link href="../DataTables/datatables.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.18.0/skin-win8-n/ui.fancytree.css"
           rel="stylesheet">
-
 
     <script src="../js/jquery-2.2.4.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
-    <%--
-        <script src="https://cdn.datatables.net/u/bs/dt-1.10.12,cr-1.3.2,b-1.2.0/datatables.min.js"></script>--%>
+    <script src="../DataTables/datatables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.18.0/jquery.fancytree.js"></script>
 
     <style type="text/css">
@@ -53,18 +50,66 @@
                 <li><a data-toggle="tab" href="#step3">шаг 3: Скидки на отдельные товары</a></li>
             </ul>
 
-
             <div class="tab-content">
                 <%--Step 1--%>
                 <div id="step1" class="tab-pane fade">
+                    <!-- Modal -->
+                    <div class="modal fade" id="editRule" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header" align="center">
+                                    <button type="button" class="close" data-dismiss="modal"
+                                            aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title" id="orderTitle">Сегменты пользователей</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <%--  <div class="col-sm-6">--%>
+                                    <h4>Регионы</h4>
+                                    <div id="fancyTree" name="fancyTree"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                                    <button id="saveRule" type="submit" class="btn btn-primary">Сохранить</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <%--<h4>Правила</h4>--%>
+                    <a data-toggle="modal" href="#editRule" type="button" class="btn btn-success">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Новое правило
+                    </a>
+                    <table id="rulesTbl" class="table table-hover table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>id</th>
+                            <th>каналы</th>
+                            <th>источники</th>
+                            <th>устройства</th>
+                            <th>режим запуска</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                        <tbody>
+                        <c:forEach var="rRow" items="${rules}">
+                            <tr>
+                                <td><a data-id=${rRow[0]} data-toggle="modal" href="#editRule"><span
+                                        class="glyphicon glyphicon-pencil"></span></a></td>
+                                <c:forEach var="rCell" items="${rRow}">
+                                    <td>${rCell}</td>
+                                </c:forEach>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
                 </div>
                 <%--Step 2--%>
                 <div id="step2" class="tab-pane fade">
-                        <div class="col-sm-6">
-                            <h4>География</h4>
-                            <div id="fancyTree" name="fancyTree"></div>
-                            <button id="showSelection">click</button>
-                        </div>
+
                 </div>
                 <%--Step 3--%>
                 <div id="step3" class="tab-pane fade"></div>
@@ -75,51 +120,21 @@
 </body>
 
 <script type="text/javascript">
-    /*    var treeData = [
-     {title: "item1 with key and tooltip", tooltip: "Look, a tool tip!"},
-     {title: "item2: selected on init", selected: true},
-     {
-     title: "Folder", key: "id3",
-     children: [
-     {
-     title: "Sub-item 3.1",
-     children: [
-     {title: "Sub-item 3.1.1", key: "id3.1.1"},
-     {title: "Sub-item 3.1.2", key: "id3.1.2"}
-     ]
-     },
-     {
-     title: "Sub-item 3.2",
-     children: [
-     {title: "Sub-item 3.2.1", key: "id3.2.1"},
-     {title: "Sub-item 3.2.2", key: "id3.2.2"}
-     ]
-     }
-     ]
-     },
-     {
-     title: "Document with some children (expanded on init)", key: "id4", expanded: true,
-     children: [
-     {
-     title: "Sub-item 4.1 (active on init)", active: true,
-     children: [
-     {title: "Sub-item 4.1.1", key: "id4.1.1"},
-     {title: "Sub-item 4.1.2", key: "id4.1.2"}
-     ]
-     },
-     {
-     title: "Sub-item 4.2 (selected on init)", selected: true,
-     children: [
-     {title: "Sub-item 4.2.1", key: "id4.2.1"},
-     {title: "Sub-item 4.2.2", key: "id4.2.2"}
-     ]
-     },
-     {title: "Sub-item 4.3 (hideCheckbox)", hideCheckbox: true},
-     {title: "Sub-item 4.4 (unselectable)", unselectable: true}
-     ]
-     },
-     {title: "Lazy folder", folder: true, lazy: true}
-     ];*/
+    var language = {
+        "lengthMenu": "Показать _MENU_ записей",
+        "zeroRecords": "По Вашему запросу ничего не найдено",
+        "search": "Поиск:",
+        "info": "Показаны _START_-_END_ из _TOTAL_ записей",
+        "infoEmpty": "Нет записей",
+        "infoFiltered": "(всего _MAX_)",
+        "loadingRecords": "Загрузка...",
+        "paginate": {
+            "first": "1",
+            "last": "_PAGES_",
+            "next": ">>",
+            "previous": "<<"
+        }
+    };
 
     $(document).ready(function () {
         // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line
@@ -134,6 +149,36 @@
             $('.nav-tabs a:first').tab('show');
         }
 
+        $('#rulesTbl').DataTable({
+            colReorder: true,
+            ordering: false,
+            paging: false,
+            searching: false,
+            language: language
+        });
+    });
+
+    jQuery('#saveRule').on('click', function () {
+        var selection = jQuery.map(
+                jQuery('#fancyTree').fancytree('getRootNode').tree.getSelectedNodes(),
+                function (node) {
+                    return node.key;
+                }
+        );
+
+        $.ajax({
+            type: "POST",
+            url: "/widget_settings",
+            data: {
+                tree: selection.join(":")
+            }
+        }).done(function (msg) {
+            //do other processing
+        });
+    });
+
+    $('#editRule').on('show.bs.modal', function (e) {
+        console.log($(e.relatedTarget).data('id'));
         $("#fancyTree").fancytree({
             checkbox: true,
             selectMode: 3,
@@ -141,16 +186,11 @@
                 url: "/datatable",
                 cache: false,
                 data: {
-                    "type": "tree"
+                    "type": "tree",
+                    "id": $(e.relatedTarget).data('id')
                 }
             },
-            icons: false,
-            /*            lazyLoad: function(event, ctx) {
-             ctx.result = {url: "ajax-sub2.json", debugDelay: 1000};
-             },
-             loadChildren: function(event, ctx) {
-             ctx.node.fixSelection3AfterClick();
-             },*/
+            icon: false,
             select: function (event, data) {
                 // Get a list of all selected nodes, and convert to a key array:
                 var selKeys = $.map(data.tree.getSelectedNodes(), function (node) {
@@ -181,31 +221,6 @@
             cookieId: "fancytree-Cb3",
             idPrefix: "fancytree-Cb3-"
         });
-    });
-
-    $('#tree').on("changed.jstree", function (e, data) {
-        console.log(data.selected);
-    });
-
-    jQuery('#showSelection').on('click', function () {
-        var selection = jQuery.map(
-                jQuery('#fancyTree').fancytree('getRootNode').tree.getSelectedNodes(),
-                function (node) {
-                    return node.key;
-                }
-        );
-
-        $.ajax({
-            type: "POST",
-            url: "/widget_settings",
-            data: { tree: selection.join(":"),
-                    test: "test"}
-        }).done(function( msg ) {
-            //do other processing
-        });
-
-        // selection will have an array of the keys of all selected nodes
-        console.log(selection);
     });
 
 </script>

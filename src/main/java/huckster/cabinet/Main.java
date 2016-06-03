@@ -14,7 +14,7 @@ public class Main {
     public static final Optional<String> HOSTNAME = Optional.ofNullable(System.getenv("HOSTNAME"));
     
     public static void main(String[] args) throws Exception {
-/*        String contextPath = "/" ;
+        String contextPath = "/" ;
         String appBase = ".";
         Tomcat tomcat = new Tomcat();   
         tomcat.setPort(Integer.valueOf(PORT.orElse("8080") ));
@@ -22,41 +22,6 @@ public class Main {
         tomcat.getHost().setAppBase(appBase);
         tomcat.addWebapp(contextPath, appBase);
         tomcat.start();
-        tomcat.getServer().await();*/
-        HashMap<Integer, String> map = new HashMap();
-        map.put(1, "333");
-        map.put(3, "ddd");
-        Gson json = new Gson();
-        System.out.println(json.toJson(map));
+        tomcat.getServer().await();
     }
 }
-/*
-
-class TreeNode {
-    private Integer key;
-    private String data;
-
-    public TreeNode(Integer key, String data) {
-        this.key = key;
-        this.data = data;
-    }
-
-    public Integer getKey() {
-        return key;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj.getClass() == TreeNode.class && key.equals(((TreeNode) obj).getKey());
-    }
-
-    @Override
-    public int hashCode() {
-        return key.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return data;
-    }
-}*/

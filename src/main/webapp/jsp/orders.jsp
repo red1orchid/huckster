@@ -15,11 +15,11 @@
     <link href="../css/dashboard.css" rel="stylesheet">
     <link href="../css/table.css" rel="stylesheet">
     <link href="../css/datepicker.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/u/dt/dt-1.10.12,cr-1.3.2/datatables.min.css">
+    <link href="../DataTables/datatables.min.css" rel="stylesheet" >
 
     <script src="../js/jquery-2.2.4.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
-    <script src="https://cdn.datatables.net/u/dt/dt-1.10.12,cr-1.3.2/datatables.min.js"></script>
+    <script src="../DataTables/datatables.min.js"></script>
     <script src="../js/bootstrap-datepicker.js"></script>
 </head>
 <body>

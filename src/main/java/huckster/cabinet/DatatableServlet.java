@@ -39,8 +39,7 @@ public class DatatableServlet extends HttpServlet {
                 data = getTraffic(req, userData);
                 break;
             case "tree":
-                data = getTree(userData);
-                StaticElements.timeStone("getJson");
+                data = getTree(req, userData);
                 break;
         }
 
@@ -110,7 +109,7 @@ public class DatatableServlet extends HttpServlet {
         return json.toJson(map);
     }
 
-    private String getTree(UserData userData) {
+    private String getTree(HttpServletRequest req, UserData userData) {
 /*        return "[{title: \"item1 with key and tooltip\", tooltip: \"Look, a tool tip!\"},\n" +
                 "        {title: \"item2: selected on init\", selected: true},\n" +
                 "        {\n" +
@@ -157,9 +156,11 @@ public class DatatableServlet extends HttpServlet {
                 "    ]";*/
 
         StaticElements.timeStone("getTree");
+        System.out.println("DATA");
+
         Map<Integer, JsonTreeNode> map = null;
         try {
-            map = userData.getTree();
+            map = userData.getSelectedTree(req.getParameter("id"));
         } catch (SQLException e) {
             e.printStackTrace();
         }

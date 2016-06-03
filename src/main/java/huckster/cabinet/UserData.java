@@ -258,12 +258,7 @@ class UserData {
                 "      WHERE h.company_id = ?" +
                 "        AND trunc(h.ctime) BETWEEN ? AND ?";
 
-        List<List> table = makeTable(sql, 500, 15, companyId, startDate, endDate);
-
-        if (table.isEmpty()) {
-            throw new DataException("No orders for company " + companyId);
-        }
-        return table;
+        return makeTable(sql, 500, 15, companyId, startDate, endDate);
     }
 
     List<List> getGoods(String period) throws SQLException {
@@ -283,12 +278,7 @@ class UserData {
                 "                      AND rownum < 100" +
                 "                    ORDER BY t.uniq_clients_widget_%1$s DESC", period);
 
-        List<List> table = makeTable(sql, 100, 11, companyId);
-
-        if (table.isEmpty()) {
-            throw new DataException("No goods for company " + companyId);
-        }
-        return table;
+        return makeTable(sql, 100, 11, companyId);
     }
 
     List<List> getTraffic(String period) throws SQLException {
@@ -296,12 +286,20 @@ class UserData {
                 "                     FROM analitic.mv_traffic_rules t" +
                 "                    WHERE t.company_id = ?", period);
 
-        List<List> table = makeTable(sql, null, 5, companyId);
+        return makeTable(sql, null, 5, companyId);
+    }
 
-        if (table.isEmpty()) {
-            throw new DataException("No traffic for company " + companyId);
-        }
-        return table;
+    List<List> getRules() throws SQLException {
+        String sql = "SELECT r.id AS empno," +
+                "            replace(nvl(r.utm_source,'все'), 'all', 'все') AS utm_source," +
+                "            replace(nvl(r.utm_medium,'все'), 'all', 'все') AS utm_medium," +
+                "            decode(r.destination, 0, 'все', 1, 'ПК и ноутбуки', 2, 'мобильные') AS destination," +
+                "            r.days || ', ' || r.start_hour || '-' || r.end_hour || 'чч' AS runmode" +
+                "  FROM analitic.clients_rules r" +
+                " WHERE r.company_id = ?" +
+                " ORDER BY utm_medium desc, utm_source DESC, id ASC";
+
+        return makeTable(sql, null, 5, companyId);
     }
 
     private List<List> makeTable(String sql, Integer fetchSize, int columns, Object... params) throws SQLException {
@@ -348,19 +346,40 @@ class UserData {
         return map;
     }
 
-    Map<Integer, JsonTreeNode> getTree() throws SQLException {
-        String sql = " SELECT id, title, parent_id" +
-                "        FROM analitic.cidr_tree";
-/*                "       START WITH parent_id IS NULL" +
-                "     CONNECT BY PRIOR id = parent_id" +
-                "       ORDER BY level DESC, id";*/
+/*    Map<Integer, JsonTreeNode> getTree(I) throws SQLException {
+
 
         Map<Integer, JsonTreeNode> map = new HashMap<>();
         select(sql, 1000, (rs) -> {
-            map.put(rs.getInt("id"), new JsonTreeNode(rs.getInt("id"), rs.getString("title"), rs.getInt("parent_id"), null));
-          //  list.add(new TreeNode(rs.getInt("id"), rs.getInt("parent_id"), rs.getInt("level"), rs.getString("title")));
+            map.put(rs.getInt("id"), new JsonTreeNode(rs.getInt("id"), rs.getString("title"), rs.getInt("parent_id"), false, null));
         });
 
         return map;
+    }*/
+
+    Map<Integer, JsonTreeNode> getSelectedTree(String ruleId) throws SQLException {
+        String sql;
+        Map<Integer, JsonTreeNode> map = new HashMap<>();
+        if (ruleId == null) {
+            sql = " SELECT id, title, parent_id FROM analitic.cidr_tree";
+            select(sql, 1000, (rs) -> {
+                map.put(rs.getInt("id"), new JsonTreeNode(rs.getInt("id"), rs.getString("title"), rs.getInt("parent_id"), false, null));
+            });
+        } else {
+            sql = "SELECT t.id," +
+                    "     title," +
+                    "     parent_id," +
+                    "     (SELECT 1 FROM analitic.clients_rules" +
+                    "       WHERE id = ?" +
+                    "         AND (geo LIKE '%:' || t.id || ':%' OR geo LIKE '%:' || t.id OR geo LIKE t.id || ':%')) AS is_selected " +
+                    "FROM analitic.cidr_tree t";
+            select(sql, 1000, (rs) -> {
+                map.put(rs.getInt("id"), new JsonTreeNode(rs.getInt("id"), rs.getString("title"), rs.getInt("parent_id"), rs.getBoolean("is_selected"), null));
+            }, Integer.parseInt(ruleId));
+        }
+
+        return map;
     }
+
+
 }

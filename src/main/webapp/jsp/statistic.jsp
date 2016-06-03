@@ -14,12 +14,11 @@
     <link href="../css/dashboard.css" rel="stylesheet">
     <link href="../css/datepicker.css" rel="stylesheet">
     <link href="../css/table.css" rel="stylesheet">
-    <link rel="stylesheet"
-          href="https://cdn.datatables.net/u/bs/dt-1.10.12,cr-1.3.2,b-1.2.0,jszip-2.5.0,b-flash-1.2.0,b-html5-1.2.0/datatables.min.css">
+    <link href="../DataTables/datatables.min.css" rel="stylesheet" >
 
     <script src="../js/jquery-2.2.4.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
-    <script src="https://cdn.datatables.net/u/bs/dt-1.10.12,cr-1.3.2,b-1.2.0,jszip-2.5.0,b-flash-1.2.0,b-html5-1.2.0/datatables.min.js"></script>
+    <script src="../DataTables/datatables.min.js"></script>
     <script src="../js/bootstrap-datepicker.js"></script>
 </head>
 <body>
@@ -218,13 +217,8 @@
             colReorder: true,
             ordering: false,
             paging: false,
-            language: language/*,
-             ajax: {
-             url: "/datatable",
-             data: {
-             "type": "traffic"
-             }
-             }*/
+            searching: false,
+            language: language
         });
     });
 </script>
