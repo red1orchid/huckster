@@ -17,6 +17,7 @@
     <link href="../DataTables/datatables.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.18.0/skin-win8-n/ui.fancytree.css"
           rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
 
     <script src="../js/jquery-2.2.4.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
@@ -24,6 +25,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
     <script src="../DataTables/datatables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.18.0/jquery.fancytree.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
 
     <style type="text/css">
         /* Remove system outline for focused container */
@@ -65,9 +67,13 @@
                                     <h4 class="modal-title" id="orderTitle">Сегменты пользователей</h4>
                                 </div>
                                 <div class="modal-body">
-                                    <%--  <div class="col-sm-6">--%>
                                     <h4>Регионы</h4>
                                     <div id="fancyTree" name="fancyTree"></div>
+                                    <select class="selectpicker" multiple>
+                                        <option>Mustard</option>
+                                        <option>Ketchup</option>
+                                        <option>Relish</option>
+                                    </select>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
@@ -156,29 +162,7 @@
             searching: false,
             language: language
         });
-    });
 
-    jQuery('#saveRule').on('click', function () {
-        var selection = jQuery.map(
-                jQuery('#fancyTree').fancytree('getRootNode').tree.getSelectedNodes(),
-                function (node) {
-                    return node.key;
-                }
-        );
-
-        $.ajax({
-            type: "POST",
-            url: "/widget_settings",
-            data: {
-                tree: selection.join(":")
-            }
-        }).done(function (msg) {
-            //do other processing
-        });
-    });
-
-    $('#editRule').on('show.bs.modal', function (e) {
-        console.log($(e.relatedTarget).data('id'));
         $("#fancyTree").fancytree({
             checkbox: true,
             selectMode: 3,
@@ -187,7 +171,6 @@
                 cache: false,
                 data: {
                     "type": "tree",
-                    "id": $(e.relatedTarget).data('id')
                 }
             },
             icon: false,
@@ -221,6 +204,40 @@
             cookieId: "fancytree-Cb3",
             idPrefix: "fancytree-Cb3-"
         });
+    });
+
+    jQuery('#saveRule').on('click', function () {
+        var selection = jQuery.map(
+                jQuery('#fancyTree').fancytree('getRootNode').tree.getSelectedNodes(),
+                function (node) {
+                    return node.key;
+                }
+        );
+
+        $.ajax({
+            type: "POST",
+            url: "/widget_settings",
+            data: {
+                tree: selection.join(":")
+            }
+        }).done(function (msg) {
+            //do other processing
+        });
+    });
+
+    $('#editRule').on('show.bs.modal', function (e) {
+        console.log($(e.relatedTarget).data('id'));
+
+        // Optionally pass new `source`:
+        var tree = $("#fancyTree").fancytree("getTree");
+        tree.reload({
+            url: "/datatable",
+            cache: false,
+            data: {
+                "type": "tree",
+                "id": $(e.relatedTarget).data('id')
+            }
+        }).done();
     });
 
 </script>
