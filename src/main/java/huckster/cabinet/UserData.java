@@ -381,5 +381,34 @@ class UserData {
         return map;
     }
 
+    Map<String, String> getChannels() throws SQLException {
+        String sql = "with t_select as (" +
+                "select replace(c.name, 'all', null) d, replace(c.name, 'all', null) r, c.rating" +
+                "  from analitic.clients_utm_medium c" +
+                " where c.company_id = ?" +
+                " union" +
+                " select 'direct' d, 'direct' r, 100500 as rating" +
+                "   from dual" +
+                " union" +
+                " select 'cpc' d, 'cpc' r, 100499 as rating" +
+                "   from dual" +
+                " union" +
+                " select 'cpa' d, 'cpa' r, 100498 as rating" +
+                "   from dual" +
+                " union" +
+                " select 'organic' d, 'organic' r, 100497 as rating" +
+                "   from dual" +
+                " union" +
+                " select 'referral' d, 'referral' r, 100496 as rating" +
+                "   from dual" +
+                " order by rating desc )" +
+                "select distinct d, r" +
+                "  from t_select";
 
+        Map<String, String> channels = new LinkedHashMap<>();
+        select(sql, 100, (rs) -> {
+            channels.put(rs.getString(2), rs.getString(1));
+        }, companyId);
+        return channels;
+    }
 }

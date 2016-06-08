@@ -17,7 +17,8 @@
     <link href="../DataTables/datatables.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.18.0/skin-win8-n/ui.fancytree.css"
           rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
 
     <script src="../js/jquery-2.2.4.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
@@ -60,26 +61,29 @@
                          aria-labelledby="myModalLabel"
                          aria-hidden="true">
                         <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header" align="center">
-                                    <button type="button" class="close" data-dismiss="modal"
-                                            aria-hidden="true">&times;</button>
-                                    <h4 class="modal-title" id="orderTitle">Сегменты пользователей</h4>
+                            <form method="POST">
+                                <div class="modal-content">
+                                    <div class="modal-header" align="center">
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title" id="orderTitle">Сегменты пользователей</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h4>Регионы</h4>
+                                        <div id="fancyTree" name="fancyTree"></div>
+                                        <select class="selectpicker" multiple>
+                                        <c:forEach var="channel" items="${channels}">
+                                            <option>${channel.value}</option>
+                                        </c:forEach>
+                                        </select>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
+                                        </button>
+                                        <button id="saveRule" type="submit" class="btn btn-primary">Сохранить</button>
+                                    </div>
                                 </div>
-                                <div class="modal-body">
-                                    <h4>Регионы</h4>
-                                    <div id="fancyTree" name="fancyTree"></div>
-                                    <select class="selectpicker" multiple>
-                                        <option>Mustard</option>
-                                        <option>Ketchup</option>
-                                        <option>Relish</option>
-                                    </select>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-                                    <button id="saveRule" type="submit" class="btn btn-primary">Сохранить</button>
-                                </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                     <br>
