@@ -156,7 +156,7 @@ public class DatatableServlet extends HttpServlet {
                 "    ]";*/
 
         StaticElements.timeStone("getTree");
-        System.out.println("DATA");
+        System.out.println("DATA " + req.getParameter("id"));
 
         Map<Integer, JsonTreeNode> map = null;
         try {

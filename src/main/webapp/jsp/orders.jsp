@@ -7,7 +7,6 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <html>
 <head>
     <title>Работа с заказами</title>
@@ -175,19 +174,17 @@
         }).on('changeDate', function (ev) {
             checkout.hide();
         }).data('datepicker');
-
-        $('#editOrder').on('show.bs.modal', function (e) {
-            var id = $(e.relatedTarget).data('id');
-            var status = $(e.relatedTarget).data('status');
-            var comment = $(e.relatedTarget).data('comment');
-            document.getElementById('orderId').value = id;
-            document.getElementById('orderTitle').innerHTML = "Заказ №".concat(id);
-            document.getElementById("statuses").selectedIndex = status;
-            document.getElementById('comment').value = comment;
-        });
-
     });
 
+    $('#editOrder').on('show.bs.modal', function (e) {
+        var id = $(e.relatedTarget).data('id');
+        var status = $(e.relatedTarget).data('status');
+        var comment = $(e.relatedTarget).data('comment');
+        document.getElementById('orderId').value = id;
+        document.getElementById('orderTitle').innerHTML = "Заказ №".concat(id);
+        document.getElementById("statuses").selectedIndex = status;
+        document.getElementById('comment').value = comment;
+    });
     /*{
      "processing": true,
      "serverSide": true,

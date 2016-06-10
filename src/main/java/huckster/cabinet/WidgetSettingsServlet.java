@@ -21,6 +21,9 @@ public class WidgetSettingsServlet extends UserServlet {
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
         req.setAttribute("rules", userData.getRules());
+        req.setAttribute("channels", userData.getChannels());
+        req.setAttribute("sources", userData.getSources());
+        req.setAttribute("channel", "cpa:referral");
         req.getRequestDispatcher("/jsp/widget_settings.jsp").forward(req, resp);
     }
 
@@ -28,5 +31,7 @@ public class WidgetSettingsServlet extends UserServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println("DODODO");
         System.out.println(req.getParameter("tree"));
+        System.out.println(req.getParameter("channels"));
+        System.out.println(req.getParameter("sources"));
     }
 }

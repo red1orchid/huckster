@@ -291,8 +291,8 @@ class UserData {
 
     List<List> getRules() throws SQLException {
         String sql = "SELECT r.id AS empno," +
-                "            replace(nvl(r.utm_source,'все'), 'all', 'все') AS utm_source," +
                 "            replace(nvl(r.utm_medium,'все'), 'all', 'все') AS utm_medium," +
+                "            replace(nvl(r.utm_source,'все'), 'all', 'все') AS utm_source," +
                 "            decode(r.destination, 0, 'все', 1, 'ПК и ноутбуки', 2, 'мобильные') AS destination," +
                 "            r.days || ', ' || r.start_hour || '-' || r.end_hour || 'чч' AS runmode" +
                 "  FROM analitic.clients_rules r" +
@@ -362,9 +362,7 @@ class UserData {
         Map<Integer, JsonTreeNode> map = new HashMap<>();
         if (ruleId == null) {
             sql = " SELECT id, title, parent_id FROM analitic.cidr_tree";
-            select(sql, 1000, (rs) -> {
-                map.put(rs.getInt("id"), new JsonTreeNode(rs.getInt("id"), rs.getString("title"), rs.getInt("parent_id"), false, null));
-            });
+            select(sql, 1000, (rs) -> map.put(rs.getInt("id"), new JsonTreeNode(rs.getInt("id"), rs.getString("title"), rs.getInt("parent_id"), false, null)));
         } else {
             sql = "SELECT t.id," +
                     "     title," +
@@ -381,34 +379,40 @@ class UserData {
         return map;
     }
 
-    Map<String, String> getChannels() throws SQLException {
-        String sql = "with t_select as (" +
-                "select replace(c.name, 'all', null) d, replace(c.name, 'all', null) r, c.rating" +
-                "  from analitic.clients_utm_medium c" +
-                " where c.company_id = ?" +
-                " union" +
-                " select 'direct' d, 'direct' r, 100500 as rating" +
-                "   from dual" +
-                " union" +
-                " select 'cpc' d, 'cpc' r, 100499 as rating" +
-                "   from dual" +
-                " union" +
-                " select 'cpa' d, 'cpa' r, 100498 as rating" +
-                "   from dual" +
-                " union" +
-                " select 'organic' d, 'organic' r, 100497 as rating" +
-                "   from dual" +
-                " union" +
-                " select 'referral' d, 'referral' r, 100496 as rating" +
-                "   from dual" +
-                " order by rating desc )" +
-                "select distinct d, r" +
-                "  from t_select";
+    List<String> getChannels() throws SQLException {
+        String sql = "SELECT replace(c.name, 'all', null) AS name" +
+                "       FROM analitic.clients_utm_medium c" +
+                "       JOIN (SELECT id," +
+                "                    row_number() over(partition by name order by company_id nulls first) r" +
+                "               FROM analitic.clients_utm_medium c" +
+                "              WHERE c.company_id = ?" +
+                "                 OR c.company_id IS NULL" +
+                "              ORDER BY name) n" +
+                "         ON c.id = n.id" +
+                "        AND n.r = 1" +
+                "      ORDER BY rating desc";
 
-        Map<String, String> channels = new LinkedHashMap<>();
-        select(sql, 100, (rs) -> {
-            channels.put(rs.getString(2), rs.getString(1));
-        }, companyId);
+        List<String> channels = new ArrayList<>();
+        select(sql, 100, (rs) -> channels.add(rs.getString("name")), companyId);
         return channels;
+    }
+
+    Map<String, String> getSources() throws SQLException {
+        String sql = "SELECT nvl(c.name_display, replace(substr(c.name, 1, 25), 'all', null)) AS name_display," +
+                "            replace(c.name, 'all', null) AS name" +
+                "       FROM analitic.clients_utm_source c" +
+                "       JOIN (SELECT id," +
+                "                    row_number() over(partition by name order by company_id nulls first) r" +
+                "               FROM analitic.clients_utm_source c" +
+                "              WHERE c.company_id = ?" +
+                "                 OR c.company_id IS NULL" +
+                "              ORDER BY name) n" +
+                "         ON c.id = n.id" +
+                "        AND n.r = 1" +
+                "      ORDER BY rating desc";
+
+        Map<String, String> sources = new LinkedHashMap<>();
+        select(sql, 100, (rs) -> sources.put(rs.getString("name"), rs.getString("name_display")), companyId);
+        return sources;
     }
 }

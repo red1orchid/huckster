@@ -37,6 +37,8 @@
         .ui-fancytree.fancytree-container {
             border: none;
         }
+
+
     </style>
 <body>
 <%--Top bar--%>
@@ -56,36 +58,6 @@
             <div class="tab-content">
                 <%--Step 1--%>
                 <div id="step1" class="tab-pane fade">
-                    <!-- Modal -->
-                    <div class="modal fade" id="editRule" tabindex="-1" role="dialog"
-                         aria-labelledby="myModalLabel"
-                         aria-hidden="true">
-                        <div class="modal-dialog">
-                            <form method="POST">
-                                <div class="modal-content">
-                                    <div class="modal-header" align="center">
-                                        <button type="button" class="close" data-dismiss="modal"
-                                                aria-hidden="true">&times;</button>
-                                        <h4 class="modal-title" id="orderTitle">Сегменты пользователей</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <h4>Регионы</h4>
-                                        <div id="fancyTree" name="fancyTree"></div>
-                                        <select class="selectpicker" multiple>
-                                        <c:forEach var="channel" items="${channels}">
-                                            <option>${channel.value}</option>
-                                        </c:forEach>
-                                        </select>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
-                                        </button>
-                                        <button id="saveRule" type="submit" class="btn btn-primary">Сохранить</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                     <br>
                     <%--<h4>Правила</h4>--%>
                     <a data-toggle="modal" href="#editRule" type="button" class="btn btn-success">
@@ -107,7 +79,7 @@
                         <tbody>
                         <c:forEach var="rRow" items="${rules}">
                             <tr>
-                                <td><a data-id=${rRow[0]} data-toggle="modal" href="#editRule"><span
+                                <td><a data-id=${rRow[0]} data-channel=${rRow[1]} data-source=${rRow[2]} data-toggle="modal" href="#editRule"><span
                                         class="glyphicon glyphicon-pencil"></span></a></td>
                                 <c:forEach var="rCell" items="${rRow}">
                                     <td>${rCell}</td>
@@ -116,6 +88,62 @@
                         </c:forEach>
                         </tbody>
                     </table>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="editRule" tabindex="-1" role="dialog"
+                         aria-labelledby="myModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header" align="center">
+                                    <button type="button" class="close" data-dismiss="modal"
+                                            aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title" id="orderTitle">Сегменты пользователей</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <label for="fancyTree">Регионы</label>
+                                            <div id="fancyTree" name="fancyTree"></div>
+                                        </div>
+                                        <%--
+                                                                                <div class="col-sm-1"></div>--%>
+                                        <div class="col-sm-6">
+                                            <form role="form">
+                                                <div class="form-group">
+                                                    <label for="chnl">Каналы</label>
+                                                    <select id="chnl" class="selectpicker channels form-control"
+                                                            multiple title="Все каналы"
+                                                            data-live-search="true">
+                                                        <c:forEach var="channel" items="${channels}">
+                                                            <option>${channel}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="src">Источники</label>
+                                                    <select id="src" class="selectpicker sources form-control" multiple
+                                                            title="Все источники"
+                                                            data-live-search="true">
+                                                        <c:forEach var="source" items="${sources}">
+                                                            <option value="${source.key}">${source.value}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
+                                    </button>
+                                    <button id="saveRule" type="submit" class="btn btn-primary">Сохранить
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <%--Step 2--%>
                 <div id="step2" class="tab-pane fade">
@@ -222,7 +250,9 @@
             type: "POST",
             url: "/widget_settings",
             data: {
-                tree: selection.join(":")
+                tree: selection.join(":"),
+                channels: $('.channels').selectpicker('val').join(":"),
+                sources: $('.sources').selectpicker('val').join(":")
             }
         }).done(function (msg) {
             //do other processing
@@ -231,8 +261,10 @@
 
     $('#editRule').on('show.bs.modal', function (e) {
         console.log($(e.relatedTarget).data('id'));
+        console.log($(e.relatedTarget).data('channel').split(":"));
+        console.log($(e.relatedTarget).data('source').split(":"));
 
-        // Optionally pass new `source`:
+        // Reload tree with new source
         var tree = $("#fancyTree").fancytree("getTree");
         tree.reload({
             url: "/datatable",
@@ -242,6 +274,13 @@
                 "id": $(e.relatedTarget).data('id')
             }
         }).done();
+
+        $('.channels').selectpicker('val', $(e.relatedTarget).data('channel').split(":").map(function(str){
+            return "'" + str + "'"; // add quotes
+        }).join(","));
+        $('.sources').selectpicker('val', $(e.relatedTarget).data('source').split(":").map(function(str){
+            return "'" + str + "'"; // add quotes
+        }).join(","));
     });
 
 </script>
