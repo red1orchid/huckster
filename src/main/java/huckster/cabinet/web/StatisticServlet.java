@@ -1,4 +1,6 @@
-package huckster.cabinet;
+package huckster.cabinet.web;
+
+import huckster.cabinet.repository.UserData;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

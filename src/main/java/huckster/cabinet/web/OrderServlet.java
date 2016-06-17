@@ -1,4 +1,8 @@
-package huckster.cabinet;
+package huckster.cabinet.web;
+
+import huckster.cabinet.repository.DbDao;
+import huckster.cabinet.StaticElements;
+import huckster.cabinet.repository.UserData;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,8 +20,6 @@ import static huckster.cabinet.StaticElements.*;
  */
 @WebServlet("/orders")
 public class OrderServlet extends UserServlet {
-    static long timeStone = System.currentTimeMillis();
-
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException {
         LocalDate startDate = (LocalDate) req.getSession().getAttribute("startDate");
@@ -41,9 +43,9 @@ public class OrderServlet extends UserServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         if (req.getParameter("orderId") != null) {
-            DbData db = new DbData();
+            DbDao dao = new DbDao();
             try {
-                db.updateOrder(Integer.parseInt(req.getParameter("orderId")), Integer.parseInt(req.getParameter("status")), req.getParameter("comment"));
+                dao.updateOrder(Integer.parseInt(req.getParameter("orderId")), Integer.parseInt(req.getParameter("status")), req.getParameter("comment"));
             } catch (SQLException e) {
                 e.printStackTrace();
                 req.setAttribute("error", "Сохранение невозможно в данный момент. Попробуйте еще раз позднее");

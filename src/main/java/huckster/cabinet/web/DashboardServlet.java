@@ -1,4 +1,8 @@
-package huckster.cabinet;
+package huckster.cabinet.web;
+
+import huckster.cabinet.Chart;
+import huckster.cabinet.StatisticPanel;
+import huckster.cabinet.repository.UserData;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,28 +19,6 @@ import java.util.List;
 
 @WebServlet("")
 public class DashboardServlet extends UserServlet {
-
-    /*    @Override
-        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-            if (auth(req, resp)) {
-                try {
-               //     timeStone("start");
-                    UserData userData = (UserData) req.getSession().getAttribute("userData");
-                    userData.refreshData();
-
-                    req.setAttribute("company", userData.getCompanyName());
-                    req.setAttribute("period", userData.getPeriod());
-                    req.setAttribute("menu", StaticElements.getMenu());
-                    req.setAttribute("panels", getPanels(userData));
-              //      timeStone("get panels");
-                    req.setAttribute("charts", getCharts(userData));
-               //     timeStone("before redirect");
-                    req.getRequestDispatcher("/jsp/dashboard.jsp").forward(req, resp);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }*/
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
         userData.refreshData();

@@ -10,11 +10,11 @@ import java.util.List;
  */
 public class StaticElements{
     static long timeStone = System.currentTimeMillis();
-    static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    static final LocalDate DEFAULT_START_DATE = LocalDate.now().minusDays(7);
-    static final LocalDate DEFAULT_END_DATE = LocalDate.now();
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    public static final LocalDate DEFAULT_START_DATE = LocalDate.now().minusDays(7);
+    public static final LocalDate DEFAULT_END_DATE = LocalDate.now();
 
-    static List<MenuItem> getMenu() {
+/*    static List<MenuItem> getMenu() {
         List<MenuItem> list = new ArrayList<>();
         list.add(new MenuItem("Работа с заказами", "/orders", "glyphicon glyphicon-shopping-cart"));
         list.add(new MenuItem("Настройки виджета", null, "glyphicon glyphicon-plus-sign"));
@@ -22,7 +22,7 @@ public class StaticElements{
         list.add(new MenuItem("Общие настройки", null, "glyphicon glyphicon-cog"));
 
         return list;
-    }
+    }*/
 
     public static void timeStone(String message) {
         long newTimeStone = System.currentTimeMillis();

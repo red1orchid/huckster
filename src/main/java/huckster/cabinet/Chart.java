@@ -1,6 +1,9 @@
 package huckster.cabinet;
 
 import com.google.gson.Gson;
+import huckster.cabinet.DataException;
+import huckster.cabinet.model.ChartData;
+import huckster.cabinet.repository.UserData;
 
 import java.sql.SQLException;
 
@@ -56,7 +59,7 @@ public class Chart {
         return type.getVarName();
     }
 
-    enum Type {
+    public enum Type {
         INCOME("Доход за %s LFL, %s.", 1, "chart_inc", "data_inc"),
         ORDERS("Заказы за %s LFL, шт.", 2, "chart_ord", "data_ord"),
         CONVERSION("Конверсия за %s LFL, %%", 3, "chart_cnv", "data_cnv");

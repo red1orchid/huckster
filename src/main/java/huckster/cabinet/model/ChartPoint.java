@@ -1,4 +1,4 @@
-package huckster.cabinet;
+package huckster.cabinet.model;
 
 /**
  * Created by Perevalova Marina on 13.05.2016.

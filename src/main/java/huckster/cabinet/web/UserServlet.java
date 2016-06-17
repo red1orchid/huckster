@@ -1,6 +1,7 @@
-package huckster.cabinet;
+package huckster.cabinet.web;
 
-import javax.servlet.ServletContext;
+import huckster.cabinet.repository.UserData;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;

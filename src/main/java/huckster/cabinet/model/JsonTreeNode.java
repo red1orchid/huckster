@@ -1,4 +1,4 @@
-package huckster.cabinet;
+package huckster.cabinet.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * Created by PerevalovaMA on 01.06.2016.
  */
-class JsonTreeNode {
+public class JsonTreeNode {
     private int key;
     private int parent;
     private String title;
@@ -41,7 +41,7 @@ class JsonTreeNode {
         return children;
     }
 
-    void addChild(JsonTreeNode node) {
+    public void addChild(JsonTreeNode node) {
         if (children == null) {
             children = new ArrayList<>();
         }

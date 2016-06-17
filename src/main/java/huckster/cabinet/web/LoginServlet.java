@@ -1,5 +1,7 @@
 /* Copyright � 2015 Oracle and/or its affiliates. All rights reserved. */
-package huckster.cabinet;
+package huckster.cabinet.web;
+
+import huckster.cabinet.repository.DbDao;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -27,8 +29,8 @@ public class LoginServlet extends HttpServlet {
         String rememberMe = req.getParameter("rememberMe");
 
         try {
-            DbData db = new DbData();
-            if (db.isUserExists(username, password)) {
+            DbDao dao = new DbDao();
+            if (dao.isUserExists(username, password)) {
                 req.getSession().setAttribute("user", username);
                 if (rememberMe != null) {
                     Cookie loginCookie = new Cookie("user", username);

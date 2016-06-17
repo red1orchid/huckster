@@ -116,7 +116,7 @@
                                                             multiple title="Все каналы"
                                                             data-live-search="true">
                                                         <c:forEach var="channel" items="${channels}">
-                                                            <option>${channel}</option>
+                                                            <option value="${channel}">${channel}</option>
                                                         </c:forEach>
                                                     </select>
                                                 </div>
@@ -274,6 +274,10 @@
                 "id": $(e.relatedTarget).data('id')
             }
         }).done();
+
+        $('.channels')
+                .html('<option>city1</option><option>city2</option>')
+                .selectpicker('refresh');
 
         $('.channels').selectpicker('val', $(e.relatedTarget).data('channel').split(":").map(function(str){
             return "'" + str + "'"; // add quotes

@@ -1,7 +1,6 @@
 package huckster.cabinet;
 
-import huckster.cabinet.DataException;
-import huckster.cabinet.UserData;
+import huckster.cabinet.repository.UserData;
 
 import java.sql.SQLException;
 
@@ -15,7 +14,7 @@ public class StatisticPanel {
     private String panelClass;
     private String footer;
 
-    StatisticPanel(UserData userData, Type type) throws SQLException {
+    public StatisticPanel(UserData userData, Type type) throws SQLException {
         String period = userData.getPeriod();
         String currency = userData.getCurrency();
         switch (period) {
@@ -67,7 +66,7 @@ public class StatisticPanel {
         return panelClass;
     }
 
-    enum Type {
+    public enum Type {
         INCOME("Доход за %s, т.%s.", "доход LFL", "panel-primary", "glyphicon glyphicon-ruble", 5),
         ORDERS("Заказы за %s, шт.", "заказы LFL", "panel-warning", "glyphicon glyphicon-shopping-cart", 6),
         CONVERSION("Конверсия за %s, %%", "конверсия LFL", "panel-success", "glyphicon glyphicon-stats", 4),
