@@ -202,12 +202,13 @@
             buttons: [
                 'excel'
             ],
-            "ordering": false,
-            "iDisplayLength": 25,
-            "language": language,
-            "ajax": {
-                "url": "/datatable",
-                "data": {
+            ordering: false,
+            iDisplayLength: 25,
+            language: language,
+            ajax: {
+                url: "/ajax",
+                type: "POST",
+                data: {
                     "type": "goods"
                 }
             }

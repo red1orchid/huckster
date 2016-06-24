@@ -134,43 +134,91 @@ public class UserData {
         return chartContainer.get(reportId);
     }
 
-    public List<List> getOrders(Date startDate, Date endDate) throws SQLException {
-        return dao.getOrders(companyId, startDate, endDate);
+    public List<List> getOrders(Date startDate, Date endDate) {
+        try {
+            return dao.getOrders(companyId, startDate, endDate);
+        } catch (SQLException e) {
+            //TODO
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
-    public List<List> getGoods(String period) throws SQLException {
-        return dao.getGoods(companyId, period);
+    public List<List> getGoods(String period) {
+        try {
+            return dao.getGoods(companyId, period);
+        } catch (SQLException e) {
+            //TODO
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
-    public List<List> getTraffic(String period) throws SQLException {
-        return dao.getTraffic(companyId, period);
+    public List<List> getTraffic(String period) {
+        try {
+            return dao.getTraffic(companyId, period);
+        } catch (SQLException e) {
+            //TODO
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
-    public List<List> getRules() throws SQLException {
-        return dao.getRules(companyId);
+    public List<List> getRules() {
+        try {
+            return dao.getRules(companyId);
+        } catch (SQLException e) {
+            //TODO
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
-    public Map<String, String> getYml() throws SQLException {
-        return dao.getYml(companyId);
+    public Map<String, String> getYml() {
+        try {
+            return dao.getYml(companyId);
+        } catch (SQLException e) {
+            //TODO
+            e.printStackTrace();
+            return new TreeMap<>();
+        }
     }
 
-    public Map<Integer, JsonTreeNode> getSelectedTree(String ruleId) throws SQLException {
+    public Map<Integer, JsonTreeNode> getSelectedTree(String ruleId) {
         List<SelectedTreeEntity> selectedTreeEntities;
-        if (ruleId != null) {
-            selectedTreeEntities = dao.getSelectedTree(Integer.parseInt(ruleId));
-        } else {
-            selectedTreeEntities = dao.getSelectedTree();
+        try {
+            if (ruleId != null) {
+                selectedTreeEntities = dao.getSelectedTree(Integer.parseInt(ruleId));
+            } else {
+                selectedTreeEntities = dao.getSelectedTree();
+            }
+        } catch (SQLException e) {
+            //TODO
+            e.printStackTrace();
+            return new TreeMap<>();
         }
 
         return selectedTreeEntities.stream()
                 .collect(Collectors.toMap(SelectedTreeEntity::getId, v -> new JsonTreeNode(v.getId(), v.getTitle(), v.getParentId(), v.isSelected(), null)));
     }
 
-    public List<String> getChannels() throws SQLException {
-        return dao.getChannels(companyId);
+    public List<String> getChannels() {
+        try {
+            return dao.getChannels(companyId);
+        } catch (SQLException e) {
+            //TODO
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
-    public Map<String, String> getSources() throws SQLException {
-        return dao.getSources(companyId);
+    public Map<String, String> getSources() {
+        try {
+            return dao.getSources(companyId);
+        } catch (SQLException e) {
+            //TODO
+            e.printStackTrace();
+            return new TreeMap<>();
+        }
     }
 }

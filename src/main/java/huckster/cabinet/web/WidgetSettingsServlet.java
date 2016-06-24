@@ -1,6 +1,5 @@
 package huckster.cabinet.web;
 
-import huckster.cabinet.StaticElements;
 import huckster.cabinet.repository.UserData;
 
 import javax.servlet.ServletException;
@@ -17,17 +16,14 @@ import java.sql.SQLException;
 public class WidgetSettingsServlet extends UserServlet {
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
-        StaticElements.timeStone("stat: start");
         req.setAttribute("rules", userData.getRules());
-        StaticElements.timeStone("stat: get rules");
-        req.setAttribute("channels", userData.getChannels());
-        StaticElements.timeStone("stat: get channels");
+/*        req.setAttribute("channels", userData.getChannels());
+        Util.timeStone("stat: get channels");
         req.setAttribute("sources", userData.getSources());
-        StaticElements.timeStone("stat: get sources");
+        Util.timeStone("stat: get sources");
         req.setAttribute("channel", "cpa:referral");
-        StaticElements.timeStone("stat: get data");
+        Util.timeStone("stat: get data");*/
         req.getRequestDispatcher("/jsp/widget_settings.jsp").forward(req, resp);
-        StaticElements.timeStone("stat: done");
     }
 
     @Override

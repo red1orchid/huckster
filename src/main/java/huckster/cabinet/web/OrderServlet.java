@@ -1,7 +1,7 @@
 package huckster.cabinet.web;
 
 import huckster.cabinet.repository.DbDao;
-import huckster.cabinet.StaticElements;
+import huckster.cabinet.Util;
 import huckster.cabinet.repository.UserData;
 
 import javax.servlet.ServletException;
@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 
-import static huckster.cabinet.StaticElements.*;
+import static huckster.cabinet.Util.*;
 
 /**
  * Created by PerevalovaMA on 17.05.2016.
@@ -35,7 +35,7 @@ public class OrderServlet extends UserServlet {
         req.setAttribute("endDate", endDate.format(FORMATTER));
         req.setAttribute("statuses", getOrderStatuses());
 
-        StaticElements.timeStone("orders start forward");
+        Util.timeStone("orders start forward");
         req.getRequestDispatcher("/jsp/orders.jsp").forward(req, resp);
     }
 

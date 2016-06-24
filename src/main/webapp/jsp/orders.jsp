@@ -5,7 +5,7 @@
   Time: 12:38
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" errorPage="error.jsp" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
@@ -14,7 +14,7 @@
     <link href="../css/dashboard.css" rel="stylesheet">
     <link href="../css/table.css" rel="stylesheet">
     <link href="../css/datepicker.css" rel="stylesheet">
-    <link href="../DataTables/datatables.min.css" rel="stylesheet" >
+    <link href="../DataTables/datatables.min.css" rel="stylesheet">
 
     <script src="../js/jquery-2.2.4.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
@@ -129,12 +129,12 @@
     $(document).ready(function () {
         $('#orders').DataTable({
             colReorder: true,
-            "iDisplayLength": 25,
-            "order": [[1, 'desc']],
-            "columnDefs": [
-                {"orderable": false, "targets": 0}
+            iDisplayLength: 25,
+            order: [[1, 'desc']],
+            columnDefs: [
+                {orderable: false, targets: 0}
             ],
-            "language": {
+            language: {
                 "lengthMenu": "Показать _MENU_ записей",
                 "zeroRecords": "По Вашему запросу ничего не найдено",
                 "search": "Поиск:",
@@ -149,9 +149,10 @@
                     "previous": "<<"
                 }
             },
-            "ajax": {
-                "url": "/datatable",
-                "data": {
+            ajax: {
+                url: "/ajax",
+                type: "POST",
+                data: {
                     "type": "orders"
                 }
             }

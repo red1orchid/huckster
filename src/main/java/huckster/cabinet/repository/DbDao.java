@@ -219,7 +219,7 @@ public class DbDao {
     List<List> getGoods(int companyId, String period) throws SQLException {
         String sql = String.format("SELECT t.offer_id," +
                 "                          t.name," +
-                "                          t.category_name," +
+                "                          t.category," +
                 "                          t.vendor," +
                 "                          t.uniq_clients_views_%1$s," +
                 "                          t.uniq_clients_widget_%1$s," +
@@ -228,7 +228,7 @@ public class DbDao {
                 "                          t.orders2_%1$s," +
                 "                          t.orders3_%1$s," +
                 "                          nvl(t.image_info, t.reco)" +
-                "                     FROM analitic.offers_stats t" +
+                "                     FROM analitic.offers_stats @DB_ORA_PRODUCT t" +
                 "                    WHERE t.company_id = ?" +
                 "                      AND rownum < 100" +
                 "                    ORDER BY t.uniq_clients_widget_%1$s DESC", period);

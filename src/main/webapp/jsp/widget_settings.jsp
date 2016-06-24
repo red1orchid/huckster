@@ -79,7 +79,8 @@
                         <tbody>
                         <c:forEach var="rRow" items="${rules}">
                             <tr>
-                                <td><a data-id=${rRow[0]} data-channel=${rRow[1]} data-source=${rRow[2]} data-toggle="modal" href="#editRule"><span
+                                <td><a data-id=${rRow[0]} data-channel=${rRow[1]}
+                                       data-source=${rRow[2]} data-toggle="modal" href="#editRule"><span
                                         class="glyphicon glyphicon-pencil"></span></a></td>
                                 <c:forEach var="rCell" items="${rRow}">
                                     <td>${rCell}</td>
@@ -115,9 +116,6 @@
                                                     <select id="chnl" class="selectpicker channels form-control"
                                                             multiple title="Все каналы"
                                                             data-live-search="true">
-                                                        <c:forEach var="channel" items="${channels}">
-                                                            <option value="${channel}">${channel}</option>
-                                                        </c:forEach>
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
@@ -125,9 +123,6 @@
                                                     <select id="src" class="selectpicker sources form-control" multiple
                                                             title="Все источники"
                                                             data-live-search="true">
-                                                        <c:forEach var="source" items="${sources}">
-                                                            <option value="${source.key}">${source.value}</option>
-                                                        </c:forEach>
                                                     </select>
                                                 </div>
                                             </form>
@@ -199,8 +194,9 @@
             checkbox: true,
             selectMode: 3,
             source: {
-                url: "/datatable",
                 cache: false,
+                url: "/ajax",
+                type: "POST",
                 data: {
                     "type": "tree",
                 }
@@ -267,22 +263,58 @@
         // Reload tree with new source
         var tree = $("#fancyTree").fancytree("getTree");
         tree.reload({
-            url: "/datatable",
             cache: false,
+            url: "/ajax",
+            type: "POST",
             data: {
                 "type": "tree",
                 "id": $(e.relatedTarget).data('id')
             }
         }).done();
 
-        $('.channels')
-                .html('<option>city1</option><option>city2</option>')
-                .selectpicker('refresh');
+        $.ajax({
+            url: "/ajax",
+            type: "POST",
+            data: {
+                "type": "channels"
+            },
+            success: function (data) {
+                $('#chnl').empty();
+                data.forEach(function (item, i, arr) {
+                    $('#chnl').append('<option>' + item + '</option>');
+                });
+                $('#chnl').selectpicker('refresh');
+            }
+        });
 
-        $('.channels').selectpicker('val', $(e.relatedTarget).data('channel').split(":").map(function(str){
-            return "'" + str + "'"; // add quotes
-        }).join(","));
-        $('.sources').selectpicker('val', $(e.relatedTarget).data('source').split(":").map(function(str){
+        $.ajax({
+            url: "/ajax",
+            type: "POST",
+            data: {
+                "type": "sources"
+            },
+            success: function (data) {
+                console.log(data);
+                $('#src').empty();
+                for(var i in data) {
+                    $('#src').append('<option value="' + i + '">' + data[i] + '</option>');
+                }
+                $('#src').selectpicker('refresh');
+            }
+        });
+        /*
+         list.forEach(function(item, i, arr) {
+         console.log(item);
+         });*/
+
+        /*        $('.channels')
+         .html('<option>city1</option><option>city2</option>')
+         .selectpicker('refresh');*/
+
+        /*        $('.channels').selectpicker('val', $(e.relatedTarget).data('channel').split(":").map(function(str){
+         return "'" + str + "'"; // add quotes
+         }).join(","));*/
+        $('.sources').selectpicker('val', $(e.relatedTarget).data('source').split(":").map(function (str) {
             return "'" + str + "'"; // add quotes
         }).join(","));
     });
