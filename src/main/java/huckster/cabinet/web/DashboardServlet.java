@@ -2,6 +2,7 @@ package huckster.cabinet.web;
 
 import huckster.cabinet.Chart;
 import huckster.cabinet.StatisticPanel;
+import huckster.cabinet.model.JsonTreeNode;
 import huckster.cabinet.repository.UserData;
 
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Perevalova Marina on 09.05.2016.
@@ -21,6 +23,8 @@ import java.util.List;
 public class DashboardServlet extends UserServlet {
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
+        Map<Integer, JsonTreeNode> tree = userData.getSelectedTree(null);
+
         userData.refreshData();
         req.setAttribute("period", userData.getPeriod());
         req.setAttribute("panels", getPanels(userData));

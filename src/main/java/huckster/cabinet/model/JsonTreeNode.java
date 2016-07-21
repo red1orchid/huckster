@@ -42,9 +42,8 @@ public class JsonTreeNode {
     }
 
     public void addChild(JsonTreeNode node) {
-        if (children == null) {
+        if (children == null)
             children = new ArrayList<>();
-        }
         children.add(node);
     }
 }

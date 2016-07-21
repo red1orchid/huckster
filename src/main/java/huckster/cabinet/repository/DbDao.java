@@ -1,6 +1,7 @@
 package huckster.cabinet.repository;
 
 import huckster.cabinet.model.CompanyEntity;
+import huckster.cabinet.model.RuleEntity;
 import huckster.cabinet.model.SelectedTreeEntity;
 import huckster.cabinet.model.TwoLineChartEntity;
 
@@ -299,7 +300,7 @@ public class DbDao {
         return list;
     }
 
-    List<List> getRules(int companyId) throws SQLException {
+/*    List<List> getRules(int companyId) throws SQLException {
         String sql = "SELECT r.id AS empno," +
                 "            replace(nvl(r.utm_medium,'все'), 'all', 'все') AS utm_medium," +
                 "            replace(nvl(r.utm_source,'все'), 'all', 'все') AS utm_source," +
@@ -310,6 +311,25 @@ public class DbDao {
                 " ORDER BY utm_medium desc, utm_source DESC, id ASC";
 
         return makeTable(sql, null, 5, companyId);
+    }*/
+
+    List<RuleEntity> getRules(int companyId) throws SQLException {
+        List<RuleEntity> list = new ArrayList<>();
+        String sql = "SELECT r.id AS empno," +
+                "            replace(nvl(r.utm_medium,'все'), 'all', 'все') AS utm_medium," +
+                "            replace(nvl(r.utm_source,'все'), 'all', 'все') AS utm_source," +
+                "            decode(r.destination, 0, 'все', 1, 'ПК и ноутбуки', 2, 'мобильные') AS destination," +
+                "            r.days," +
+                "            r.start_hour," +
+                "            r.end_hour" +
+                "  FROM analitic.clients_rules r" +
+                " WHERE r.company_id = ?" +
+                " ORDER BY utm_medium desc, utm_source DESC, id ASC";
+
+        execute(sql, null,
+                (rs) -> list.add(new RuleEntity(rs.getInt("empno"), rs.getString("utm_medium"), rs.getString("utm_source"), rs.getString("destination"),
+                        rs.getString("days"), rs.getString("start_hour"), rs.getString("end_hour"))), companyId);
+        return list;
     }
 
     List<String> getChannels(int companyId) throws SQLException {

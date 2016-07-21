@@ -164,7 +164,7 @@ public class UserData {
         }
     }
 
-    public List<List> getRules() {
+    public List<RuleEntity> getRules() {
         try {
             return dao.getRules(companyId);
         } catch (SQLException e) {

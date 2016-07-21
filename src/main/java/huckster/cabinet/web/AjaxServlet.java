@@ -44,14 +44,11 @@ public class AjaxServlet extends HttpServlet {
                 case "traffic":
                     data = getTraffic(req, userData);
                     break;
-                case "tree":
+                case "settings_tree":
                     data = getTree(req, userData);
                     break;
-                case "channels":
-                    data = Util.toJson(userData.getChannels());
-                    break;
-                case "sources":
-                    data = Util.toJson(userData.getSources());
+                case "settings_lists":
+                    data = getSettings(req, userData);
                     break;
             }
 
@@ -62,6 +59,13 @@ public class AjaxServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }
+    }
+
+    private String getSettings(HttpServletRequest req, UserData userData) {
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("sources", userData.getSources());
+        map.put("channels", userData.getChannels());
+        return Util.toJson(map);
     }
 
     private String getGoods(HttpServletRequest req, UserData userData) {

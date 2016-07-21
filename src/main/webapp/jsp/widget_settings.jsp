@@ -19,6 +19,7 @@
           rel="stylesheet">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+    <link href="../Labelauty/jquery-labelauty.css" rel="stylesheet">
 
     <script src="../js/jquery-2.2.4.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
@@ -27,6 +28,7 @@
     <script src="../DataTables/datatables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.18.0/jquery.fancytree.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+    <script src="../Labelauty/jquery-labelauty.js"></script>
 
     <style type="text/css">
         /* Remove system outline for focused container */
@@ -38,7 +40,10 @@
             border: none;
         }
 
-
+        .modal-dialog {
+            width: 1100px;
+            max-width: 95%; /* respsonsive width */
+        }
     </style>
 <body>
 <%--Top bar--%>
@@ -79,12 +84,17 @@
                         <tbody>
                         <c:forEach var="rRow" items="${rules}">
                             <tr>
-                                <td><a data-id=${rRow[0]} data-channel=${rRow[1]}
-                                       data-source=${rRow[2]} data-toggle="modal" href="#editRule"><span
+                                <td><a data-id=${rRow.id} data-channels=${rRow.channels}
+                                       data-sources=${rRow.sources} data-device=${rRow.devices}
+                                       data-days=${rRow.days} data-time-from=${rRow.timeFrom}
+                                       data-time-to=${rRow.timeTo} data-toggle="modal"
+                                       href="#editRule"><span
                                         class="glyphicon glyphicon-pencil"></span></a></td>
-                                <c:forEach var="rCell" items="${rRow}">
-                                    <td>${rCell}</td>
-                                </c:forEach>
+                                <td>${rRow.id}</td>
+                                <td>${rRow.channels}</td>
+                                <td>${rRow.sources}</td>
+                                <td>${rRow.devices}</td>
+                                <td>${rRow.days}, ${rRow.timeFrom}-${rRow.timeTo}чч</td>
                             </tr>
                         </c:forEach>
                         </tbody>
@@ -110,21 +120,84 @@
                                         <%--
                                                                                 <div class="col-sm-1"></div>--%>
                                         <div class="col-sm-6">
-                                            <form role="form">
+                                            <div role="form">
                                                 <div class="form-group">
                                                     <label for="chnl">Каналы</label>
-                                                    <select id="chnl" class="selectpicker channels form-control"
+                                                    <select id="chnl" class="selectpicker form-control"
                                                             multiple title="Все каналы"
                                                             data-live-search="true">
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="src">Источники</label>
-                                                    <select id="src" class="selectpicker sources form-control" multiple
+                                                    <select id="src" class="selectpicker form-control" multiple
                                                             title="Все источники"
                                                             data-live-search="true">
                                                     </select>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label for="devices">Устройства</label>
+                                                    <select id="devices" class="selectpicker form-control">
+                                                        <option value="все">Все устройства</option>
+                                                        <option>ПК и ноутбуки</option>
+                                                        <option>мобильные</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="days">Дни</label>
+                                                    <div id="days" class="form-inline">
+                                                        <input id="mon" class="button-checkbox" type="checkbox"
+                                                               data-labelauty="ПН|ПН" checked/>
+                                                        <input class="button-checkbox" type="checkbox"
+                                                               data-labelauty="ВТ|ВТ" checked/>
+                                                        <input id="wed" class="button-checkbox" type="checkbox"
+                                                               data-labelauty="СР|СР" checked/>
+                                                        <input class="button-checkbox" type="checkbox"
+                                                               data-labelauty="ЧТ|ЧТ" checked/>
+                                                        <input id="fri" class="button-checkbox" type="checkbox"
+                                                               data-labelauty="ПТ|ПТ" checked/>
+                                                        <input class="button-checkbox" type="checkbox"
+                                                               data-labelauty="СБ|СБ" checked/>
+                                                        <input id="sun" class="button-checkbox" type="checkbox"
+                                                               data-labelauty="ВС|ВС" checked/>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="hours">Часы</label>
+                                                    <div id="hours" class="form-inline">
+                                                        <div class="form-group">
+                                                            <label for="hourFrom">C</label>
+                                                            <select id="hourFrom" class="selectpicker"
+                                                                    data-live-search="true" data-width="auto">
+                                                                <c:forEach begin="0" end="24" varStatus="loop">
+                                                                    <option>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
+                                                                </c:forEach>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="hourTo">По</label>
+                                                            <select id="hourTo" class="selectpicker"
+                                                                    data-live-search="true"
+                                                                    data-width="auto">
+                                                                <c:forEach begin="0" end="24" varStatus="loop">
+                                                                    <option>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
+                                                                </c:forEach>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <%--
+                                                                                            </div>--%>
+
+                                            <%--
+                                                <input class="text-nicelabel"
+                                                       data-nicelabel='{"checked_text": "ПН", "unchecked_text": "ПН"}'
+                                                       type="checkbox">
+                                                <input class="text-nicelabel"
+                                                       data-nicelabel='{"checked_text": "ВТ", "unchecked_text": "ВТ"}'
+                                                       type="checkbox">--%>
+
                                             </form>
                                         </div>
                                     </div>
@@ -170,6 +243,13 @@
     };
 
     $(document).ready(function () {
+        $(".button-checkbox").labelauty({
+            class: "labelauty",
+            label: true,
+            separator: "|",
+            same_width: true
+        });
+
         // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line
         $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
             localStorage.setItem('wActiveTab', $(e.target).attr('href'));
@@ -198,7 +278,7 @@
                 url: "/ajax",
                 type: "POST",
                 data: {
-                    "type": "tree",
+                    "type": "settings_tree"
                 }
             },
             icon: false,
@@ -226,11 +306,56 @@
                     data.node.toggleSelected();
                     return false;
                 }
+            }
+        });
+    });
+
+    $('#editRule').on('show.bs.modal', function (e) {
+        // Reload tree with new source
+        var tree = $("#fancyTree").fancytree("getTree");
+        tree.reload({
+            cache: false,
+            url: "/ajax",
+            type: "POST",
+            data: {
+                "type": "settings_tree",
+                "id": $(e.relatedTarget).data('id')
+            }
+        }).done();
+
+        //load select lists
+        $.ajax({
+            url: "/ajax",
+            type: "POST",
+            data: {
+                "type": "settings_lists"
             },
-            // The following options are only required, if we have more than one tree on one page:
-//				initId: "treeData",
-            cookieId: "fancytree-Cb3",
-            idPrefix: "fancytree-Cb3-"
+            success: function (data) {
+                $('#chnl').empty();
+                $('#src').empty();
+
+                data.channels.forEach(function (item, i, arr) {
+                    $('#chnl').append('<option>' + item + '</option>');
+                });
+                for (var i in data.sources) {
+                    $('#src').append('<option value="' + i + '">' + data.sources[i] + '</option>');
+                }
+
+                $('#chnl').selectpicker('refresh');
+                $('#src').selectpicker('refresh');
+
+                $('#chnl').selectpicker('val', $(e.relatedTarget).data('channels').split(":"));
+                $('#src').selectpicker('val', $(e.relatedTarget).data('sources').split(":"));
+                $('#devices').selectpicker('val', $(e.relatedTarget).data('device'));
+                $('#hourFrom').selectpicker('val', $(e.relatedTarget).data('time-from'));
+                $('#hourTo').selectpicker('val', $(e.relatedTarget).data('time-to'));
+                var days = $(e.relatedTarget).data('days');
+                for (i = 1; i <= 7; i++) {
+                    if (days.indexOf(i.toString()) < 0) {
+                        $('#mon').prop('checked', false);
+                    }
+                }
+            }
         });
     });
 
@@ -254,70 +379,5 @@
             //do other processing
         });
     });
-
-    $('#editRule').on('show.bs.modal', function (e) {
-        console.log($(e.relatedTarget).data('id'));
-        console.log($(e.relatedTarget).data('channel').split(":"));
-        console.log($(e.relatedTarget).data('source').split(":"));
-
-        // Reload tree with new source
-        var tree = $("#fancyTree").fancytree("getTree");
-        tree.reload({
-            cache: false,
-            url: "/ajax",
-            type: "POST",
-            data: {
-                "type": "tree",
-                "id": $(e.relatedTarget).data('id')
-            }
-        }).done();
-
-        $.ajax({
-            url: "/ajax",
-            type: "POST",
-            data: {
-                "type": "channels"
-            },
-            success: function (data) {
-                $('#chnl').empty();
-                data.forEach(function (item, i, arr) {
-                    $('#chnl').append('<option>' + item + '</option>');
-                });
-                $('#chnl').selectpicker('refresh');
-            }
-        });
-
-        $.ajax({
-            url: "/ajax",
-            type: "POST",
-            data: {
-                "type": "sources"
-            },
-            success: function (data) {
-                console.log(data);
-                $('#src').empty();
-                for(var i in data) {
-                    $('#src').append('<option value="' + i + '">' + data[i] + '</option>');
-                }
-                $('#src').selectpicker('refresh');
-            }
-        });
-        /*
-         list.forEach(function(item, i, arr) {
-         console.log(item);
-         });*/
-
-        /*        $('.channels')
-         .html('<option>city1</option><option>city2</option>')
-         .selectpicker('refresh');*/
-
-        /*        $('.channels').selectpicker('val', $(e.relatedTarget).data('channel').split(":").map(function(str){
-         return "'" + str + "'"; // add quotes
-         }).join(","));*/
-        $('.sources').selectpicker('val', $(e.relatedTarget).data('source').split(":").map(function (str) {
-            return "'" + str + "'"; // add quotes
-        }).join(","));
-    });
-
 </script>
 </html>

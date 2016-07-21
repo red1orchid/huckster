@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import com.google.gson.Gson;
+import huckster.cabinet.repository.DbDao;
+import huckster.cabinet.repository.UserData;
 import org.apache.catalina.startup.Tomcat;
 import org.apache.jorphan.collections.HashTree;
 
@@ -14,7 +16,10 @@ public class Main {
     public static final Optional<String> HOSTNAME = Optional.ofNullable(System.getenv("HOSTNAME"));
     
     public static void main(String[] args) throws Exception {
-        String contextPath = "/" ;
+        UserData user = new UserData("1admin");
+
+
+/*        String contextPath = "/" ;
         String appBase = ".";
         Tomcat tomcat = new Tomcat();   
         tomcat.setPort(Integer.valueOf(PORT.orElse("8080") ));
@@ -22,6 +27,6 @@ public class Main {
         tomcat.getHost().setAppBase(appBase);
         tomcat.addWebapp(contextPath, appBase);
         tomcat.start();
-        tomcat.getServer().await();
+        tomcat.getServer().await();*/
     }
 }
