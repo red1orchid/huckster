@@ -93,7 +93,7 @@
                                 <td>${rRow.id}</td>
                                 <td>${rRow.channels}</td>
                                 <td>${rRow.sources}</td>
-                                <td>${rRow.devices}</td>
+                                <td>${devices[rRow.devices].toLowerCase().replace('все устройства', 'все')}</td>
                                 <td>${rRow.days}, ${rRow.timeFrom}-${rRow.timeTo}чч</td>
                             </tr>
                         </c:forEach>
@@ -138,9 +138,9 @@
                                                 <div class="form-group">
                                                     <label for="devices">Устройства</label>
                                                     <select id="devices" class="selectpicker form-control">
-                                                        <option value="все">Все устройства</option>
-                                                        <option>ПК и ноутбуки</option>
-                                                        <option>мобильные</option>
+                                                        <c:forEach var="device" items="${devices}">
+                                                            <option value="${device.key}">${device.value}</option>
+                                                        </c:forEach>
                                                     </select>
                                                 </div>
                                                 <div class="form-group">
@@ -148,15 +148,15 @@
                                                     <div id="days" class="form-inline">
                                                         <input id="mon" class="button-checkbox" type="checkbox"
                                                                data-labelauty="ПН|ПН" checked/>
-                                                        <input class="button-checkbox" type="checkbox"
+                                                        <input id="tue" class="button-checkbox" type="checkbox"
                                                                data-labelauty="ВТ|ВТ" checked/>
                                                         <input id="wed" class="button-checkbox" type="checkbox"
                                                                data-labelauty="СР|СР" checked/>
-                                                        <input class="button-checkbox" type="checkbox"
+                                                        <input id="thu" class="button-checkbox" type="checkbox"
                                                                data-labelauty="ЧТ|ЧТ" checked/>
                                                         <input id="fri" class="button-checkbox" type="checkbox"
                                                                data-labelauty="ПТ|ПТ" checked/>
-                                                        <input class="button-checkbox" type="checkbox"
+                                                        <input id="sat" class="button-checkbox" type="checkbox"
                                                                data-labelauty="СБ|СБ" checked/>
                                                         <input id="sun" class="button-checkbox" type="checkbox"
                                                                data-labelauty="ВС|ВС" checked/>
@@ -344,6 +344,7 @@
                 $('#chnl').selectpicker('refresh');
                 $('#src').selectpicker('refresh');
 
+                //set selected values
                 $('#chnl').selectpicker('val', $(e.relatedTarget).data('channels').split(":"));
                 $('#src').selectpicker('val', $(e.relatedTarget).data('sources').split(":"));
                 $('#devices').selectpicker('val', $(e.relatedTarget).data('device'));
@@ -367,13 +368,36 @@
                 }
         );
 
+        var days;
+        function addDay(id, day) {
+            if ($(id).is(":checked")) {
+                if (days == null)
+                    days = day;
+                else
+                    days = days + ':' + day;
+            }
+        }
+
+        addDay('#mon', 1);
+        addDay('#tue', 2);
+        addDay('#wed', 3);
+        addDay('#thu', 4);
+        addDay('#fri', 5);
+        addDay('#sat', 6);
+        addDay('#sun', 7);
+
         $.ajax({
             type: "POST",
             url: "/widget_settings",
             data: {
                 tree: selection.join(":"),
-                channels: $('.channels').selectpicker('val').join(":"),
-                sources: $('.sources').selectpicker('val').join(":")
+                channels: ($('#chnl').selectpicker('val') || []).join(":"),
+                sources: ($('#src').selectpicker('val') || []).join(":"),
+                devices: $('#devices').selectpicker('val'),
+                days: days,
+                hourFrom: $('#hourFrom').selectpicker('val'),
+                hourTo: $('#hourTo').selectpicker('val')
+
             }
         }).done(function (msg) {
             //do other processing

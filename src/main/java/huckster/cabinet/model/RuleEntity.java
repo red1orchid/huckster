@@ -7,12 +7,12 @@ public class RuleEntity {
     private int id;
     private String channels;
     private String sources;
-    private String devices;
+    private int devices;
     private String days;
     private String timeFrom;
     private String timeTo;
 
-    public RuleEntity(int id, String channels, String sources, String devices, String days, String timeFrom, String timeTo) {
+    public RuleEntity(int id, String channels, String sources, int devices, String days, String timeFrom, String timeTo) {
         this.id = id;
         this.sources = sources;
         this.channels = channels;
@@ -34,7 +34,7 @@ public class RuleEntity {
         return channels;
     }
 
-    public String getDevices() {
+    public int getDevices() {
         return devices;
     }
 

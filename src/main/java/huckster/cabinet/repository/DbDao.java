@@ -109,6 +109,15 @@ public class DbDao {
         }, status, comment, orderId);
     }
 
+    public Map<Integer, String> getDevices() {
+        Map<Integer, String> map = new HashMap<>();
+        map.put(0, "Все устройства");
+        map.put(1, "ПК и ноутбуки");
+        map.put(2, "Мобильные");
+
+        return map;
+    }
+
     HashMap<Integer, String> getStatisticRates(int companyId, String period) throws SQLException {
         String sql = " SELECT report_id, " +
                 "             CASE" +
@@ -318,7 +327,7 @@ public class DbDao {
         String sql = "SELECT r.id AS empno," +
                 "            replace(nvl(r.utm_medium,'все'), 'all', 'все') AS utm_medium," +
                 "            replace(nvl(r.utm_source,'все'), 'all', 'все') AS utm_source," +
-                "            decode(r.destination, 0, 'все', 1, 'ПК и ноутбуки', 2, 'мобильные') AS destination," +
+                "            r.destination," +
                 "            r.days," +
                 "            r.start_hour," +
                 "            r.end_hour" +
@@ -327,7 +336,7 @@ public class DbDao {
                 " ORDER BY utm_medium desc, utm_source DESC, id ASC";
 
         execute(sql, null,
-                (rs) -> list.add(new RuleEntity(rs.getInt("empno"), rs.getString("utm_medium"), rs.getString("utm_source"), rs.getString("destination"),
+                (rs) -> list.add(new RuleEntity(rs.getInt("empno"), rs.getString("utm_medium"), rs.getString("utm_source"), rs.getInt("destination"),
                         rs.getString("days"), rs.getString("start_hour"), rs.getString("end_hour"))), companyId);
         return list;
     }

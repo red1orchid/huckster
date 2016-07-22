@@ -1,5 +1,6 @@
 package huckster.cabinet.web;
 
+import huckster.cabinet.repository.DbDao;
 import huckster.cabinet.repository.UserData;
 
 import javax.servlet.ServletException;
@@ -16,7 +17,9 @@ import java.sql.SQLException;
 public class WidgetSettingsServlet extends UserServlet {
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
+        DbDao dao = new DbDao();
         req.setAttribute("rules", userData.getRules());
+        req.setAttribute("devices", dao.getDevices());
 /*        req.setAttribute("channels", userData.getChannels());
         Util.timeStone("stat: get channels");
         req.setAttribute("sources", userData.getSources());
@@ -32,5 +35,9 @@ public class WidgetSettingsServlet extends UserServlet {
         System.out.println(req.getParameter("tree"));
         System.out.println(req.getParameter("channels"));
         System.out.println(req.getParameter("sources"));
+        System.out.println(req.getParameter("devices"));
+        System.out.println(req.getParameter("days"));
+        System.out.println(req.getParameter("hourFrom"));
+        System.out.println(req.getParameter("hourTo"));
     }
 }
