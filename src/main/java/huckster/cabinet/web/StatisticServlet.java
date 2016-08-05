@@ -24,8 +24,6 @@ public class StatisticServlet extends UserServlet {
 
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException {
-        System.out.println(userData.getPeriodGoods());
-        System.out.println(userData.getPeriodTraffic());
         req.setAttribute("periodGoods", userData.getPeriodGoods());
         req.setAttribute("periodTraffic", userData.getPeriodTraffic());
         req.setAttribute("traffic", getTraffic(userData));

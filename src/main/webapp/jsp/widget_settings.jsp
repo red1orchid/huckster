@@ -227,6 +227,23 @@
                     <a data-toggle="modal" href="#editRule" type="button" class="btn btn-success">
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить скидку
                     </a>
+                    <table id="vendorRulesTbl" class="table table-hover table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>категория</th>
+                            <th>вендор</th>
+                            <th>цена, от</th>
+                            <th>цена, до</th>
+                            <th>скидка 1 шаг, %</th>
+                            <th>скидка 2 шаг, %</th>
+                        </tr>
+                        </thead>
+                        <tfoot>
+                        </tfoot>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
                 <%--Step 3--%>
                 <div id="step3" class="tab-pane fade"></div>
@@ -279,6 +296,21 @@
             paging: false,
             searching: false,
             language: language
+        });
+
+        $('#vendorRulesTbl').DataTable({
+            colReorder: true,
+            ordering: false,
+            paging: false,
+            searching: false,
+            language: language,
+            ajax: {
+                url: "/ajax",
+                type: "POST",
+                data: {
+                    "type": "vendor_rules"
+                }
+            }
         });
 
         $("#fancyTree").fancytree({

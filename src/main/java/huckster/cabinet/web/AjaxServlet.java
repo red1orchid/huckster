@@ -45,7 +45,10 @@ public class AjaxServlet extends HttpServlet {
                     data = getTree(req, userData);
                     break;
                 case "settings_lists":
-                    data = getSettings(req, userData);
+                    data = getSettings(userData);
+                    break;
+                case "vendor_rules":
+                    data = getVendorRules(req, userData);
                     break;
             }
 
@@ -93,7 +96,7 @@ public class AjaxServlet extends HttpServlet {
         return Util.toJson(map);
     }
 
-    private String getSettings(HttpServletRequest req, UserData userData) {
+    private String getSettings(UserData userData) {
         HashMap<String, Object> map = new HashMap<>();
         List<String> channels = new ArrayList<>();
         Map<String, String> sources = new LinkedHashMap<>();
@@ -144,5 +147,27 @@ public class AjaxServlet extends HttpServlet {
         }
 
         return Util.toJson(list);
+    }
+
+    private String getVendorRules(HttpServletRequest req, UserData userData) {
+        List<List> data = new ArrayList<>();
+        String vendorId = req.getParameter("vendorId");
+        if (vendorId != null) {
+            try {
+                data = widgetSettingsDao.getVendorsRules(userData.getCompanyId(), Integer.parseInt(vendorId));
+            } catch (SQLException e) {
+                //TODO: some message?
+                Util.logError("Failed to load vendor rules", e, userData);
+            }
+        } else {
+            //TODO: some message?
+            Util.logError("Empty vendor category", userData);
+        }
+
+        HashMap<String, List> map = new HashMap<>();
+        map.put("data", data);
+
+        System.out.println(Util.toJson(map));
+        return Util.toJson(map);
     }
 }
