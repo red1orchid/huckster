@@ -11,10 +11,10 @@ public class StatisticPanel {
     private String content;
     private String label;
     private String icon;
-    private String panelClass;
     private String footer;
+    private String panelClass;
 
-    public StatisticPanel(UserData userData, Type type) throws SQLException {
+    public StatisticPanel(UserData userData, Type type, String rate, String percent) throws SQLException {
         String period = userData.getPeriod();
         String currency = userData.getCurrency();
         switch (period) {
@@ -29,21 +29,9 @@ public class StatisticPanel {
                 break;
         }
         icon = type.getIcon();
+        content = rate;
+        footer = String.format("<b>%s%%</b> %s", percent, type.getFooter());
         panelClass = type.getPanelClass();
-        try {
-            content = userData.getRate(type, "main", period);
-        } catch (SQLException | DataException e) {
-            content = "0";
-            e.printStackTrace();
-        }
-        String prc;
-        try {
-            prc = userData.getRate(type, "footer", period);
-        } catch (SQLException | DataException e) {
-            prc = "0.0";
-            e.printStackTrace();
-        }
-        footer = String.format("<b>%s%%</b> %s", prc, type.getFooter());
     }
 
     public String getFooter() {
@@ -62,9 +50,7 @@ public class StatisticPanel {
         return icon;
     }
 
-    public String getPanelClass() {
-        return panelClass;
-    }
+    public String getPanelClass() { return panelClass; }
 
     public enum Type {
         INCOME("Доход за %s, т.%s.", "доход LFL", "panel-primary", "glyphicon glyphicon-ruble", 5),
@@ -74,16 +60,16 @@ public class StatisticPanel {
 
         private final String label;
         private final String footer;
-        private final String panelClass;
         private final String icon;
         private final int reportId;
+        private final String panelClass;
 
         Type(String label, String footer, String panelClass, String icon, int reportId) {
             this.label = label;
             this.footer = footer;
-            this.panelClass = panelClass;
             this.icon = icon;
             this.reportId = reportId;
+            this.panelClass = panelClass;
         }
 
         public String getLabel() {
@@ -94,10 +80,6 @@ public class StatisticPanel {
             return footer;
         }
 
-        public String getPanelClass() {
-            return panelClass;
-        }
-
         public String getIcon() {
             return icon;
         }
@@ -105,5 +87,7 @@ public class StatisticPanel {
         public int getReportId() {
             return reportId;
         }
+
+        public String getPanelClass() { return panelClass; }
     }
 }

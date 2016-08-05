@@ -1,7 +1,7 @@
 /* Copyright � 2015 Oracle and/or its affiliates. All rights reserved. */
 package huckster.cabinet.web;
 
-import huckster.cabinet.repository.DbDao;
+import huckster.cabinet.repository.CompanyInfoDao;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,8 +14,9 @@ import java.sql.SQLException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-    //setting cookie to expiry in 30 mins
-    private static final int COOKIE_MAX_AGE = 60 * 60;
+    private CompanyInfoDao dao = new CompanyInfoDao();
+    //setting cookie to expiry in 300 mins
+    private static final int COOKIE_MAX_AGE = 600 * 60;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,7 +30,6 @@ public class LoginServlet extends HttpServlet {
         String rememberMe = req.getParameter("rememberMe");
 
         try {
-            DbDao dao = new DbDao();
             if (dao.isUserExists(username, password)) {
                 req.getSession().setAttribute("user", username);
                 if (rememberMe != null) {

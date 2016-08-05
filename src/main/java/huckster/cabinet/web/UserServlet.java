@@ -26,7 +26,22 @@ abstract class UserServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if (auth(req, resp)) {
+            UserData userData = (UserData) req.getSession().getAttribute("userData");
+            try {
+                req.setAttribute("company", userData.getCompanyName());
+                initDataPost(req, resp, userData);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                req.getRequestDispatcher("/jsp/error.jsp").forward(req, resp);
+            }
+        }
+    }
+
     abstract void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException;
+    abstract void initDataPost(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException;
 
     private String getUser(HttpServletRequest req) {
         String user = (String) req.getSession().getAttribute("user");
@@ -44,7 +59,7 @@ abstract class UserServlet extends HttpServlet {
         return user;
     }
 
-    boolean auth(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+    private boolean auth(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String user = getUser(req);
         HttpSession session = req.getSession();
         if (user != null) {

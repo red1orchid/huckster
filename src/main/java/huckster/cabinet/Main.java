@@ -1,15 +1,9 @@
 /* Copyright � 2015 Oracle and/or its affiliates. All rights reserved. */
 package huckster.cabinet;
 
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Optional;
 
-import com.google.gson.Gson;
-import huckster.cabinet.repository.DbDao;
 import huckster.cabinet.repository.UserData;
-import org.apache.catalina.startup.Tomcat;
-import org.apache.jorphan.collections.HashTree;
 
 public class Main {
     public static final Optional<String> PORT = Optional.ofNullable(System.getenv("PORT"));

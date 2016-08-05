@@ -1,21 +1,19 @@
 package huckster.cabinet;
 
 import com.google.gson.Gson;
+import huckster.cabinet.repository.UserData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by PerevalovaMA on 17.05.2016.
  */
 public class Util {
     static long timeStone = System.currentTimeMillis();
-    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-    public static final LocalDate DEFAULT_START_DATE = LocalDate.now().minusDays(7);
-    public static final LocalDate DEFAULT_END_DATE = LocalDate.now();
+    private static final Logger LOG = LoggerFactory.getLogger(Util.class);
 
     public static void timeStone(String message) {
         long newTimeStone = System.currentTimeMillis();
@@ -25,5 +23,13 @@ public class Util {
 
     public static <T>String toJson(T obj) {
         return new Gson().toJson(obj);
+    }
+
+    public static void logError(String message, Exception e, UserData userData) {
+        LOG.error(message + " for company " + userData.getCompanyName(), e);
+    }
+
+    public static void logError(String message, UserData userData) {
+        LOG.error(message + " for company " + userData.getCompanyName());
     }
 }

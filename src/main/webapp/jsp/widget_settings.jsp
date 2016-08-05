@@ -215,7 +215,18 @@
                 </div>
                 <%--Step 2--%>
                 <div id="step2" class="tab-pane fade">
-
+                    <br>
+                    Выберите сегмент, для которого хотите установить скидки на группы товаров
+                    <br><br>
+                    <select id="vendors" class="selectpicker form-control">
+                        <c:forEach var="vendor" items="${vendors}">
+                            <option value="${vendor.key}">${vendor.value}</option>
+                        </c:forEach>
+                    </select>
+                    <br><br>
+                    <a data-toggle="modal" href="#editRule" type="button" class="btn btn-success">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить скидку
+                    </a>
                 </div>
                 <%--Step 3--%>
                 <div id="step3" class="tab-pane fade"></div>
@@ -310,7 +321,10 @@
         });
     });
 
+    var id;
+
     $('#editRule').on('show.bs.modal', function (e) {
+        id = $(e.relatedTarget).data('id');
         // Reload tree with new source
         var tree = $("#fancyTree").fancytree("getTree");
         tree.reload({
@@ -390,6 +404,7 @@
             type: "POST",
             url: "/widget_settings",
             data: {
+                rule: id,
                 tree: selection.join(":"),
                 channels: ($('#chnl').selectpicker('val') || []).join(":"),
                 sources: ($('#src').selectpicker('val') || []).join(":"),
@@ -397,7 +412,6 @@
                 days: days,
                 hourFrom: $('#hourFrom').selectpicker('val'),
                 hourTo: $('#hourTo').selectpicker('val')
-
             }
         }).done(function (msg) {
             //do other processing

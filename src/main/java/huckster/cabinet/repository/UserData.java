@@ -1,192 +1,139 @@
 package huckster.cabinet.repository;
 
-import huckster.cabinet.Chart;
-import huckster.cabinet.DataException;
-import huckster.cabinet.StatisticPanel;
-import huckster.cabinet.model.*;
+import huckster.cabinet.model.ChartData;
+import huckster.cabinet.model.CompanyEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
-import java.sql.Date;
+import javax.ws.rs.NotFoundException;
 import java.sql.SQLException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Perevalova Marina on 11.05.2016.
  */
 public class UserData {
-    private DbDao dao = new DbDao();
-    private String username;
-    private String companyName;
-    private String currency;
-    private int companyId;
     private String period = "month";
+    private String periodTraffic = "month";
+    private String periodGoods = "month";
+    private CompanyEntity companyInfo;
+    private LocalDate startDate = LocalDate.now().minusDays(7);
+    private LocalDate endDate = LocalDate.now();
     private Map<Integer, String> rateContainer = new HashMap<>();
-    private Map<Integer, String> prcContainer = new HashMap<>();
+    private Map<Integer, String> percentContainer = new HashMap<>();
     private Map<Integer, ChartData> chartContainer = new HashMap<>();
+    private static final Logger LOG = LoggerFactory.getLogger(UserData.class);
+    private CompanyInfoDao dao = new CompanyInfoDao();
 
     public UserData(String user) throws ServletException {
-        this.username = user;
+        try {
+            Integer companyId = dao.getCompanyId(user).orElseThrow(NotFoundException::new);
+            companyInfo = dao.getCompanyInfo(companyId).orElseThrow(NotFoundException::new);
+        } catch (SQLException | NotFoundException e) {
+            LOG.error("Failed to load company info for user " + user, e);
+            //TODO: fatal error, go to 500
+        }
     }
+    /*
+
+        public void setUser(String username) {
+            this.username = username;
+            companyId = 0;
+            companyName = null;
+            currency = null;
+            clear();
+        }
+    */
 
     public String getPeriod() {
         return period;
+    }
+
+    public String getPeriodTraffic() {
+        return periodTraffic;
+    }
+
+    public String getPeriodGoods() { return periodGoods; }
+
+    public int getCompanyId() {
+        return companyInfo.getId();
+    }
+
+    public String getCompanyName() {
+        return companyInfo.getName();
+    }
+
+    public String getCurrency() {
+        return companyInfo.getCurrency();
+    }
+
+    public Map<Integer, String> getRateContainer() {
+        return rateContainer;
+    }
+
+    public Map<Integer, String> getPercentContainer() {
+        return percentContainer;
+    }
+
+    public Map<Integer, ChartData> getChartContainer() {
+        return chartContainer;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
     public void setPeriod(String period) {
         this.period = period;
     }
 
-    public void setUser(String username) {
-        this.username = username;
-        companyId = 0;
-        companyName = null;
-        currency = null;
-        refreshData();
+    public void setPeriodGoods(String periodGoods) {
+        this.periodGoods = periodGoods;
     }
 
-    private void initRateContainer(String period) throws SQLException {
-        if (rateContainer.isEmpty()) {
-            rateContainer = dao.getStatisticRates(companyId, period);
-
-            if (rateContainer.isEmpty()) {
-                throw new DataException("No appropriate data");
-            }
-        }
+    public void setPeriodTraffic(String periodTraffic) {
+        this.periodTraffic = periodTraffic;
     }
 
-    private void initPrcContainer(String period) throws SQLException {
-        if (prcContainer.isEmpty()) {
-            prcContainer = dao.getStatisticPercents(companyId, period);
-
-            if (prcContainer.isEmpty()) {
-                throw new DataException("No appropriate data");
-            }
-        }
+    public void setRateContainer(Map<Integer, String> rateContainer) {
+        this.rateContainer = rateContainer;
     }
 
-    private void initChartContainer(String period) throws SQLException {
-        if (chartContainer.isEmpty()) {
-            List<TwoLineChartEntity> chartRawData = dao.getChartData(companyId, period);
-            chartContainer = ChartData.makeData(chartRawData, ".current", ".last");
-            chartContainer.values().stream()
-                    .forEach(v -> v.setProperties("time", "linear", 0));
-
-            if (chartContainer.isEmpty()) {
-                throw new DataException("No appropriate data");
-            }
-        }
+    public void setPercentContainer(Map<Integer, String> percentContainer) {
+        this.percentContainer = percentContainer;
     }
 
-    private void initCompanyInfo() throws SQLException {
-        if (companyId == 0) {
-            companyId = dao.getCompanyId(username).orElse(0);
-
-            if (companyId == 0) {
-                throw new DataException("Company not found for user " + username);
-            }
-
-            Optional<CompanyEntity> company = dao.getCompanyInfo(companyId);
-            if (!company.isPresent()) {
-                throw new DataException("Company " + companyId + " not exists");
-            } else {
-                companyName = company.get().getName();
-                currency = company.get().getCurrency();
-            }
-        }
+    public void setChartContainer(Map<Integer, ChartData> chartContainer) {
+        this.chartContainer = chartContainer;
     }
 
-    public void refreshData() {
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public void clear() {
         rateContainer.clear();
-        prcContainer.clear();
+        percentContainer.clear();
         chartContainer.clear();
     }
+/*
 
-    public String getCompanyName() throws SQLException {
-        initCompanyInfo();
-        return companyName;
-    }
-
-    public String getCurrency() throws SQLException {
-        initCompanyInfo();
-        return currency;
-    }
-
-    public String getRate(StatisticPanel.Type rateType, String contextType, String period) throws
-            SQLException {
-        int reportId = rateType.getReportId();
-
-        if (contextType.equals("main")) {
-            initRateContainer(period);
-            return rateContainer.get(reportId);
-        } else if (contextType.equals("footer")) {
-            initPrcContainer(period);
-            return prcContainer.get(reportId);
-        } else {
-            throw new DataException("Unsupported context type");
-        }
-    }
-
-    public ChartData getChartData(Chart.Type type, String period) throws SQLException {
-        int reportId = type.getReportId();
-
-        initChartContainer(period);
-        return chartContainer.get(reportId);
-    }
-
-    public List<List> getOrders(Date startDate, Date endDate) {
-        try {
-            return dao.getOrders(companyId, startDate, endDate);
-        } catch (SQLException e) {
-            //TODO
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public List<List> getGoods(String period) {
-        try {
-            return dao.getGoods(companyId, period);
-        } catch (SQLException e) {
-            //TODO
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public List<List> getTraffic(String period) {
-        try {
-            return dao.getTraffic(companyId, period);
-        } catch (SQLException e) {
-            //TODO
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public List<RuleEntity> getRules() {
-        try {
-            return dao.getRules(companyId);
-        } catch (SQLException e) {
-            //TODO
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public Map<String, String> getYml() {
-        try {
-            return dao.getYml(companyId);
-        } catch (SQLException e) {
-            //TODO
-            e.printStackTrace();
-            return new TreeMap<>();
-        }
-    }
 
     public Map<Integer, JsonTreeNode> getSelectedTree(String ruleId) {
         List<SelectedTreeEntity> selectedTreeEntities;
         try {
+            WidgetSettingsDao dao = new WidgetSettingsDao();
             if (ruleId != null) {
                 selectedTreeEntities = dao.getSelectedTree(Integer.parseInt(ruleId));
             } else {
@@ -201,24 +148,5 @@ public class UserData {
         return selectedTreeEntities.stream()
                 .collect(Collectors.toMap(SelectedTreeEntity::getId, v -> new JsonTreeNode(v.getId(), v.getTitle(), v.getParentId(), v.isSelected(), null)));
     }
-
-    public List<String> getChannels() {
-        try {
-            return dao.getChannels(companyId);
-        } catch (SQLException e) {
-            //TODO
-            e.printStackTrace();
-            return new ArrayList<>();
-        }
-    }
-
-    public Map<String, String> getSources() {
-        try {
-            return dao.getSources(companyId);
-        } catch (SQLException e) {
-            //TODO
-            e.printStackTrace();
-            return new TreeMap<>();
-        }
-    }
+*/
 }

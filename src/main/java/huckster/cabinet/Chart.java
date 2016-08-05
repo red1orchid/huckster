@@ -1,7 +1,6 @@
 package huckster.cabinet;
 
 import com.google.gson.Gson;
-import huckster.cabinet.DataException;
 import huckster.cabinet.model.ChartData;
 import huckster.cabinet.repository.UserData;
 
@@ -16,7 +15,7 @@ public class Chart {
     private String icon;
     private Type type;
 
-    public Chart(UserData userData, Type type) throws SQLException {
+    public Chart(UserData userData, Type type, ChartData chartData) throws SQLException {
         String period = userData.getPeriod();
         String currency = userData.getCurrency();
         switch (period) {
@@ -32,12 +31,7 @@ public class Chart {
         }
         icon = "glyphicon glyphicon-stats";
         this.type = type;
-
-        try {
-            data = userData.getChartData(type, period);
-        } catch (SQLException | DataException e) {
-            e.printStackTrace();
-        }
+        data = chartData;
     }
 
     public String getData() {

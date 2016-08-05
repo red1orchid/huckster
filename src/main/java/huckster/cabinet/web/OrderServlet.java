@@ -1,7 +1,7 @@
 package huckster.cabinet.web;
 
-import huckster.cabinet.repository.DbDao;
 import huckster.cabinet.Util;
+import huckster.cabinet.repository.OrdersDao;
 import huckster.cabinet.repository.UserData;
 
 import javax.servlet.ServletException;
@@ -9,30 +9,26 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
-
-import static huckster.cabinet.Util.*;
+import java.util.List;
 
 /**
  * Created by PerevalovaMA on 17.05.2016.
  */
 @WebServlet("/orders")
 public class OrderServlet extends UserServlet {
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private OrdersDao dao = new OrdersDao();
+
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException {
-        LocalDate startDate = (LocalDate) req.getSession().getAttribute("startDate");
-        LocalDate endDate = (LocalDate) req.getSession().getAttribute("endDate");
-        if (startDate == null) {
-            startDate = DEFAULT_START_DATE;
-        }
-        if (endDate == null) {
-            endDate = DEFAULT_END_DATE;
-        }
-
-        req.setAttribute("startDate", startDate.format(FORMATTER));
-        req.setAttribute("endDate", endDate.format(FORMATTER));
+        req.setAttribute("startDate", userData.getStartDate().format(FORMATTER));
+        req.setAttribute("endDate", userData.getEndDate().format(FORMATTER));
         req.setAttribute("statuses", getOrderStatuses());
 
         Util.timeStone("orders start forward");
@@ -40,19 +36,10 @@ public class OrderServlet extends UserServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void initDataPost(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
-        if (req.getParameter("orderId") != null) {
-            DbDao dao = new DbDao();
-            try {
-                dao.updateOrder(Integer.parseInt(req.getParameter("orderId")), Integer.parseInt(req.getParameter("status")), req.getParameter("comment"));
-            } catch (SQLException e) {
-                e.printStackTrace();
-                req.setAttribute("error", "Сохранение невозможно в данный момент. Попробуйте еще раз позднее");
-                //TODO: something!  initDataGet(req, resp);
-            }
-            //   System.out.println(req.getParameter("comment"));
-        } else {
+        if (req.getParameter("orderId") == null) {
+            //Get list of orders from startDate to endDate
             String startDateStr = req.getParameter("startDate");
             String endDateStr = req.getParameter("endDate");
             LocalDate startDate;
@@ -70,8 +57,18 @@ public class OrderServlet extends UserServlet {
                 endDate = LocalDate.parse(endDateStr, FORMATTER);
             }
 
-            req.getSession().setAttribute("startDate", startDate);
-            req.getSession().setAttribute("endDate", endDate);
+            userData.setStartDate(startDate);
+            userData.setEndDate(endDate);
+        } else {
+            // Update order
+            try {
+                dao.updateOrder(Integer.parseInt(req.getParameter("orderId")), Integer.parseInt(req.getParameter("status")), req.getParameter("comment"));
+            } catch (SQLException e) {
+                Util.logError("Failed to update order №" + req.getParameter("orderId"), e, userData);
+                req.setAttribute("error", "Сохранение невозможно в данный момент. Попробуйте еще раз позднее");
+                //TODO: something!  initDataGet(req, resp);
+            }
+            //   System.out.println(req.getParameter("comment"));
         }
         resp.sendRedirect("/orders");
     }
