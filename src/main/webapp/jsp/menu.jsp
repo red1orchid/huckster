@@ -11,7 +11,7 @@
         <li><a href="/orders"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Работа с заказами</a></li>
         <li><a href="/widget_settings"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Настройки виджета</a></li>
         <li><a href="/statistic"><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Статистика и аналитика</a></li>
-        <li><a href="#"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Общие настройки</a></li>
+        <li><a href="/settings"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Общие настройки</a></li>
         <%--        <c:forEach var="menuItem" items="${menu}">
                     <li><a href="${menuItem.getLink()}"><span class="${menuItem.getIcon()}"
                                                               aria-hidden="true"></span> ${menuItem.getName()}</a></li>
