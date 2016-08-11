@@ -1,14 +1,18 @@
 package huckster.cabinet.repository;
 
+import huckster.cabinet.model.OrderEntity;
+
 import java.sql.Date;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by PerevalovaMA on 04.08.2016.
  */
 public class OrdersDao extends DbDao {
-    public List<List> getOrders(int companyId, Date startDate, Date endDate) throws SQLException {
+    public List<OrderEntity> getOrders(int companyId, Date startDate, Date endDate) throws SQLException {
+        List<OrderEntity> orders = new ArrayList<>();
         String sql = "SELECT h.remote_id as order_id," +
                 "            h.rule_id," +
                 "            t.offer_id," +
@@ -19,9 +23,9 @@ public class OrdersDao extends DbDao {
                 "            t.discount," +
                 "            h.phone," +
                 "            h.city," +
-                "            to_char(h.ctime, 'DD.MM.YYYY HH24:MI')," +
+                "            to_char(h.ctime, 'DD.MM.YYYY HH24:MI') as ctime," +
                 "            h.phrase," +
-                "            decode(h.processing_status, 0, 'принят', 1, 'в работе', 2, 'обработан', 3, 'выкуплен', 4, 'отложен', 5, 'отменен') as processing_status," +
+                "            decode(h.processing_status, 0, 'принят', 1, 'в работе', 2, 'обработан', 3, 'выкуплен', 4, 'отложен', 5, 'отменен') as status_title," +
                 "            h.processing_comment," +
                 "            h.processing_status" +
                 "       FROM analitic.orders_header h" +
@@ -33,7 +37,14 @@ public class OrdersDao extends DbDao {
                 "      WHERE h.company_id = ?" +
                 "        AND trunc(h.ctime) BETWEEN ? AND ?";
 
-        return makeTable(sql, 500, 15, companyId, startDate, endDate);
+        execute(sql, 500, (rs) -> {
+            orders.add(new OrderEntity(rs.getInt("order_id"), rs.getInt("rule_id"), rs.getString("offer_id"), rs.getString("vendor_code"), rs.getString("model"),
+                    rs.getDouble("base_price"), rs.getDouble("end_price"), rs.getInt("discount"), rs.getString("phone"), rs.getString("city"), rs.getString("ctime"),
+                    rs.getString("phrase"), rs.getInt("processing_status"), rs.getString("status_title"), rs.getString("processing_comment")));
+        }, companyId, startDate, endDate);
+
+        return orders;
+          //  return makeTable(sql, 500, 15, companyId, startDate, endDate);
     }
 
     public void updateOrder(int orderId, int status, String comment) throws SQLException {

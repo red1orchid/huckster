@@ -55,5 +55,39 @@
             </div>
         </div>
     </div>
+</div>
 </body>
+
+<script type="text/javascript">
+    var language = {
+        "lengthMenu": "Показать _MENU_ записей",
+        "zeroRecords": "По Вашему запросу ничего не найдено",
+        "search": "Поиск:",
+        "info": "Показаны _START_-_END_ из _TOTAL_ записей",
+        "infoEmpty": "Нет записей",
+        "infoFiltered": "(всего _MAX_)",
+        "loadingRecords": "Загрузка...",
+        "paginate": {
+            "first": "1",
+            "last": "_PAGES_",
+            "next": ">>",
+            "previous": "<<"
+        }
+    };
+
+    $(document).ready(function () {
+        //select last tab or first tab by default
+        // for bootstrap 3 use 'shown.bs.tab', for bootstrap 2 use 'shown' in the next line
+        $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+            localStorage.setItem('sActiveTab', $(e.target).attr('href'));
+        });
+        var activeTab = localStorage.getItem('sActiveTab');
+        if (activeTab) {
+            console.log(activeTab);
+            $('a[href="' + activeTab + '"]').tab('show');
+        } else {
+            $('.nav-tabs a:first').tab('show');
+        }
+    });
+</script>
 </html>

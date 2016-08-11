@@ -35,9 +35,9 @@ public class DbDao {
     }
 
     protected <T> Optional<T> selectValue(String sql,
-                                        Integer fetchSize,
-                                        ResultSetSelectProcessor<T> processor,
-                                        Object... params) throws SQLException {
+                                          Integer fetchSize,
+                                          ResultSetSelectProcessor<T> processor,
+                                          Object... params) throws SQLException {
         T value = null;
         try (Connection dbConnection = pool.getConnection();
              PreparedStatement ps = dbConnection.prepareStatement(sql)) {
@@ -59,9 +59,9 @@ public class DbDao {
     }
 
     protected void execute(String sql,
-                         Integer fetchSize,
-                         ResultSetExecuteProcessor processor,
-                         Object... params) throws SQLException {
+                           Integer fetchSize,
+                           ResultSetExecuteProcessor processor,
+                           Object... params) throws SQLException {
         try (Connection dbConnection = pool.getConnection();
              PreparedStatement ps = dbConnection.prepareStatement(sql)) {
             int cnt = 0;

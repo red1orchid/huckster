@@ -1,5 +1,7 @@
 package huckster.cabinet.repository;
 
+import huckster.cabinet.model.DiscountEntity;
+import huckster.cabinet.model.ListEntity;
 import huckster.cabinet.model.RuleEntity;
 import huckster.cabinet.model.SelectedTreeEntity;
 
@@ -113,40 +115,6 @@ public class WidgetSettingsDao extends DbDao {
         return makeTable(sql, null, 5, companyId);
     }*/
 
-
-    public Map<Integer, String> getVendorsCategories(int companyId) throws SQLException {
-        String sql = "SELECT id || ' - ' || REPLACE(NVL(utm_medium, 'все каналы'), 'all', 'все каналы') || ', ' ||" +
-                "                           REPLACE(NVL(utm_source, 'все источники'), 'all', 'все источники') AS display_value," +
-                "            id AS return_value" +
-                "       FROM analitic.clients_rules" +
-                "      WHERE company_id = ?" +
-                "      ORDER BY ID DESC";
-
-        Map<Integer, String> rules = new LinkedHashMap<>();
-        execute(sql, 500, (rs) -> rules.put(rs.getInt("return_value"), rs.getString("display_value")), companyId);
-        return rules;
-    }
-
-    public List<List> getVendorsRules(int companyId, int ruleId) throws SQLException {
-        String sql = "SELECT id," +
-                "            NVL((SELECT category_id || ' - ' || NAME" +
-                "                   FROM analitic.yml_categories c" +
-                "                  WHERE c.category_id = NVL(t.category_id, 0)" +
-                "                    AND c.company_id = t.company_id" +
-                "                    AND rownum = 1), '*все категории*') AS category," +
-                "            NVL(vendor, '*все вендоры*') AS vendor," +
-                "            step1," +
-                "            step2," +
-                "            min_price," +
-                "            max_price" +
-                "       FROM analitic.clients_discounts t" +
-                "      WHERE company_id = ?" +
-                "        AND rule_id = ?" +
-                "      ORDER BY 2 DESC, 3 DESC";
-
-        return makeTable(sql, 100, 7, companyId, ruleId);
-    }
-
     public void updateRules(Integer ruleId, int companyId, String cities, String channels, String sources, String devices, String days, String startHour, String endHour) throws SQLException {
         String sql = "MERGE INTO analitic.clients_rules r" +
                 "     USING (SELECT ? AS id," +
@@ -191,5 +159,82 @@ public class WidgetSettingsDao extends DbDao {
                 "           d.end_hour)";
         //TODO: hours: 00 and 0
         executeUpdate(sql, ruleId, companyId, cities, channels, sources, days, devices, startHour, endHour);
+    }
+
+    public Map<Integer, String> getSegments(int companyId) throws SQLException {
+        String sql = "SELECT id || ' - ' || REPLACE(NVL(utm_medium, 'все каналы'), 'all', 'все каналы') || ', ' ||" +
+                "                           REPLACE(NVL(utm_source, 'все источники'), 'all', 'все источники') AS display_value," +
+                "            id AS return_value" +
+                "       FROM analitic.clients_rules" +
+                "      WHERE company_id = ?" +
+                "      ORDER BY ID DESC";
+
+        Map<Integer, String> rules = new LinkedHashMap<>();
+        execute(sql, 500, (rs) -> rules.put(rs.getInt("return_value"), rs.getString("display_value")), companyId);
+        return rules;
+    }
+
+    public List<DiscountEntity> getVendorsDiscounts(int companyId, int ruleId) throws SQLException {
+        List<DiscountEntity> discounts = new ArrayList<>();
+        String sql = "SELECT id," +
+                "            NVL((SELECT category_id || ' - ' || NAME" +
+                "                   FROM analitic.yml_categories c" +
+                "                  WHERE c.category_id = NVL(t.category_id, 0)" +
+                "                    AND c.company_id = t.company_id" +
+                "                    AND rownum = 1), '*все категории*') AS category," +
+                "            NVL(vendor, '*все вендоры*') AS vendor," +
+                "            step1," +
+                "            step2," +
+                "            min_price," +
+                "            max_price" +
+                "       FROM analitic.clients_discounts t" +
+                "      WHERE company_id = ?" +
+                "        AND rule_id = ?" +
+                "      ORDER BY 2 DESC, 3 DESC";
+
+        execute(sql, 100, (rs) -> {
+            discounts.add(new DiscountEntity(rs.getInt("id"), rs.getString("category"), rs.getString("vendor"), rs.getInt("min_price"), rs.getInt("max_price"),
+                    rs.getInt("step1"), rs.getInt("step2")));
+        }, companyId, ruleId);
+
+        return discounts;
+      //  return makeTable(sql, 100, 7, companyId, ruleId);
+    }
+
+    public List<ListEntity<Integer, String>> getCategories(int companyId) throws SQLException {
+        List<ListEntity<Integer, String>> list = new ArrayList<>();
+        String sql = "SELECT c.category_id || ' - ' || c.name AS display_value, " +
+                "            c.category_id AS return_value" +
+                "       FROM analitic.yml_categories c" +
+                "      WHERE c.company_id = ?" +
+                "        AND c.name IS NOT NULL" +
+                "        AND rownum < 500" +
+                "      ORDER BY c.name";
+
+        execute(sql, 500, (rs) -> list.add(new ListEntity<Integer, String>(rs.getInt("return_value"), rs.getString("display_value"))), companyId);
+        return list;
+    }
+
+    public List<String> getVendors(int companyId) throws SQLException {
+        List<String> list = new ArrayList<>();
+        String sql = "SELECT DISTINCT v.vendor" +
+                "       FROM analitic.yml_vendors v" +
+                "      WHERE v.company_id = ?" +
+                "      ORDER BY 1";
+
+        execute(sql, 500, (rs) -> list.add(rs.getString("vendor")), companyId);
+        return list;
+    }
+
+    public List<String> getVendors(int companyId, int categoryId) throws SQLException {
+        List<String> list = new ArrayList<>();
+        String sql = "SELECT DISTINCT v.vendor" +
+                "       FROM analitic.yml_vendors v" +
+                "      WHERE v.company_id = ?" +
+                "        AND v.category_id = ?" +
+                "      ORDER BY 1";
+
+        execute(sql, 500, (rs) -> list.add(rs.getString("vendor")), companyId, categoryId);
+        return list;
     }
 }

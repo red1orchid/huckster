@@ -30,7 +30,7 @@ public class WidgetSettingsServlet extends UserServlet {
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
         req.setAttribute("rules", getRules(userData));
         req.setAttribute("devices", dao.getDevices());
-        req.setAttribute("vendors", getVendorsCategories(userData));
+        req.setAttribute("segments", getSegments(userData));
 /*        req.setAttribute("channels", userData.getChannels());
         Util.timeStone("stat: get channels");
         req.setAttribute("sources", userData.getSources());
@@ -76,13 +76,12 @@ public class WidgetSettingsServlet extends UserServlet {
         }
     }
 
-    private Map<Integer, String> getVendorsCategories(UserData userData) throws SQLException {
+    private Map<Integer, String> getSegments(UserData userData) throws SQLException {
         try {
-            WidgetSettingsDao dao = new WidgetSettingsDao();
-            return dao.getVendorsCategories(userData.getCompanyId());
+            return dao.getSegments(userData.getCompanyId());
         } catch (SQLException e) {
             //TODO: fatal?
-            Util.logError("Failed to load vendor categories", e, userData);
+            Util.logError("Failed to load segments", e, userData);
             return new LinkedHashMap<>();
         }
     }

@@ -10,15 +10,15 @@
 <html>
 <head>
     <title>Работа с заказами</title>
+    <link href="../DataTables/datatables.min.css" rel="stylesheet">
+    <link href="../css/table.css" rel="stylesheet">
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/dashboard.css" rel="stylesheet">
-    <link href="../css/table.css" rel="stylesheet">
     <link href="../css/datepicker.css" rel="stylesheet">
-    <link href="../DataTables/datatables.min.css" rel="stylesheet">
 
     <script src="../js/jquery-2.2.4.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
     <script src="../DataTables/datatables.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
     <script src="../js/bootstrap-datepicker.js"></script>
 </head>
 <body>
@@ -96,29 +96,6 @@
                 </form>
 
                 <table id="orders" class="table table-hover table-bordered" cellspacing="0" width="100%">
-                    <thead>
-                    <tr>
-                        <th></th>
-                        <th>заказ</th>
-                        <th>правило</th>
-                        <th>артикул</th>
-                        <th>код вендора</th>
-                        <th>модель</th>
-                        <th>цена базовая</th>
-                        <th>цена итоговая</th>
-                        <th>скидка</th>
-                        <th>телефон</th>
-                        <th>город</th>
-                        <th>создан</th>
-                        <th>фраза</th>
-                        <th>статус</th>
-                        <th>коммент</th>
-                    </tr>
-                    </thead>
-                    <tfoot>
-                    </tfoot>
-                    <tbody>
-                    </tbody>
                 </table>
             </div>
         </div>
@@ -155,8 +132,31 @@
                 data: {
                     "type": "orders"
                 }
-            }
+            },
+            columns: [
+                {
+                    //TODO: status, comment?
+                    data: 'id', "render": function (data) {
+                    return '<a data-id="' + data + '" data-status="" data-comment="" data-toggle="modal" href="#editOrder"><span class="glyphicon glyphicon-pencil"></a>';
+                }
+                },
+                {data: 'id', title: 'заказ', defaultContent: ''},
+                {data: 'ruleId', title: 'правило', defaultContent: ''},
+                {data: 'articul', title: 'артикул', defaultContent: ''},
+                {data: 'vendorCode', title: 'код вендора', defaultContent: ''},
+                {data: 'model', title: 'модель', defaultContent: ''},
+                {data: 'basePrice', title: 'цена базовая', defaultContent: ''},
+                {data: 'resultPrice', title: 'цена итоговая', defaultContent: ''},
+                {data: 'discount', title: 'скидка', defaultContent: ''},
+                {data: 'phone', title: 'телефон', defaultContent: ''},
+                {data: 'city', title: 'город', defaultContent: ''},
+                {data: 'creationDate', title: 'создан', defaultContent: ''},
+                {data: 'phrase', title: 'фраза', defaultContent: ''},
+                {data: 'statusTitle', title: 'статус', defaultContent: ''},
+                {data: 'comment', title: 'комментарий', defaultContent: ''}
+            ]
         });
+
 
         var checkin = $('#startdate').datepicker().on('changeDate', function (ev) {
             if (ev.date.valueOf() > checkout.date.valueOf()) {
