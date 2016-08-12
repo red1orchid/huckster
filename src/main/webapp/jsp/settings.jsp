@@ -32,7 +32,33 @@
             </ul>
 
             <div class="tab-content">
-                <div id="settings" class="tab-pane fade"></div>
+                <div id="settings" class="tab-pane fade">
+                    <div role="form">
+                        <div class="form-group col-xs-6">
+                            <br>
+                            <label for="yml">Ссылка на выгрузку с товарами (YML)</label>
+                            <input id="yml" type="text" class="form-control" value="${settings.yml}">
+                            <br>
+                            <label for="orderEmails">Email для рассылки заказов (возможно несколько адресов через точку с запятой)</label>
+                            <input id="orderEmails" type="text" class="form-control" value="${settings.orderEmails}">
+                            <br>
+                            <label for="contactEmails">Email для контактов и уведомлений (возможно несколько адресов через точку с запятой)</label>
+                            <input id="contactEmails" type="text" class="form-control" value="${settings.contactEmails}">
+                            <br>
+                            <label for="yandexKey">Ключ Яндекс.Метрика</label>
+                            <input id="yandexKey" type="text" class="form-control" value="${settings.yandexKey}">
+                            <br>
+                            <label for="isEnabled">Виджет, состояние</label>
+                            <select id="isEnabled" class="selectpicker form-control">
+                                <option value="1">Включен</option>
+                                <option value="0">Выключен</option>
+                            </select>
+                            <br>
+                            <button id="saveSettings" type="submit" class="btn btn-primary">Сохранить
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <div id="pages" class="tab-pane fade"></div>
                 <div id="password" class="tab-pane fade"></div>
                 <div id="setup" class="tab-pane fade">
