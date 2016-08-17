@@ -1,8 +1,8 @@
 package huckster.cabinet.repository;
 
-import huckster.cabinet.Util;
 import huckster.cabinet.model.ChartData;
 import huckster.cabinet.model.CompanyEntity;
+import huckster.cabinet.model.ListEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +10,9 @@ import javax.servlet.ServletException;
 import javax.ws.rs.NotFoundException;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +28,9 @@ public class UserData {
     private Map<Integer, String> rateContainer = new HashMap<>();
     private Map<Integer, String> percentContainer = new HashMap<>();
     private Map<Integer, ChartData> chartContainer = new HashMap<>();
+    private Map<Integer, List<String>> vendorCatContainer = new HashMap<>();
+    private List<String> vendorContainer = new ArrayList<>();
+    private List<ListEntity<Integer, String>> categoryContainer = new ArrayList<>();
     private static final Logger LOG = LoggerFactory.getLogger(UserData.class);
     private CompanyInfoDao dao = new CompanyInfoDao();
 
@@ -91,6 +96,12 @@ public class UserData {
         return endDate;
     }
 
+    public Map<Integer, List<String>> getVendorCatContainer() { return vendorCatContainer; }
+
+    public List<String> getVendorContainer() { return vendorContainer; }
+
+    public List<ListEntity<Integer, String>> getCategoryContainer() { return categoryContainer; }
+
     public void setPeriod(String period) {
         this.period = period;
     }
@@ -123,10 +134,25 @@ public class UserData {
         this.endDate = endDate;
     }
 
+    public void setVendorContainer(List<String> vendorContainer) {
+        this.vendorContainer = vendorContainer;
+    }
+
+    public void setVendorCatContainer(Map<Integer, List<String>> vendorCatContainer) {
+        this.vendorCatContainer = vendorCatContainer;
+    }
+
+    public void setCategoryContainer(List<ListEntity<Integer, String>> categoryContainer) {
+        this.categoryContainer = categoryContainer;
+    }
+
     public void clear() {
         rateContainer.clear();
         percentContainer.clear();
         chartContainer.clear();
+        vendorContainer.clear();
+        vendorCatContainer.clear();
+        categoryContainer.clear();
     }
 /*
 

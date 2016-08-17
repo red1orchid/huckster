@@ -135,11 +135,9 @@
             },
             columns: [
                 {
-                    //TODO: status, comment?
-                    data: 'id', "render": function (data) {
-                    return '<a data-id="' + data + '" data-status="" data-comment="" data-toggle="modal" href="#editOrder"><span class="glyphicon glyphicon-pencil"></a>';
-                }
-                },
+                    data: null, render: function (data, type, full, meta) {
+                    return '<a data-id="' + full.id + '" data-status="' + full.status + '" data-comment="' + full.comment + '" data-toggle="modal" href="#editOrder"><span class="glyphicon glyphicon-pencil"></a>';
+                }},
                 {data: 'id', title: 'заказ', defaultContent: ''},
                 {data: 'ruleId', title: 'правило', defaultContent: ''},
                 {data: 'articul', title: 'артикул', defaultContent: ''},

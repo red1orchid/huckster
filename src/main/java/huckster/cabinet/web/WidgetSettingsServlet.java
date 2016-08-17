@@ -28,15 +28,10 @@ public class WidgetSettingsServlet extends UserServlet {
 
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
+        userData.clear();
         req.setAttribute("rules", getRules(userData));
         req.setAttribute("devices", dao.getDevices());
         req.setAttribute("segments", getSegments(userData));
-/*        req.setAttribute("channels", userData.getChannels());
-        Util.timeStone("stat: get channels");
-        req.setAttribute("sources", userData.getSources());
-        Util.timeStone("stat: get sources");
-        req.setAttribute("channel", "cpa:referral");
-        Util.timeStone("stat: get data");*/
         req.getRequestDispatcher("/jsp/widget_settings.jsp").forward(req, resp);
     }
 

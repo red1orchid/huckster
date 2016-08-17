@@ -1,5 +1,6 @@
 package huckster.cabinet.web;
 
+import huckster.cabinet.Util;
 import huckster.cabinet.repository.UserData;
 
 import javax.servlet.ServletException;
@@ -33,8 +34,8 @@ abstract class UserServlet extends HttpServlet {
             try {
                 req.setAttribute("company", userData.getCompanyName());
                 initDataPost(req, resp, userData);
-            } catch (SQLException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                Util.logError("Error while loading a servlet" + this.getClass(), userData);
                 req.getRequestDispatcher("/jsp/error.jsp").forward(req, resp);
             }
         }

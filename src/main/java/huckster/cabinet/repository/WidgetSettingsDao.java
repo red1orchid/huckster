@@ -177,6 +177,7 @@ public class WidgetSettingsDao extends DbDao {
     public List<DiscountEntity> getVendorsDiscounts(int companyId, int ruleId) throws SQLException {
         List<DiscountEntity> discounts = new ArrayList<>();
         String sql = "SELECT id," +
+                "            category_id," +
                 "            NVL((SELECT category_id || ' - ' || NAME" +
                 "                   FROM analitic.yml_categories c" +
                 "                  WHERE c.category_id = NVL(t.category_id, 0)" +
@@ -190,16 +191,33 @@ public class WidgetSettingsDao extends DbDao {
                 "       FROM analitic.clients_discounts t" +
                 "      WHERE company_id = ?" +
                 "        AND rule_id = ?" +
-                "      ORDER BY 2 DESC, 3 DESC";
+                "      ORDER BY category DESC, vendor DESC";
 
         execute(sql, 100, (rs) -> {
-            discounts.add(new DiscountEntity(rs.getInt("id"), rs.getString("category"), rs.getString("vendor"), rs.getInt("min_price"), rs.getInt("max_price"),
+            discounts.add(new DiscountEntity(rs.getInt("id"), rs.getInt("category_id"), rs.getString("category"), rs.getString("vendor"), rs.getInt("min_price"), rs.getInt("max_price"),
                     rs.getInt("step1"), rs.getInt("step2")));
         }, companyId, ruleId);
 
         return discounts;
-      //  return makeTable(sql, 100, 7, companyId, ruleId);
+        //  return makeTable(sql, 100, 7, companyId, ruleId);
     }
+
+/*    public Optional<DiscountEntity> getVendorsDiscount(int discountId) throws SQLException {
+        String sql = "SELECT id," +
+                "            category_id AS category," +
+                "            vendor," +
+                "            step1," +
+                "            step2," +
+                "            min_price," +
+                "            max_price" +
+                "       FROM analitic.clients_discounts t" +
+                "      WHERE id = ?";
+
+        return selectValue(sql, 100, (rs) ->
+                        new DiscountEntity(discountId, rs.getString("category"), rs.getString("vendor"), rs.getInt("min_price"), rs.getInt("max_price"),
+                                rs.getInt("step1"), rs.getInt("step2"))
+                , discountId);
+    }*/
 
     public List<ListEntity<Integer, String>> getCategories(int companyId) throws SQLException {
         List<ListEntity<Integer, String>> list = new ArrayList<>();
@@ -215,18 +233,37 @@ public class WidgetSettingsDao extends DbDao {
         return list;
     }
 
+    public Map<Integer, List<String>> getVendorsByCategory(int companyId) throws SQLException {
+        Map<Integer, List<String>> map = new HashMap<>();
+        String sql = "SELECT v.vendor, v.category_id" +
+                "       FROM analitic.yml_vendors v" +
+                "      WHERE v.company_id = ?" +
+                "        AND v.vendor IS NOT NULL" +
+                "      ORDER BY 1";
+
+        execute(sql, 1000, (rs) -> {
+            map.putIfAbsent(rs.getInt("category_id"), new ArrayList<>());
+            map.get(rs.getInt("category_id")).add(rs.getString("vendor"));
+        }, companyId);
+        return map;
+    }
+
     public List<String> getVendors(int companyId) throws SQLException {
-        List<String> list = new ArrayList<>();
+        List<String> vendors = new ArrayList<>();
         String sql = "SELECT DISTINCT v.vendor" +
                 "       FROM analitic.yml_vendors v" +
                 "      WHERE v.company_id = ?" +
+                "        AND v.vendor IS NOT NULL" +
                 "      ORDER BY 1";
 
-        execute(sql, 500, (rs) -> list.add(rs.getString("vendor")), companyId);
-        return list;
+        execute(sql, 500, (rs) -> {
+            vendors.add(rs.getString("vendor"));
+        }, companyId);
+
+        return vendors;
     }
 
-    public List<String> getVendors(int companyId, int categoryId) throws SQLException {
+/*    public List<String> getVendors(int companyId, int categoryId) throws SQLException {
         List<String> list = new ArrayList<>();
         String sql = "SELECT DISTINCT v.vendor" +
                 "       FROM analitic.yml_vendors v" +
@@ -236,5 +273,5 @@ public class WidgetSettingsDao extends DbDao {
 
         execute(sql, 500, (rs) -> list.add(rs.getString("vendor")), companyId, categoryId);
         return list;
-    }
+    }*/
 }

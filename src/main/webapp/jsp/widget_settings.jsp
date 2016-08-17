@@ -243,7 +243,7 @@
                                         <div class="form-group">
                                             <label for="catSelect">Категория</label>
                                             <select id="catSelect" class="selectpicker form-control"
-                                                    data-live-search="true">
+                                                    title="<Все категории>" data-live-search="true">
                                             </select>
                                             <label for="vendorSelect">Вендоры</label>
                                             <select id="vendorSelect" class="selectpicker form-control"
@@ -310,15 +310,17 @@
         ajax: {
             url: "/ajax",
             type: "POST",
-            data: {
-                "type": "vendor_discounts",
-                "id": $('#segmentSelect').selectpicker('val')
+            data: function (d) {
+                d.type = "vendor_discounts";
+                d.ruleId = $('#segmentSelect').selectpicker('val')
             }
         },
         columns: [
             {
-                data: 'id', "render": function (data) {
-                return '<a data-id="' + data + '" data-toggle="modal" href="#editVendorDiscount"><span class="glyphicon glyphicon-pencil"></a>';
+                data: 'id', render: function (data, type, full, meta) {
+                return '<a data-id="' + full.id + '" data-category="' + full.categoryId + '" data-vendor="' + full.vendor + '" data-minprice="' + full.minPrice +
+                        '" data-maxprice="' + full.maxPrice + '" data-discount1="' + full.discount1 + '" data-discount2="' + full.discount2 +
+                        '" data-toggle="modal" href="#editVendorDiscount"><span class="glyphicon glyphicon-pencil"></a>';
             }
             },
             {data: 'category', title: 'категория', defaultContent: ''},
@@ -502,52 +504,78 @@
 
     //Step 2
     $('#segmentSelect').on('changed.bs.select', function (e) {
+        console.log($('#segmentSelect').selectpicker('val'));
         vendorDiscounts.ajax.reload();
     });
 
-    function fillCategories() {
+    function fillCategories(data) {
+        $('#catSelect').empty().append('<option value=""><Все категории></option>');
+        if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+                $('#catSelect').append('<option value="' + data[i].key + '">' + data[i].value + '</option>');
+            }
+        }
+        $('#catSelect').selectpicker('refresh');
+    }
+
+    function fillVendors(data) {
+        $('#vendorSelect').empty();
+        if (data != null) {
+            for (var i = 0; i < data.length; i++) {
+                $('#vendorSelect').append('<option>' + data[i] + '</option>');
+            }
+        }
+        $('#vendorSelect').selectpicker('refresh');
+    }
+
+    $('#editVendorDiscount').on('show.bs.modal', function (e) {
+        $('#priceFrom').val($(e.relatedTarget).data('minprice'));
+        $('#priceTo').val($(e.relatedTarget).data('maxprice'));
+        $('#discount1').val($(e.relatedTarget).data('discount1'));
+        $('#discount2').val($(e.relatedTarget).data('discount2'));
+
+        var categoryId = $(e.relatedTarget).data('category');
+        if (categoryId == null) {
+            categoryId = undefined;
+        }
         $.ajax({
             url: "/ajax",
             type: "POST",
             data: {
-                "type": "categories"
+                "type": "vendor_categories",
+                "categoryId": categoryId
             },
             success: function (data) {
-                $('#catSelect').empty();
-                $('#catSelect').append('<option value=""><Все категории></option>');
-                for (var i = 0; i < data.length; i++) {
-                    $('#catSelect').append('<option value="' + data[i].key + '">' + data[i].value + '</option>');
+                fillCategories(data.categories);
+                $('#catSelect').selectpicker('val', $(e.relatedTarget).data('category'));
+                fillVendors(data.vendors);
+                if ($(e.relatedTarget).data('vendor') != null) {
+                    $('#vendorSelect').selectpicker('val', $(e.relatedTarget).data('vendor').split(":"));
                 }
-                $('#catSelect').selectpicker('refresh');
             }
         });
-    }
+    }).on('hidden.bs.modal', function () {
+        $('#catSelect').empty().selectpicker('refresh');
+        $('#vendorSelect').empty().selectpicker('refresh');
+        $('#priceFrom').val('');
+        $('#priceTo').val('');
+        $('#discount1').val('');
+        $('#discount2').val('');
+    });
 
-    function fillVendors(categoryId) {
+    $('#catSelect').on('changed.bs.select', function (e) {
         $.ajax({
             url: "/ajax",
             type: "POST",
             data: {
                 "type": "vendors",
-                "categoryId": categoryId
+                "categoryId": $('#catSelect').selectpicker('val')
             },
             success: function (data) {
-                $('#vendorSelect').empty();
-                for (var i = 0; i < data.length; i++) {
-                    $('#vendorSelect').append('<option>' + data[i] + '</option>');
-                }
-                $('#vendorSelect').selectpicker('refresh');
+                fillVendors(data);
             }
         });
-    }
-
-    $('#editVendorDiscount').on('show.bs.modal', function (e) {
-        fillCategories();
-        fillVendors(null);
-    });
-
-    $('#catSelect').on('changed.bs.select', function (e) {
-        fillVendors($('#catSelect').selectpicker('val'));
+        // fillVendors($('#catSelect').selectpicker('val'));
     });
 
 </script>

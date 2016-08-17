@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: Marina
@@ -39,19 +40,22 @@
                             <label for="yml">Ссылка на выгрузку с товарами (YML)</label>
                             <input id="yml" type="text" class="form-control" value="${settings.yml}">
                             <br>
-                            <label for="orderEmails">Email для рассылки заказов (возможно несколько адресов через точку с запятой)</label>
+                            <label for="orderEmails">Email для рассылки заказов (возможно несколько адресов через точку
+                                с запятой)</label>
                             <input id="orderEmails" type="text" class="form-control" value="${settings.orderEmails}">
                             <br>
-                            <label for="contactEmails">Email для контактов и уведомлений (возможно несколько адресов через точку с запятой)</label>
-                            <input id="contactEmails" type="text" class="form-control" value="${settings.contactEmails}">
+                            <label for="contactEmails">Email для контактов и уведомлений (возможно несколько адресов
+                                через точку с запятой)</label>
+                            <input id="contactEmails" type="text" class="form-control"
+                                   value="${settings.contactEmails}">
                             <br>
                             <label for="yandexKey">Ключ Яндекс.Метрика</label>
                             <input id="yandexKey" type="text" class="form-control" value="${settings.yandexKey}">
                             <br>
                             <label for="isEnabled">Виджет, состояние</label>
                             <select id="isEnabled" class="selectpicker form-control">
-                                <option value="1">Включен</option>
-                                <option value="0">Выключен</option>
+                                <option value="1" <c:if test="${settings.isActive == 1}">selected="selected"</c:if>>Включен</option>
+                                <option value="0" <c:if test="${settings.isActive == 0}">selected="selected"</c:if>>Выключен</option>
                             </select>
                             <br>
                             <button id="saveSettings" type="submit" class="btn btn-primary">Сохранить

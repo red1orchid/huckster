@@ -36,7 +36,7 @@ public class CompanySettingsEntity {
         return yandexKey;
     }
 
-    public int isActive() {
+    public int getIsActive() {
         return isActive;
     }
 }
