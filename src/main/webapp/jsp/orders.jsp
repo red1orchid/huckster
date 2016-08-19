@@ -127,16 +127,16 @@
                 }
             },
             ajax: {
-                url: "/ajax",
+                url: "/orders",
                 type: "POST",
                 data: {
-                    "type": "orders"
+                    "request" : "ajax"
                 }
             },
             columns: [
                 {
                     data: null, render: function (data, type, full, meta) {
-                    return '<a data-id="' + full.id + '" data-status="' + full.status + '" data-comment="' + full.comment + '" data-toggle="modal" href="#editOrder"><span class="glyphicon glyphicon-pencil"></a>';
+                    return '<a data-id="' + full.id + '" data-status="' + full.status + '" data-comment="' + full.comment + '" data-toggle="modal" href="#editOrder"><span class="glyphicon glyphicon-pencil"></span></a>';
                 }},
                 {data: 'id', title: 'заказ', defaultContent: ''},
                 {data: 'ruleId', title: 'правило', defaultContent: ''},

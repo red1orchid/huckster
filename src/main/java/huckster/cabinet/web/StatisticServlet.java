@@ -10,17 +10,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by PerevalovaMA on 23.05.2016.
  */
 @WebServlet("/statistic")
-public class StatisticServlet extends UserServlet {
+public class StatisticServlet extends UserServlet implements JsonOutput {
     private StatisticDao dao = new StatisticDao();
+    private Util util = new Util();
 
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException {
@@ -33,13 +31,17 @@ public class StatisticServlet extends UserServlet {
 
     @Override
     protected void initDataPost(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException {
-        if (req.getParameter("periodGoods") != null) {
-            userData.setPeriodGoods(req.getParameter("periodGoods"));
+        if ("ajax".equals(req.getParameter("request"))) {
+            writeJson(resp, getGoods(userData));
+        } else {
+            if (req.getParameter("periodGoods") != null) {
+                userData.setPeriodGoods(req.getParameter("periodGoods"));
+            }
+            if (req.getParameter("periodTraffic") != null) {
+                userData.setPeriodTraffic(req.getParameter("periodTraffic"));
+            }
+            resp.sendRedirect("/statistic");
         }
-        if (req.getParameter("periodTraffic") != null) {
-            userData.setPeriodTraffic(req.getParameter("periodTraffic"));
-        }
-        resp.sendRedirect("/statistic");
     }
 
     private List<List> getTraffic(UserData userData) {
@@ -52,7 +54,7 @@ public class StatisticServlet extends UserServlet {
         }
     }
 
-    public Map<String, String> getYml(UserData userData) {
+    private Map<String, String> getYml(UserData userData) {
         try {
             return dao.getYml(userData.getCompanyId());
         } catch (SQLException e) {
@@ -60,5 +62,17 @@ public class StatisticServlet extends UserServlet {
             Util.logError("Failed to load yml", userData);
             return new TreeMap<>();
         }
+    }
+
+    private String getGoods(UserData userData) {
+        List<List> data = new ArrayList<>();
+        try {
+            data = dao.getGoods(userData.getCompanyId(), userData.getPeriodGoods());
+        } catch (SQLException e) {
+            //TODO: some message?
+            Util.logError("Failed to load goods", e, userData);
+        }
+
+        return util.toJsonWithDataWrap(data);
     }
 }

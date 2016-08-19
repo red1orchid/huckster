@@ -277,7 +277,66 @@
                     </div>
                 </div>
                 <%--Step 3--%>
-                <div id="step3" class="tab-pane fade"></div>
+                <div id="step3" class="tab-pane fade">
+                    <br>
+                    Выберите сегмент, в котором вы хотите управлять индивидуальными скидками на товары (такие скидки
+                    приоритетнее скидок для категорий и вендоров)
+                    <br><br>
+                    <select id="segmentItemSelect" class="selectpicker form-control">
+                        <c:forEach var="segment" items="${segments}">
+                            <option value="${segment.key}">${segment.value}</option>
+                        </c:forEach>
+                    </select>
+                    <br><br>
+                    <a data-toggle="modal" href="#editItemDiscount" type="button" class="btn btn-success">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить скидку
+                    </a>
+                    <table id="itemDiscountsTbl" class="table table-hover table-bordered" cellspacing="0"
+                           width="100%">
+                    </table>
+                    <!-- Modal -->
+                    <div class="modal fade" id="editItemDiscount" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header" align="center">
+                                    <button type="button" class="close" data-dismiss="modal"
+                                            aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title">Скидки на отдельные товары</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div role="form">
+                                        <div class="form-group">
+                                            <label for="vendorItemSelect">Вендор</label>
+                                            <select id="vendorItemSelect" class="selectpicker form-control"
+                                                    title="<Все вендоры>" data-live-search="true">
+                                            </select>
+                                            <label for="itemSelect">Товар</label>
+                                            <select id="itemSelect" class="selectpicker form-control"
+                                                    title="...Выберите товар..."
+                                                    data-live-search="true">
+                                            </select>
+                                            <label for="discountItem1">Cкидка 1 уровня, %</label>
+                                            <input id="discountItem1" type="number" class="form-control">
+                                            <label for="discountItem2">Cкидка 2 уровня, %</label>
+                                            <input id="discountItem2" type="number" class="form-control">
+                                            <br>
+                                            <br>
+                                            <br>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
+                                    </button>
+                                    <button id="deleteItemDiscount" type="submit" class="btn btn-danger">Удалить
+                                    </button>
+                                    <button id="saveItemDiscount" type="submit" class="btn btn-primary">Сохранить
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -301,6 +360,7 @@
         }
     };
 
+    //Step 2
     var vendorDiscounts = $('#vendorDiscountsTbl').DataTable({
         colReorder: true,
         ordering: false,
@@ -320,7 +380,7 @@
                 data: 'id', render: function (data, type, full, meta) {
                 return '<a data-id="' + full.id + '" data-category="' + full.categoryId + '" data-vendor="' + full.vendor + '" data-minprice="' + full.minPrice +
                         '" data-maxprice="' + full.maxPrice + '" data-discount1="' + full.discount1 + '" data-discount2="' + full.discount2 +
-                        '" data-toggle="modal" href="#editVendorDiscount"><span class="glyphicon glyphicon-pencil"></a>';
+                        '" data-toggle="modal" href="#editVendorDiscount"><span class="glyphicon glyphicon-pencil"></span></a>';
             }
             },
             {data: 'category', title: 'категория', defaultContent: ''},
@@ -329,6 +389,38 @@
             {data: 'maxPrice', title: 'цена, до', defaultContent: ''},
             {data: 'discount1', title: 'скидка 1 шаг, %', defaultContent: ''},
             {data: 'discount2', title: 'скидка 2 шаг, %', defaultContent: ''}
+        ]
+    });
+
+    //Step 3
+    var itemDiscounts = $('#itemDiscountsTbl').DataTable({
+        colReorder: true,
+        ordering: false,
+        paging: false,
+        searching: false,
+        language: language,
+        ajax: {
+            url: "/ajax",
+            type: "POST",
+            data: function (d) {
+                d.type = "offer_discounts";
+                d.ruleId = $('#segmentItemSelect').selectpicker('val')
+            }
+        },
+        columns: [
+            {
+                data: 'id', render: function (data, type, full, meta) {
+                return '<a data-id="' + full.id + '" data-vendor="' + full.vendor + '" data-articul="' + full.articul +
+                        '" data-discount1="' + full.discount1 + '" data-discount2="' + full.discount2 +
+                        '" data-toggle="modal" href="#editItemDiscount"><span class="glyphicon glyphicon-pencil"></span></a>';
+            }
+            },
+            {data: 'articul', title: 'артикул', defaultContent: ''},
+            {data: 'vendor', title: 'вендор', defaultContent: ''},
+            {data: 'name', title: 'название', defaultContent: ''},
+            {data: 'discount1', title: 'скидка 1 шаг, %', defaultContent: ''},
+            {data: 'discount2', title: 'скидка 2 шаг, %', defaultContent: ''},
+            {data: 'url', title: 'адрес', defaultContent: ''}
         ]
     });
 
@@ -504,7 +596,6 @@
 
     //Step 2
     $('#segmentSelect').on('changed.bs.select', function (e) {
-        console.log($('#segmentSelect').selectpicker('val'));
         vendorDiscounts.ajax.reload();
     });
 
@@ -542,7 +633,7 @@
             url: "/ajax",
             type: "POST",
             data: {
-                "type": "vendor_categories",
+                "type": "step2_all",
                 "categoryId": categoryId
             },
             success: function (data) {
@@ -568,7 +659,7 @@
             url: "/ajax",
             type: "POST",
             data: {
-                "type": "vendors",
+                "type": "step2_vendors",
                 "categoryId": $('#catSelect').selectpicker('val')
             },
             success: function (data) {
@@ -577,6 +668,62 @@
         });
         // fillVendors($('#catSelect').selectpicker('val'));
     });
+
+    //Step 3
+    $('#segmentItemSelect').on('changed.bs.select', function (e) {
+        itemDiscounts.ajax.reload();
+    });
+
+    $('#editItemDiscount').on('show.bs.modal', function (e) {
+        $('#discountItem1').val($(e.relatedTarget).data('discount1'));
+        $('#discountItem2').val($(e.relatedTarget).data('discount2'));
+
+        $.ajax({
+            url: "/ajax",
+            type: "POST",
+            data: {
+                "type": "step3_vendors"
+            },
+            success: function (data) {
+                $('#vendorItemSelect').empty();
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#vendorItemSelect').append('<option>' + data[i] + '</option>');
+                    }
+                }
+                $('#vendorItemSelect').selectpicker('refresh');
+              //  $('#vendorItemSelect').val($(e.relatedTarget).data('vendor'));
+                $('#itemSelect').val($(e.relatedTarget).data('id'));
+            }
+        });
+    }).on('hidden.bs.modal', function () {
+        $('#vendorItemSelect').empty().selectpicker('refresh');
+        $('#itemSelect').empty().selectpicker('refresh');
+        $('#discountItem1').val('');
+        $('#discountItem2').val('');
+    });
+
+    $('#vendorItemSelect').on('changed.bs.select', function (e) {
+        $.ajax({
+            url: "/ajax",
+            type: "POST",
+            data: {
+                "type": "step3_offers",
+                "vendor": $('#vendorItemSelect').selectpicker('val')
+            },
+            success: function (data) {
+                $('#itemSelect').empty();
+                if (data != null) {
+                    for (var i = 0; i < data.length; i++) {
+                        $('#itemSelect').append('<option value="' + data[i].key + '">' + data[i].value + '</option>');
+                    }
+                }
+                $('#itemSelect').selectpicker('refresh');
+            }
+        });
+        // fillVendors($('#catSelect').selectpicker('val'));
+    });
+
 
 </script>
 </html>

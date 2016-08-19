@@ -12,9 +12,12 @@
     <title>Общие настройки</title>
     <link href="../css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/dashboard.css" rel="stylesheet">
+    <link href="../css/table.css" rel="stylesheet">
+    <link href="../css/bootstrap-switch.css" rel="stylesheet">
 
     <script src="../js/jquery-2.2.4.min.js"></script>
     <script src="../js/bootstrap.min.js"></script>
+    <script src="../js/bootstrap-switch.js"></script>
 </head>
 <body>
 <%--Top bar--%>
@@ -52,18 +55,93 @@
                             <label for="yandexKey">Ключ Яндекс.Метрика</label>
                             <input id="yandexKey" type="text" class="form-control" value="${settings.yandexKey}">
                             <br>
-                            <label for="isEnabled">Виджет, состояние</label>
-                            <select id="isEnabled" class="selectpicker form-control">
-                                <option value="1" <c:if test="${settings.isActive == 1}">selected="selected"</c:if>>Включен</option>
-                                <option value="0" <c:if test="${settings.isActive == 0}">selected="selected"</c:if>>Выключен</option>
-                            </select>
-                            <br>
-                            <button id="saveSettings" type="submit" class="btn btn-primary">Сохранить
+                            <label for="isEnabled">Виджет, состояние</label><br>
+                            <input id="isEnabled" type="checkbox" class="toggle form-control" data-on-text="Включен"
+                                   data-off-text="Выключен" <c:if test="${settings.isActive == 1}">checked</c:if>>
+                            <%--                            <select id="isEnabled" class="selectpicker form-control">
+                                                            <option value="1" <c:if test="${settings.isActive == 1}">selected="selected"</c:if>>
+                                                                Включен
+                                                            </option>
+                                                            <option value="0" <c:if test="${settings.isActive == 0}">selected="selected"</c:if>>
+                                                                Выключен
+                                                            </option>
+                                                        </select>--%>
+                            <br><br>
+                            <button id="saveSettings" type="submit" class="btn btn-primary center-block">Сохранить
                             </button>
                         </div>
                     </div>
                 </div>
-                <div id="pages" class="tab-pane fade"></div>
+                <div id="pages" class="tab-pane fade">
+                    <br>
+                    Добавьте (или отредактируйте) страницы сайта, при заходе на которые показ виджета клиенту будет
+                    блокироваться на несколько дней (например, адрес корзины)
+                    <br><br>
+                    <a data-toggle="modal" href="#editPage" type="button" class="btn btn-success">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить адрес
+                    </a>
+                    <table class="table table-hover table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>id</th>
+                            <th>url</th>
+                            <th>корзина</th>
+                            <th>добавлена</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <c:forEach var="url" items="${urls}">
+                            <tr>
+                                <td><a data-id="${url.id}" data-url="${url.url}" data-trash="${url.isTrash}"
+                                       data-toggle="modal" href="#editPage"><span
+                                        class="glyphicon glyphicon-pencil"></span></a></td>
+                                <td>${url.id}</td>
+                                <td>${url.url}</td>
+                                <td><c:choose>
+                                    <c:when test="${url.isTrash == 1}">да</c:when>
+                                    <c:when test="${url.isTrash == 0}">нет</c:when>
+                                </c:choose></td>
+                                <td>${url.createTime}</td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
+                    <%--Modal--%>
+                    <div class="modal fade" id="editPage" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header" align="center">
+                                    <button type="button" class="close" data-dismiss="modal"
+                                            aria-hidden="true">&times;</button>
+                                    <h4 class="modal-title">Редактирование страницы</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div role="form">
+                                        <div class="form-group">
+                                            <label for="url">Адрес</label>
+                                            <input id="url" type="text" class="form-control" value="${url.url}">
+                                            <br>
+                                            <label for="isTrash">Это корзина</label>
+                                            <br>
+                                            <input id="isTrash" type="checkbox" class="toggle form-control"
+                                                   data-on-text="Да"
+                                                   data-off-text="Нет">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
+                                    </button>
+                                    <button id="deletePage" type="submit" class="btn btn-danger">Удалить
+                                    </button>
+                                    <button id="savePage" type="submit" class="btn btn-primary">Сохранить
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div id="password" class="tab-pane fade"></div>
                 <div id="setup" class="tab-pane fade">
                     <br>
@@ -118,6 +196,14 @@
         } else {
             $('.nav-tabs a:first').tab('show');
         }
+
+        $('.toggle').bootstrapSwitch();
+    });
+
+    //Pages
+    $('#editPage').on('show.bs.modal', function (e) {
+        $('#url').val($(e.relatedTarget).data('url'));
+        $('#isTrash').bootstrapSwitch('state', Boolean($(e.relatedTarget).data('trash')));
     });
 </script>
 </html>

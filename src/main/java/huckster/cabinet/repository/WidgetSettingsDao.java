@@ -199,25 +199,7 @@ public class WidgetSettingsDao extends DbDao {
         }, companyId, ruleId);
 
         return discounts;
-        //  return makeTable(sql, 100, 7, companyId, ruleId);
     }
-
-/*    public Optional<DiscountEntity> getVendorsDiscount(int discountId) throws SQLException {
-        String sql = "SELECT id," +
-                "            category_id AS category," +
-                "            vendor," +
-                "            step1," +
-                "            step2," +
-                "            min_price," +
-                "            max_price" +
-                "       FROM analitic.clients_discounts t" +
-                "      WHERE id = ?";
-
-        return selectValue(sql, 100, (rs) ->
-                        new DiscountEntity(discountId, rs.getString("category"), rs.getString("vendor"), rs.getInt("min_price"), rs.getInt("max_price"),
-                                rs.getInt("step1"), rs.getInt("step2"))
-                , discountId);
-    }*/
 
     public List<ListEntity<Integer, String>> getCategories(int companyId) throws SQLException {
         List<ListEntity<Integer, String>> list = new ArrayList<>();
@@ -263,15 +245,57 @@ public class WidgetSettingsDao extends DbDao {
         return vendors;
     }
 
-/*    public List<String> getVendors(int companyId, int categoryId) throws SQLException {
-        List<String> list = new ArrayList<>();
-        String sql = "SELECT DISTINCT v.vendor" +
-                "       FROM analitic.yml_vendors v" +
-                "      WHERE v.company_id = ?" +
-                "        AND v.category_id = ?" +
-                "      ORDER BY 1";
+    public List<DiscountEntity> getOfferDiscounts(int companyId, int ruleId) throws SQLException {
+        List<DiscountEntity> discounts = new ArrayList<>();
+        String sql = "SELECT d.id," +
+                "            d.offer_id," +
+                "            d.vendor," +
+                "            f.name," +
+                "            d.step1percent," +
+                "            d.step2percent," +
+                "            f.url," +
+                "            d.atime" +
+                "       FROM analitic.offers_discounts d" +
+                "      INNER JOIN offers f" +
+                "         ON f.company_id = d.company_id" +
+                "        AND f.offer_id = d.offer_id" +
+                "      WHERE d.company_id = ?" +
+                "        AND d.rule_id = ?" +
+                "      ORDER BY d.atime DESC";
 
-        execute(sql, 500, (rs) -> list.add(rs.getString("vendor")), companyId, categoryId);
-        return list;
-    }*/
+        execute(sql, 100, (rs) -> {
+            discounts.add(new DiscountEntity(rs.getInt("id"), rs.getString("offer_id"), rs.getString("name"), rs.getString("vendor"), rs.getInt("step1percent"), rs.getInt("step2percent"), rs.getString("url")));
+        }, companyId, ruleId);
+
+        return discounts;
+    }
+
+    public List<String> getVendorOffers(int companyId) throws SQLException {
+        List<String> vendors = new ArrayList<>();
+        String sql = "SELECT DISTINCT vendor" +
+                "       FROM offers" +
+                "      WHERE company_id = ?" +
+                "      ORDER BY vendor";
+
+        execute(sql, 1000, (rs) -> {
+            vendors.add(rs.getString("vendor"));
+        }, companyId);
+
+        return vendors;
+    }
+
+    public Map<String, List<ListEntity>> getOffers(int companyId) throws SQLException {
+        Map<String, List<ListEntity>> map = new HashMap<>();
+        String sql = " SELECT vendor, offer_id || ' - ' || name as name, offer_id" +
+                "        FROM offers" +
+                "       WHERE company_id = ?" +
+                "       ORDER BY name";
+
+        execute(sql, 10000, (rs) -> {
+            map.putIfAbsent(rs.getString("vendor"), new ArrayList<>());
+            map.get(rs.getString("vendor")).add(new ListEntity<>(rs.getInt("offer_id"), rs.getString("name")));
+        }, companyId);
+
+        return map;
+    }
 }

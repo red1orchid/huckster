@@ -206,10 +206,10 @@
             iDisplayLength: 25,
             language: language,
             ajax: {
-                url: "/ajax",
+                url: "/statistic",
                 type: "POST",
                 data: {
-                    "type": "goods"
+                    "request": "ajax"
                 }
             }
         });

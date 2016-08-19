@@ -30,7 +30,9 @@ public class UserData {
     private Map<Integer, ChartData> chartContainer = new HashMap<>();
     private Map<Integer, List<String>> vendorCatContainer = new HashMap<>();
     private List<String> vendorContainer = new ArrayList<>();
+    private List<String> vendorOfferContainer = new ArrayList<>();
     private List<ListEntity<Integer, String>> categoryContainer = new ArrayList<>();
+    private Map<String, List<ListEntity>> offerContainer = new HashMap<>();
     private static final Logger LOG = LoggerFactory.getLogger(UserData.class);
     private CompanyInfoDao dao = new CompanyInfoDao();
 
@@ -88,6 +90,14 @@ public class UserData {
         return chartContainer;
     }
 
+    public Map<String, List<ListEntity>> getOfferContainer() {
+        return offerContainer;
+    }
+
+    public List<String> getVendorOfferContainer() {
+        return vendorOfferContainer;
+    }
+
     public LocalDate getStartDate() {
         return startDate;
     }
@@ -138,12 +148,20 @@ public class UserData {
         this.vendorContainer = vendorContainer;
     }
 
+    public void setVendorOfferContainer(List<String> vendorOfferContainer) {
+        this.vendorOfferContainer = vendorOfferContainer;
+    }
+
     public void setVendorCatContainer(Map<Integer, List<String>> vendorCatContainer) {
         this.vendorCatContainer = vendorCatContainer;
     }
 
     public void setCategoryContainer(List<ListEntity<Integer, String>> categoryContainer) {
         this.categoryContainer = categoryContainer;
+    }
+
+    public void setOfferContainer(Map<String, List<ListEntity>> itemContainer) {
+        this.offerContainer = itemContainer;
     }
 
     public void clear() {
@@ -153,6 +171,7 @@ public class UserData {
         vendorContainer.clear();
         vendorCatContainer.clear();
         categoryContainer.clear();
+        offerContainer.clear();
     }
 /*
 

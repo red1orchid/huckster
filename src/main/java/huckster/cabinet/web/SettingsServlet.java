@@ -25,6 +25,7 @@ public class SettingsServlet extends UserServlet {
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
         req.setAttribute("companyId", userData.getCompanyId());
         req.setAttribute("settings", getCompanySettings(userData));
+        req.setAttribute("urls", dao.getBlockedUrls(userData.getCompanyId()));
         req.getRequestDispatcher("/jsp/settings.jsp").forward(req, resp);
     }
 

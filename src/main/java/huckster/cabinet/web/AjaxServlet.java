@@ -2,18 +2,14 @@ package huckster.cabinet.web;
 
 import huckster.cabinet.Util;
 import huckster.cabinet.model.*;
-import huckster.cabinet.repository.OrdersDao;
-import huckster.cabinet.repository.StatisticDao;
 import huckster.cabinet.repository.UserData;
 import huckster.cabinet.repository.WidgetSettingsDao;
-import org.apache.commons.math3.exception.NoDataException;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,9 +19,7 @@ import java.util.stream.Collectors;
  */
 @WebServlet("/ajax")
 public class AjaxServlet extends HttpServlet {
-    private OrdersDao ordersDao = new OrdersDao();
-    private StatisticDao statisticDao = new StatisticDao();
-    private WidgetSettingsDao widgetSettingsDao = new WidgetSettingsDao();
+    private WidgetSettingsDao dao = new WidgetSettingsDao();
     private Util util = new Util();
 
     @Override
@@ -36,12 +30,6 @@ public class AjaxServlet extends HttpServlet {
 
         if (type != null) {
             switch (req.getParameter("type")) {
-                case "orders":
-                    data = getOrders(userData);
-                    break;
-                case "goods":
-                    data = getGoods(userData);
-                    break;
                 case "settings_tree":
                     data = getTree(req, userData);
                     break;
@@ -51,11 +39,24 @@ public class AjaxServlet extends HttpServlet {
                 case "vendor_discounts":
                     data = getVendorDiscounts(req, userData);
                     break;
-                case "vendor_categories":
+                //TODO: very slow?
+                case "offer_discounts":
+                    data = getOfferDiscounts(req, userData);
+                    break;
+                case "step2_all":
                     data = getVendorCategories(req, userData);
                     break;
-                case "vendors":
+                case "step2_vendors":
                     data = Util.toJson(getVendors(req, userData));
+                    break;
+/*                case "vendor_offers":
+                    data = Util.toJson(getVendors(req, userData));
+                    break;*/
+                case "step3_offers":
+                    data = getOffers(req, userData);
+                    break;
+                case "step3_vendors":
+                    data = getVendorOffers(userData);
                     break;
             }
 
@@ -68,39 +69,7 @@ public class AjaxServlet extends HttpServlet {
         }
     }
 
-    private String getOrders(UserData userData) {
-        List<OrderEntity> data = new ArrayList<>();
-        try {
-            data = ordersDao.getOrders(userData.getCompanyId(), Date.valueOf(userData.getStartDate()), Date.valueOf(userData.getEndDate()));
-        } catch (SQLException e) {
-            //TODO: some message?
-            Util.logError("Failed to load orders", e, userData);
-        }
-
-/*        HashMap<String, List> map = new HashMap<>();
-        String link = "<a data-id=\"%s\" data-status=\"%s\" data-comment=\"%s\" data-toggle=\"modal\" href=\"#editOrder\"><span class=\"glyphicon glyphicon-pencil\"></a>";
-        for (List row : data) {
-            //order id, status, comment
-            row.add(0, String.format(link, row.get(0), row.get(14), row.get(13)));
-            row.remove(15);
-        }*/
-
-        return util.toJsonWithDataWrap(data);
-    }
-
-    private String getGoods(UserData userData) {
-        List<List> data = new ArrayList<>();
-        try {
-            data = statisticDao.getGoods(userData.getCompanyId(), userData.getPeriodGoods());
-        } catch (SQLException e) {
-            //TODO: some message?
-            Util.logError("Failed to load goods", e, userData);
-        }
-
-        HashMap<String, List> map = new HashMap<>();
-        map.put("data", data);
-        return Util.toJson(map);
-    }
+    //Step 1
 
     private String getSettings(UserData userData) {
         HashMap<String, Object> map = new HashMap<>();
@@ -108,13 +77,13 @@ public class AjaxServlet extends HttpServlet {
         Map<String, String> sources = new LinkedHashMap<>();
 
         try {
-            sources = widgetSettingsDao.getSources(userData.getCompanyId());
+            sources = dao.getSources(userData.getCompanyId());
         } catch (SQLException e) {
             //TODO: kill modal?
             Util.logError("Failed to load sources", e, userData);
         }
         try {
-            channels = widgetSettingsDao.getChannels(userData.getCompanyId());
+            channels = dao.getChannels(userData.getCompanyId());
         } catch (SQLException e) {
             //TODO: kill modal?
             Util.logError("Failed to load channels", e, userData);
@@ -130,9 +99,9 @@ public class AjaxServlet extends HttpServlet {
         try {
             List<SelectedTreeEntity> selectedTreeEntities;
             if (ruleId != null) {
-                selectedTreeEntities = widgetSettingsDao.getSelectedTree(Integer.parseInt(ruleId));
+                selectedTreeEntities = dao.getSelectedTree(Integer.parseInt(ruleId));
             } else {
-                selectedTreeEntities = widgetSettingsDao.getSelectedTree();
+                selectedTreeEntities = dao.getSelectedTree();
             }
             map = selectedTreeEntities.stream()
                     .collect(Collectors.toMap(SelectedTreeEntity::getId, v -> new JsonTreeNode(v.getId(), v.getTitle(), v.getParentId(), v.isSelected(), null)));
@@ -155,12 +124,13 @@ public class AjaxServlet extends HttpServlet {
         return Util.toJson(list);
     }
 
+    // Step 2
     private String getVendorDiscounts(HttpServletRequest req, UserData userData) {
         List<DiscountEntity> data = new ArrayList<>();
         String segmentId = req.getParameter("ruleId");
         if (!segmentId.isEmpty()) {
             try {
-                data = widgetSettingsDao.getVendorsDiscounts(userData.getCompanyId(), Integer.parseInt(segmentId));
+                data = dao.getVendorsDiscounts(userData.getCompanyId(), Integer.parseInt(segmentId));
             } catch (SQLException e) {
                 //TODO: some message?
                 Util.logError("Failed to load vendor discounts", e, userData);
@@ -174,7 +144,7 @@ public class AjaxServlet extends HttpServlet {
     }
 
     private String getVendorCategories(HttpServletRequest req, UserData userData) {
-        Map <String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         initCategories(userData);
         map.put("categories", userData.getCategoryContainer());
 
@@ -198,7 +168,7 @@ public class AjaxServlet extends HttpServlet {
     private void initCategories(UserData userData) {
         if (userData.getCategoryContainer().isEmpty()) {
             try {
-                List<ListEntity<Integer, String>> categories = widgetSettingsDao.getCategories(userData.getCompanyId());
+                List<ListEntity<Integer, String>> categories = dao.getCategories(userData.getCompanyId());
                 if (!categories.isEmpty()) {
                     userData.setCategoryContainer(categories);
                 } else {
@@ -213,7 +183,7 @@ public class AjaxServlet extends HttpServlet {
     private void initVendors(UserData userData) {
         if (userData.getVendorContainer().isEmpty()) {
             try {
-                List<String> vendors = widgetSettingsDao.getVendors(userData.getCompanyId());
+                List<String> vendors = dao.getVendors(userData.getCompanyId());
                 if (!vendors.isEmpty()) {
                     userData.setVendorContainer(vendors);
                 } else {
@@ -228,9 +198,76 @@ public class AjaxServlet extends HttpServlet {
     private void initVendorsCat(UserData userData) {
         if (userData.getVendorCatContainer().isEmpty()) {
             try {
-                Map<Integer, List<String>> vendors = widgetSettingsDao.getVendorsByCategory(userData.getCompanyId());
+                Map<Integer, List<String>> vendors = dao.getVendorsByCategory(userData.getCompanyId());
                 if (!vendors.isEmpty()) {
                     userData.setVendorCatContainer(vendors);
+                } else {
+                    Util.logError("No vendors found", userData);
+                }
+            } catch (SQLException e) {
+                Util.logError("Failed to load vendors", e, userData);
+            }
+        }
+    }
+
+    // Step 3
+    private String getOfferDiscounts(HttpServletRequest req, UserData userData) {
+        List<DiscountEntity> data = new ArrayList<>();
+        String segmentId = req.getParameter("ruleId");
+        if (!segmentId.isEmpty()) {
+            try {
+                data = dao.getOfferDiscounts(userData.getCompanyId(), Integer.parseInt(segmentId));
+            } catch (SQLException e) {
+                //TODO: some message?
+                Util.logError("Failed to load item discounts", e, userData);
+            }
+        } else {
+            //TODO: some message?
+            Util.logError("Empty segment", userData);
+        }
+
+        return util.toJsonWithDataWrap(data);
+    }
+
+    private String getOffers(HttpServletRequest req, UserData userData) {
+        List<ListEntity> offers = new ArrayList<>();
+        String vendor = req.getParameter("vendor");
+        if (vendor != null) {
+            initOffers(userData);
+            offers = userData.getOfferContainer().get(vendor);
+        }
+
+        return Util.toJson(offers);
+    }
+
+    private String getVendorOffers(UserData userData) {
+        initVendorOffers(userData);
+        List<String> vendors = userData.getVendorOfferContainer();
+
+        return Util.toJson(vendors);
+    }
+
+    private void initOffers(UserData userData) {
+        if (userData.getOfferContainer().isEmpty()) {
+            try {
+                Map<String, List<ListEntity>> offers = dao.getOffers(userData.getCompanyId());
+                if (!offers.isEmpty()) {
+                    userData.setOfferContainer(offers);
+                } else {
+                    Util.logError("No offers found", userData);
+                }
+            } catch (SQLException e) {
+                Util.logError("Failed to load offers", e, userData);
+            }
+        }
+    }
+
+    private void initVendorOffers(UserData userData) {
+        if (userData.getVendorOfferContainer().isEmpty()) {
+            try {
+                List<String> vendors = dao.getVendorOffers(userData.getCompanyId());
+                if (!vendors.isEmpty()) {
+                    userData.setVendorOfferContainer(vendors);
                 } else {
                     Util.logError("No vendors found", userData);
                 }
@@ -247,7 +284,7 @@ public class AjaxServlet extends HttpServlet {
         Map <String, Object> map = new HashMap<>();
         if (id != null) {
             try {
-                DiscountEntity discount = widgetSettingsDao.getVendorsDiscount(Integer.parseInt(id)).orElseThrow(NoDataException::new);
+                DiscountEntity discount = dao.getVendorsDiscount(Integer.parseInt(id)).orElseThrow(NoDataException::new);
                 map.put("categories", getCategories(userData));
                 map.put("category", discount.getCategory());
                 map.put("vendors", getVendors(userData, discount.getCategory()));
@@ -270,7 +307,7 @@ public class AjaxServlet extends HttpServlet {
     private List<ListEntity<Integer, String>> getCategories(UserData userData) {
         List<ListEntity<Integer, String>> categories = new ArrayList<>();
         try {
-            categories = widgetSettingsDao.getCategories(userData.getCompanyId());
+            categories = dao.getCategories(userData.getCompanyId());
         } catch (SQLException e) {
             //TODO: kill modal?
             Util.logError("Failed to load categories", e, userData);
@@ -283,9 +320,9 @@ public class AjaxServlet extends HttpServlet {
         List<String> vendors = new ArrayList<>();
         try {
             if (categoryId != null && !categoryId.isEmpty()) {
-                vendors = widgetSettingsDao.getVendors(userData.getCompanyId(), Integer.parseInt(categoryId));
+                vendors = dao.getVendors(userData.getCompanyId(), Integer.parseInt(categoryId));
             } else {
-                vendors = widgetSettingsDao.getVendors(userData.getCompanyId());
+                vendors = dao.getVendors(userData.getCompanyId());
             }
         } catch (SQLException e) {
             //TODO: kill modal?
