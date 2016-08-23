@@ -83,12 +83,10 @@ public class DbDao {
     protected void executeUpdate(String sql, Object... params) throws SQLException {
         try (Connection dbConnection = pool.getConnection();
              PreparedStatement ps = dbConnection.prepareStatement(sql)) {
-            System.out.println(ps);
             int cnt = 0;
             for (Object param : params) {
                 ps.setObject(++cnt, param);
             }
-            System.out.println(ps);
             ps.executeUpdate();
         }
     }

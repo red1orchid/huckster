@@ -69,35 +69,6 @@
                         <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Новое правило
                     </a>
                     <table id="rulesTbl" class="table table-hover table-bordered" cellspacing="0" width="100%">
-                        <thead>
-                        <tr>
-                            <th></th>
-                            <th>id</th>
-                            <th>каналы</th>
-                            <th>источники</th>
-                            <th>устройства</th>
-                            <th>режим запуска</th>
-                        </tr>
-                        </thead>
-                        <tfoot>
-                        </tfoot>
-                        <tbody>
-                        <c:forEach var="rRow" items="${rules}">
-                            <tr>
-                                <td><a data-id=${rRow.id} data-channels=${rRow.channels}
-                                       data-sources=${rRow.sources} data-device=${rRow.devices}
-                                       data-days=${rRow.days} data-time-from=${rRow.timeFrom}
-                                       data-time-to=${rRow.timeTo} data-toggle="modal"
-                                       href="#editRule"><span
-                                        class="glyphicon glyphicon-pencil"></span></a></td>
-                                <td>${rRow.id}</td>
-                                <td>${rRow.channels}</td>
-                                <td>${rRow.sources}</td>
-                                <td>${devices[rRow.devices].toLowerCase().replace('все устройства', 'все')}</td>
-                                <td>${rRow.days}, ${rRow.timeFrom}-${rRow.timeTo}чч</td>
-                            </tr>
-                        </c:forEach>
-                        </tbody>
                     </table>
 
                     <!-- Modal -->
@@ -205,6 +176,8 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
                                     </button>
+                                    <button id="deleteRule" type="submit" class="btn btn-danger">Удалить
+                                    </button>
                                     <button id="saveRule" type="submit" class="btn btn-primary">Сохранить
                                     </button>
                                 </div>
@@ -265,8 +238,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
-                                    </button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
                                     <button id="deleteVendorDiscount" type="submit" class="btn btn-danger">Удалить
                                     </button>
                                     <button id="saveVendorDiscount" type="submit" class="btn btn-primary">Сохранить
@@ -360,6 +332,46 @@
         }
     };
 
+    //Step 1
+    var week = {1: '#mon', 2: '#tue', 3: '#wed', 4: '#thu', 5: '#fri', 6: '#sat', 7: '#sun'};
+    var rules = $('#rulesTbl').DataTable({
+        colReorder: true,
+        ordering: false,
+        paging: false,
+        searching: false,
+        language: language,
+        ajax: {
+            url: "/widget_settings",
+            type: "POST",
+            data: function (d) {
+                d.request = "ajax";
+                d.type = "step1_rules";
+            }
+        },
+        columns: [
+            {
+                data: null, render: function (data, type, full, meta) {
+                return '<a data-id="' + full.id + '" data-channels="' + full.channels + '" data-sources="' + full.sources + '" data-device="' + full.devices +
+                        '" data-days="' + full.days + '" data-time-from="' + full.timeFrom + '" data-time-to="' + full.timeTo +
+                        '" data-toggle="modal" href="#editRule"><span class="glyphicon glyphicon-pencil"></span></a>';
+            }
+            },
+            {data: 'id', title: 'id', defaultContent: ''},
+            {data: 'channels', title: 'каналы', defaultContent: ''},
+            {data: 'sources', title: 'источники', defaultContent: ''},
+            {
+                data: 'strDevices', render: function (data) {
+                return data.toLowerCase().replace('все устройства', 'все')
+            }, title: 'устройства', defaultContent: ''
+            },
+            {
+                data: null, render: function (data, type, full, meta) {
+                return full.days + ', ' + full.timeFrom + '-' + full.timeTo + 'чч'
+            }, title: 'режим запуска', defaultContent: ''
+            }
+        ]
+    });
+
     //Step 2
     var vendorDiscounts = $('#vendorDiscountsTbl').DataTable({
         colReorder: true,
@@ -368,10 +380,11 @@
         searching: false,
         language: language,
         ajax: {
-            url: "/ajax",
+            url: "/widget_settings",
             type: "POST",
             data: function (d) {
-                d.type = "vendor_discounts";
+                d.request = "ajax";
+                d.type = "step2_discounts";
                 d.ruleId = $('#segmentSelect').selectpicker('val')
             }
         },
@@ -438,15 +451,6 @@
             $('.nav-tabs a:first').tab('show');
         }
 
-        //Step 1
-        $('#rulesTbl').DataTable({
-            colReorder: true,
-            ordering: false,
-            paging: false,
-            searching: false,
-            language: language
-        });
-
         //button select
         $(".button-checkbox").labelauty({
             class: "labelauty",
@@ -496,8 +500,9 @@
         });
     });
 
-    //Step 1
     var id;
+
+    //Step 1
     $('#editRule').on('show.bs.modal', function (e) {
         id = $(e.relatedTarget).data('id');
         // Reload tree with new source
@@ -534,19 +539,35 @@
                 $('#src').selectpicker('refresh');
 
                 //set selected values
-                $('#chnl').selectpicker('val', $(e.relatedTarget).data('channels').split(":"));
-                $('#src').selectpicker('val', $(e.relatedTarget).data('sources').split(":"));
+                if ($(e.relatedTarget).data('channels') != null) {
+                    $('#chnl').selectpicker('val', $(e.relatedTarget).data('channels').split(":"));
+                }
+                if ($(e.relatedTarget).data('sources') != null) {
+                    $('#src').selectpicker('val', $(e.relatedTarget).data('sources').split(":"))
+                }
                 $('#devices').selectpicker('val', $(e.relatedTarget).data('device'));
                 $('#hourFrom').selectpicker('val', $(e.relatedTarget).data('time-from'));
                 $('#hourTo').selectpicker('val', $(e.relatedTarget).data('time-to'));
-                var days = $(e.relatedTarget).data('days');
-                for (i = 1; i <= 7; i++) {
-                    if (days.indexOf(i.toString()) < 0) {
-                        $('#mon').prop('checked', false);
+                if ($(e.relatedTarget).data('days') != null) {
+                    for (var day in week) {
+                        if ($(e.relatedTarget).data('days').indexOf(day) < 0) {
+                            $(week[day]).prop('checked', false);
+                        }
                     }
                 }
             }
         });
+    }).on('hidden.bs.modal', function () {
+        $('#chnl').empty().selectpicker('refresh');
+        $('#src').empty().selectpicker('refresh');
+        $('#devices').val('');
+        $('#mon').prop('checked', true);
+        $('#tue').prop('checked', true);
+        $('#wed').prop('checked', true);
+        $('#thu').prop('checked', true);
+        $('#fri').prop('checked', true);
+        $('#sat').prop('checked', true);
+        $('#sun').prop('checked', true);
     });
 
     $('#saveRule').on('click', function () {
@@ -558,9 +579,8 @@
         );
 
         var days;
-
-        function addDay(id, day) {
-            if ($(id).is(":checked")) {
+        for (var day in week) {
+            if ($(week[day]).is(":checked")) {
                 if (days == null)
                     days = day;
                 else
@@ -568,19 +588,12 @@
             }
         }
 
-        addDay('#mon', 1);
-        addDay('#tue', 2);
-        addDay('#wed', 3);
-        addDay('#thu', 4);
-        addDay('#fri', 5);
-        addDay('#sat', 6);
-        addDay('#sun', 7);
-
         $.ajax({
             type: "POST",
             url: "/widget_settings",
             data: {
-                rule: id,
+                type: "save_rule",
+                id: id,
                 tree: selection.join(":"),
                 channels: ($('#chnl').selectpicker('val') || []).join(":"),
                 sources: ($('#src').selectpicker('val') || []).join(":"),
@@ -590,7 +603,22 @@
                 hourTo: $('#hourTo').selectpicker('val')
             }
         }).done(function (msg) {
-            //do other processing
+            $('#editRule').modal('hide');
+            rules.ajax.reload();
+        });
+    });
+
+    $('#deleteRule').on('click', function (e) {
+        $.ajax({
+            url: "/widget_settings",
+            type: "POST",
+            data: {
+                type: "delete_rule",
+                id: id
+            }
+        }).done(function (msg) {
+            $('#editRule').modal('hide');
+            rules.ajax.reload();
         });
     });
 
@@ -620,21 +648,19 @@
     }
 
     $('#editVendorDiscount').on('show.bs.modal', function (e) {
+        id = $(e.relatedTarget).data('id');
         $('#priceFrom').val($(e.relatedTarget).data('minprice'));
         $('#priceTo').val($(e.relatedTarget).data('maxprice'));
         $('#discount1').val($(e.relatedTarget).data('discount1'));
         $('#discount2').val($(e.relatedTarget).data('discount2'));
 
-        var categoryId = $(e.relatedTarget).data('category');
-        if (categoryId == null) {
-            categoryId = undefined;
-        }
         $.ajax({
-            url: "/ajax",
+            url: "/widget_settings",
             type: "POST",
             data: {
+                "request": "ajax",
                 "type": "step2_all",
-                "categoryId": categoryId
+                "categoryId": $(e.relatedTarget).data('category')
             },
             success: function (data) {
                 fillCategories(data.categories);
@@ -656,9 +682,10 @@
 
     $('#catSelect').on('changed.bs.select', function (e) {
         $.ajax({
-            url: "/ajax",
+            url: "/widget_settings",
             type: "POST",
             data: {
+                "request": "ajax",
                 "type": "step2_vendors",
                 "categoryId": $('#catSelect').selectpicker('val')
             },
@@ -667,6 +694,41 @@
             }
         });
         // fillVendors($('#catSelect').selectpicker('val'));
+    });
+
+    $('#saveVendorDiscount').on('click', function (e) {
+        $.ajax({
+            url: "/widget_settings",
+            type: "POST",
+            data: {
+                type: "step2_save_discount",
+                id: id,
+                ruleId: $('#segmentSelect').selectpicker('val'),
+                category: $('#catSelect').selectpicker('val'),
+                vendors: ($('#vendorSelect').selectpicker('val') || []).join(":"),
+                minPrice: $('#priceFrom').val(),
+                maxPrice: $('#priceTo').val(),
+                discount1: $('#discount1').val(),
+                discount2: $('#discount2').val()
+            }
+        }).done(function (msg) {
+            $('#editVendorDiscount').modal('hide');
+            vendorDiscounts.ajax.reload();
+        });
+    });
+
+    $('#deleteVendorDiscount').on('click', function (e) {
+        $.ajax({
+            url: "/widget_settings",
+            type: "POST",
+            data: {
+                type: "step2_delete_discount",
+                id: id
+            }
+        }).done(function (msg) {
+            $('#editVendorDiscount').modal('hide');
+            vendorDiscounts.ajax.reload();
+        });
     });
 
     //Step 3
@@ -692,7 +754,7 @@
                     }
                 }
                 $('#vendorItemSelect').selectpicker('refresh');
-              //  $('#vendorItemSelect').val($(e.relatedTarget).data('vendor'));
+                //  $('#vendorItemSelect').val($(e.relatedTarget).data('vendor'));
                 $('#itemSelect').val($(e.relatedTarget).data('id'));
             }
         });

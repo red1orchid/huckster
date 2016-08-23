@@ -36,18 +36,9 @@ public class AjaxServlet extends HttpServlet {
                 case "settings_lists":
                     data = getSettings(userData);
                     break;
-                case "vendor_discounts":
-                    data = getVendorDiscounts(req, userData);
-                    break;
                 //TODO: very slow?
                 case "offer_discounts":
                     data = getOfferDiscounts(req, userData);
-                    break;
-                case "step2_all":
-                    data = getVendorCategories(req, userData);
-                    break;
-                case "step2_vendors":
-                    data = Util.toJson(getVendors(req, userData));
                     break;
 /*                case "vendor_offers":
                     data = Util.toJson(getVendors(req, userData));
@@ -70,7 +61,6 @@ public class AjaxServlet extends HttpServlet {
     }
 
     //Step 1
-
     private String getSettings(UserData userData) {
         HashMap<String, Object> map = new HashMap<>();
         List<String> channels = new ArrayList<>();
@@ -124,91 +114,7 @@ public class AjaxServlet extends HttpServlet {
         return Util.toJson(list);
     }
 
-    // Step 2
-    private String getVendorDiscounts(HttpServletRequest req, UserData userData) {
-        List<DiscountEntity> data = new ArrayList<>();
-        String segmentId = req.getParameter("ruleId");
-        if (!segmentId.isEmpty()) {
-            try {
-                data = dao.getVendorsDiscounts(userData.getCompanyId(), Integer.parseInt(segmentId));
-            } catch (SQLException e) {
-                //TODO: some message?
-                Util.logError("Failed to load vendor discounts", e, userData);
-            }
-        } else {
-            //TODO: some message?
-            Util.logError("Empty segment", userData);
-        }
 
-        return util.toJsonWithDataWrap(data);
-    }
-
-    private String getVendorCategories(HttpServletRequest req, UserData userData) {
-        Map<String, Object> map = new HashMap<>();
-        initCategories(userData);
-        map.put("categories", userData.getCategoryContainer());
-
-        map.put("vendors", getVendors(req, userData));
-        return Util.toJson(map);
-    }
-
-    private List<String> getVendors(HttpServletRequest req, UserData userData) {
-        List<String> vendors;
-        String categoryId = req.getParameter("categoryId");
-        if (categoryId != null) {
-            initVendorsCat(userData);
-            vendors = userData.getVendorCatContainer().get(Integer.parseInt(categoryId));
-        } else {
-            initVendors(userData);
-            vendors = userData.getVendorContainer();
-        }
-        return vendors;
-    }
-
-    private void initCategories(UserData userData) {
-        if (userData.getCategoryContainer().isEmpty()) {
-            try {
-                List<ListEntity<Integer, String>> categories = dao.getCategories(userData.getCompanyId());
-                if (!categories.isEmpty()) {
-                    userData.setCategoryContainer(categories);
-                } else {
-                    Util.logError("No categories found", userData);
-                }
-            } catch (SQLException e) {
-                Util.logError("Failed to load categories", e, userData);
-            }
-        }
-    }
-
-    private void initVendors(UserData userData) {
-        if (userData.getVendorContainer().isEmpty()) {
-            try {
-                List<String> vendors = dao.getVendors(userData.getCompanyId());
-                if (!vendors.isEmpty()) {
-                    userData.setVendorContainer(vendors);
-                } else {
-                    Util.logError("No vendors found", userData);
-                }
-            } catch (SQLException e) {
-                Util.logError("Failed to load vendors", e, userData);
-            }
-        }
-    }
-
-    private void initVendorsCat(UserData userData) {
-        if (userData.getVendorCatContainer().isEmpty()) {
-            try {
-                Map<Integer, List<String>> vendors = dao.getVendorsByCategory(userData.getCompanyId());
-                if (!vendors.isEmpty()) {
-                    userData.setVendorCatContainer(vendors);
-                } else {
-                    Util.logError("No vendors found", userData);
-                }
-            } catch (SQLException e) {
-                Util.logError("Failed to load vendors", e, userData);
-            }
-        }
-    }
 
     // Step 3
     private String getOfferDiscounts(HttpServletRequest req, UserData userData) {

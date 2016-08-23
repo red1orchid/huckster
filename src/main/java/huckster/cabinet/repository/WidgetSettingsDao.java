@@ -25,10 +25,87 @@ public class WidgetSettingsDao extends DbDao {
                 " WHERE r.company_id = ?" +
                 " ORDER BY utm_medium desc, utm_source DESC, id ASC";
 
+        Map<Integer, String> devices = getDevices();
         execute(sql, null,
                 (rs) -> list.add(new RuleEntity(rs.getInt("empno"), rs.getString("utm_medium"), rs.getString("utm_source"), rs.getInt("destination"),
-                        rs.getString("days"), rs.getString("start_hour"), rs.getString("end_hour"))), companyId);
+                        devices.get(rs.getInt("destination")) ,rs.getString("days"), rs.getString("start_hour"), rs.getString("end_hour"))), companyId);
         return list;
+    }
+
+    public void insertRule(int companyId, String cities, String channels, String sources, String devices, String days, String startHour, String endHour) throws SQLException {
+        String sql = "INSERT INTO analitic.clients_rules(company_id, geo, utm_medium, utm_source, days, destination, start_hour, end_hour) " +
+                "     VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+
+        //TODO: hours: 00 and 0
+        executeUpdate(sql, companyId, cities, channels, sources, days, devices, startHour, endHour);
+    }
+
+    public void updateRule(int id, int companyId, String cities, String channels, String sources, String devices, String days, String startHour, String endHour) throws SQLException {
+        String sql = "UPDATE analitic.clients_rules" +
+                "        SET geo         = ?," +
+                "            utm_medium  = ?," +
+                "            utm_source  = ?," +
+                "            days        = ?," +
+                "            destination = ?," +
+                "            start_hour  = ?," +
+                "            end_hour    = ?" +
+                "      WHERE id = ?" +
+                "        AND company_id = ?";
+
+        //TODO: hours: 00 and 0
+        executeUpdate(sql, cities, channels, sources, days, devices, startHour, endHour, id, companyId);
+    }
+
+    public void deleteRule(int id, int companyId) throws SQLException {
+        String sql = "DELETE FROM analitic.clients_rules WHERE id = ? AND company_id = ?";
+
+        executeUpdate(sql, id, companyId);
+    }
+
+    public void updateRules(Integer ruleId, int companyId, String cities, String channels, String sources, String devices, String days, String startHour, String endHour) throws SQLException {
+        String sql = "MERGE INTO analitic.clients_rules r" +
+                "     USING (SELECT ? AS id," +
+                "                   ? AS company_id," +
+                "                   ? AS geo," +
+                "                   ? AS utm_medium," +
+                "                   ? AS utm_source," +
+                "                   ? AS days," +
+                "                   ? AS destination," +
+                "                   ? AS start_hour," +
+                "                   ? AS end_hour" +
+                "              FROM dual) d" +
+                "     ON (r.id = d.id)" +
+                "     WHEN MATCHED THEN" +
+                "       UPDATE" +
+                "           SET r.company_id  = d.company_id," +
+                "               r.geo         = d.geo," +
+                "               r.utm_medium  = d.utm_medium," +
+                "               r.utm_source  = d.utm_source," +
+                "               r.days        = d.days," +
+                "               r.destination = d.destination," +
+                "               r.start_hour  = d.start_hour," +
+                "               r.end_hour    = d.end_hour" +
+                "     WHEN NOT MATCHED THEN" +
+                "       INSERT" +
+                "          (r.company_id," +
+                "           r.geo," +
+                "           r.utm_medium," +
+                "           r.utm_source," +
+                "           r.days," +
+                "           r.destination," +
+                "           r.start_hour," +
+                "           r.end_hour)" +
+                "       VALUES" +
+                "          (d.company_id," +
+                "           d.geo," +
+                "           d.utm_medium," +
+                "           d.utm_source," +
+                "           d.days," +
+                "           d.destination," +
+                "           d.start_hour," +
+                "           d.end_hour)";
+        //TODO: hours: 00 and 0
+        executeUpdate(sql, ruleId, companyId, cities, channels, sources, days, devices, startHour, endHour);
     }
 
     public Map<Integer, String> getDevices() {
@@ -115,52 +192,6 @@ public class WidgetSettingsDao extends DbDao {
         return makeTable(sql, null, 5, companyId);
     }*/
 
-    public void updateRules(Integer ruleId, int companyId, String cities, String channels, String sources, String devices, String days, String startHour, String endHour) throws SQLException {
-        String sql = "MERGE INTO analitic.clients_rules r" +
-                "     USING (SELECT ? AS id," +
-                "                   ? AS company_id," +
-                "                   ? AS geo," +
-                "                   ? AS utm_medium," +
-                "                   ? AS utm_source," +
-                "                   ? AS days," +
-                "                   ? AS destination," +
-                "                   ? AS start_hour," +
-                "                   ? AS end_hour" +
-                "              FROM dual) d" +
-                "     ON (r.id = d.id)" +
-                "     WHEN MATCHED THEN" +
-                "       UPDATE" +
-                "           SET r.company_id  = d.company_id," +
-                "               r.geo         = d.geo," +
-                "               r.utm_medium  = d.utm_medium," +
-                "               r.utm_source  = d.utm_source," +
-                "               r.days        = d.days," +
-                "               r.destination = d.destination," +
-                "               r.start_hour  = d.start_hour," +
-                "               r.end_hour    = d.end_hour" +
-                "     WHEN NOT MATCHED THEN" +
-                "       INSERT" +
-                "          (r.company_id," +
-                "           r.geo," +
-                "           r.utm_medium," +
-                "           r.utm_source," +
-                "           r.days," +
-                "           r.destination," +
-                "           r.start_hour," +
-                "           r.end_hour)" +
-                "       VALUES" +
-                "          (d.company_id," +
-                "           d.geo," +
-                "           d.utm_medium," +
-                "           d.utm_source," +
-                "           d.days," +
-                "           d.destination," +
-                "           d.start_hour," +
-                "           d.end_hour)";
-        //TODO: hours: 00 and 0
-        executeUpdate(sql, ruleId, companyId, cities, channels, sources, days, devices, startHour, endHour);
-    }
-
     public Map<Integer, String> getSegments(int companyId) throws SQLException {
         String sql = "SELECT id || ' - ' || REPLACE(NVL(utm_medium, 'все каналы'), 'all', 'все каналы') || ', ' ||" +
                 "                           REPLACE(NVL(utm_source, 'все источники'), 'all', 'все источники') AS display_value," +
@@ -200,6 +231,78 @@ public class WidgetSettingsDao extends DbDao {
 
         return discounts;
     }
+
+    public void insertVendorsDiscount(int companyId, int ruleId, Integer categoryId, String vendor, Integer step1, Integer step2, Integer minPrice, Integer maxPrice) throws SQLException {
+        String sql = "INSERT INTO analitic.clients_discounts(company_id, rule_id, category_id, vendor, step1, step2, min_price, max_price)" +
+                "     VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+
+        executeUpdate(sql, companyId, ruleId, categoryId, vendor, step1, step2, minPrice, maxPrice);
+    }
+
+    public void updateVendorsDiscount(int id, int companyId, int ruleId, Integer categoryId, String vendor, Integer step1, Integer step2, Integer minPrice, Integer maxPrice) throws SQLException {
+        String sql = "UPDATE analitic.clients_discounts" +
+                "        SET rule_id     = ?," +
+                "            category_id = ?," +
+                "            vendor      = ?," +
+                "            step1       = ?," +
+                "            step2       = ?," +
+                "            min_price   = ?," +
+                "            max_price   = ?," +
+                "            atime       = sysdate" +
+                "      WHERE id = ? and company_id = ?";
+
+        executeUpdate(sql, ruleId, categoryId, vendor, step1, step2, minPrice, maxPrice, id, companyId);
+    }
+
+    public void deleteVendorsDiscount(int id, int companyId) throws SQLException {
+        String sql = "DELETE FROM analitic.clients_discounts WHERE id = ? and company_id = ?";
+
+        executeUpdate(sql, id, companyId);
+    }
+
+ /*   public void updateVendorsDiscounts(Integer id, int companyId, int ruleId, Integer categoryId, String vendor, Integer step1, Integer step2, Integer minPrice, Integer maxPrice) throws SQLException {
+        String sql = "MERGE INTO clients_discounts c" +
+                "     USING (SELECT ? AS id," +
+                "                   ? AS company_id," +
+                "                   ? AS rule_id," +
+                "                   ? AS category_id," +
+                "                   ? AS vendor," +
+                "                   ? AS step1," +
+                "                   ? AS step2," +
+                "                   ? AS min_price," +
+                "                   ? AS max_price" +
+                "              FROM dual) d" +
+                "     ON (m.id = d.id)" +
+                "     WHEN MATCHED THEN" +
+                "       UPDATE" +
+                "          SET c.company_id  = d.company_id," +
+                "              c.rule_id     = d.rule_id," +
+                "              c.category_id = d.category_id," +
+                "              c.vendor      = d.vendor," +
+                "              c.step1       = d.step1," +
+                "              c.min_price   = d.min_price," +
+                "              c.max_price   = d.max_price," +
+                "              c.atime       = sysdate" +
+                "     WHEN NOT MATCHED THEN" +
+                "       INSERT" +
+                "         (c.company_id," +
+                "          c.rule_id," +
+                "          c.category_id," +
+                "          c.vendor," +
+                "          c.step1," +
+                "          c.min_price," +
+                "          c.max_price)" +
+                "       VALUES" +
+                "         (d.company_id," +
+                "          d.rule_id," +
+                "          d.category_id," +
+                "          d.vendor," +
+                "          d.step1," +
+                "          d.min_price," +
+                "          d.max_price)";
+
+        executeUpdate(sql, id, companyId, ruleId, categoryId, vendor, step1, step2, minPrice, maxPrice);
+    }*/
 
     public List<ListEntity<Integer, String>> getCategories(int companyId) throws SQLException {
         List<ListEntity<Integer, String>> list = new ArrayList<>();
