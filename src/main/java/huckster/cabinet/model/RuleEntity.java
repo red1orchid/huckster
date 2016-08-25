@@ -10,10 +10,10 @@ public class RuleEntity {
     private int devices;
     private String strDevices;
     private String days;
-    private String timeFrom;
-    private String timeTo;
+    private int timeFrom;
+    private int timeTo;
 
-    public RuleEntity(int id, String channels, String sources, int devices, String strDevices, String days, String timeFrom, String timeTo) {
+    public RuleEntity(int id, String channels, String sources, int devices, String strDevices, String days, int timeFrom, int timeTo) {
         this.id = id;
         this.sources = sources;
         this.channels = channels;
@@ -48,11 +48,11 @@ public class RuleEntity {
         return days;
     }
 
-    public String getTimeFrom() {
+    public int getTimeFrom() {
         return timeFrom;
     }
 
-    public String getTimeTo() {
+    public int getTimeTo() {
         return timeTo;
     }
 }

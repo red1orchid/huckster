@@ -29,7 +29,7 @@ public class DiscountEntity {
         this.discount2 = discount2;
     }
 
-    public DiscountEntity(int id, String articul, String name, String vendor, int discount1, int discount2, String url) {
+    public DiscountEntity(int id, String articul, String name, int discount1, int discount2, String url) {
         this.id = id;
         this.articul = articul;
         this.name = name;

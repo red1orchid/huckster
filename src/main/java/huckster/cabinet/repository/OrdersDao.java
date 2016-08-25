@@ -28,10 +28,10 @@ public class OrdersDao extends DbDao {
                 "            decode(h.processing_status, 0, 'принят', 1, 'в работе', 2, 'обработан', 3, 'выкуплен', 4, 'отложен', 5, 'отменен') as status_title," +
                 "            h.processing_comment," +
                 "            h.processing_status" +
-                "       FROM analitic.orders_header h" +
-                "      INNER JOIN analitic.orders_items t" +
+                "       FROM orders_header h" +
+                "      INNER JOIN orders_items t" +
                 "         ON h.id = t.orders_headers_id" +
-                "       LEFT JOIN analitic.mv_offers f" +
+                "       LEFT JOIN offers f" +
                 "         ON f.company_id = h.company_id" +
                 "        AND f.offer_id = t.offer_id" +
                 "      WHERE h.company_id = ?" +
@@ -48,7 +48,7 @@ public class OrdersDao extends DbDao {
     }
 
     public void updateOrder(int orderId, int status, String comment) throws SQLException {
-        String sql = " UPDATE analitic.orders_header" +
+        String sql = " UPDATE orders_header" +
                 "         SET processing_status = ?," +
                 "             processing_comment = ?" +
                 "       WHERE remote_id = ?";

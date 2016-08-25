@@ -1,6 +1,5 @@
 package huckster.cabinet.web;
 
-import huckster.cabinet.DataException;
 import huckster.cabinet.Util;
 import huckster.cabinet.model.CompanySettingsEntity;
 import huckster.cabinet.repository.SettingsDao;
@@ -31,7 +30,27 @@ public class SettingsServlet extends UserServlet {
 
     @Override
     void initDataPost(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
-
+        String type = req.getParameter("type");
+        if (type != null) {
+            switch (type) {
+                case "save_settings": {
+                    String isEnabled = req.getParameter("isEnabled");
+                    try {
+                        if (isEnabled == null) {
+                            throw new NotFoundException("Empty field isEnabled");
+                        } else {
+                            int isActive = Boolean.parseBoolean(isEnabled) ? 1 : 0;
+                            dao.updateCompanySettings(userData.getCompanyId(), req.getParameter("yml"), req.getParameter("orderEmails"), req.getParameter("contactEmails"),
+                                    req.getParameter("yandexKey"), isActive);
+                        }
+                    } catch (SQLException | NotFoundException e) {
+                        Util.logError("Failed to update settings for company ", e, userData);
+                        //TODO: error?
+                    }
+                }
+                break;
+            }
+        }
     }
 
     private CompanySettingsEntity getCompanySettings(UserData userData) {

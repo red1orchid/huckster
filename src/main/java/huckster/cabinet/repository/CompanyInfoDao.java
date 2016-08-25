@@ -10,7 +10,7 @@ import java.util.Optional;
  */
 public class CompanyInfoDao extends DbDao {
     public boolean isUserExists(String username, String password) throws SQLException {
-        String sql = "SELECT count(*) AS count FROM users_auth " +
+        String sql = "SELECT count(*) AS count FROM auth " +
                 "      WHERE upper(user_name) = upper(?) " +
                 "        AND password = sys.hash_md5(? || id || upper(user_name))";
 
@@ -18,16 +18,16 @@ public class CompanyInfoDao extends DbDao {
     }
 
     public Optional<Integer> getCompanyId(String username) throws SQLException {
-        return selectValue("SELECT company " +
-                        "     FROM users_auth " +
+        return selectValue("SELECT company_id " +
+                        "     FROM auth " +
                         "    WHERE upper(user_name) = upper(?)"
-                , null, (rs) -> rs.getInt("company"), username);
+                , null, (rs) -> rs.getInt("company_id"), username);
     }
 
     public Optional<CompanyEntity> getCompanyInfo(int companyId) throws SQLException {
-        return selectValue("SELECT head_name, price_cur " +
-                        "             FROM companies " +
-                        "            WHERE company_id = ?", null, (rs) -> new CompanyEntity(companyId, rs.getString("head_name"), rs.getString("price_cur"))
+        return selectValue("SELECT name, price_cur " +
+                        "     FROM companies " +
+                        "    WHERE id = ?", null, (rs) -> new CompanyEntity(companyId, rs.getString("name"), rs.getString("price_cur"))
                 , companyId);
     }
 }

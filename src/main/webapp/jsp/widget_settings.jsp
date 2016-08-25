@@ -20,6 +20,11 @@
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
     <link href="../Labelauty/jquery-labelauty.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.8/select2-bootstrap.css"
+          rel="stylesheet"/>
+    <%--    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.8/select2-bootstrap.min.css"
+              rel="stylesheet"/>--%>
 
     <script src="../js/jquery-2.2.4.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
@@ -27,8 +32,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
     <script src="../DataTables/datatables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.18.0/jquery.fancytree.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+    <script src="../js/bootstrap-select.min.js"></script>
     <script src="../Labelauty/jquery-labelauty.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
     <style type="text/css">
         /* Remove system outline for focused container */
@@ -140,7 +146,7 @@
                                                             <select id="hourFrom" class="selectpicker"
                                                                     data-live-search="true" data-width="auto">
                                                                 <c:forEach begin="0" end="24" varStatus="loop">
-                                                                    <option>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
+                                                                    <option value="${loop.index}">${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
                                                                 </c:forEach>
                                                             </select>
                                                         </div>
@@ -150,7 +156,7 @@
                                                                     data-live-search="true"
                                                                     data-width="auto">
                                                                 <c:forEach begin="0" end="24" varStatus="loop">
-                                                                    <option>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
+                                                                    <option value="${loop.index}">${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
                                                                 </c:forEach>
                                                             </select>
                                                         </div>
@@ -278,22 +284,14 @@
                                 <div class="modal-body">
                                     <div role="form">
                                         <div class="form-group">
-                                            <label for="vendorItemSelect">Вендор</label>
-                                            <select id="vendorItemSelect" class="selectpicker form-control"
-                                                    title="<Все вендоры>" data-live-search="true">
-                                            </select>
                                             <label for="itemSelect">Товар</label>
-                                            <select id="itemSelect" class="selectpicker form-control"
-                                                    title="...Выберите товар..."
-                                                    data-live-search="true">
-                                            </select>
+                                            <select class="js-example-basic-single form-control" style="width: 100%"
+                                                    id="itemSelect"></select>
                                             <label for="discountItem1">Cкидка 1 уровня, %</label>
                                             <input id="discountItem1" type="number" class="form-control">
                                             <label for="discountItem2">Cкидка 2 уровня, %</label>
                                             <input id="discountItem2" type="number" class="form-control">
-                                            <br>
-                                            <br>
-                                            <br>
+                                            <br><br><br><br>
                                         </div>
                                     </div>
                                 </div>
@@ -345,7 +343,7 @@
             type: "POST",
             data: function (d) {
                 d.request = "ajax";
-                d.type = "step1_rules";
+                d.type = "rules";
             }
         },
         columns: [
@@ -384,7 +382,7 @@
             type: "POST",
             data: function (d) {
                 d.request = "ajax";
-                d.type = "step2_discounts";
+                d.type = "vendors_discounts";
                 d.ruleId = $('#segmentSelect').selectpicker('val')
             }
         },
@@ -413,23 +411,23 @@
         searching: false,
         language: language,
         ajax: {
-            url: "/ajax",
+            url: "/widget_settings",
             type: "POST",
             data: function (d) {
-                d.type = "offer_discounts";
+                d.request = "ajax";
+                d.type = "offers_discounts";
                 d.ruleId = $('#segmentItemSelect').selectpicker('val')
             }
         },
         columns: [
             {
                 data: 'id', render: function (data, type, full, meta) {
-                return '<a data-id="' + full.id + '" data-vendor="' + full.vendor + '" data-articul="' + full.articul +
+                return '<a data-id="' + full.id + '" data-articul="' + full.articul +
                         '" data-discount1="' + full.discount1 + '" data-discount2="' + full.discount2 +
                         '" data-toggle="modal" href="#editItemDiscount"><span class="glyphicon glyphicon-pencil"></span></a>';
             }
             },
             {data: 'articul', title: 'артикул', defaultContent: ''},
-            {data: 'vendor', title: 'вендор', defaultContent: ''},
             {data: 'name', title: 'название', defaultContent: ''},
             {data: 'discount1', title: 'скидка 1 шаг, %', defaultContent: ''},
             {data: 'discount2', title: 'скидка 2 шаг, %', defaultContent: ''},
@@ -445,7 +443,6 @@
         });
         var activeTab = localStorage.getItem('wActiveTab');
         if (activeTab) {
-            console.log(activeTab);
             $('a[href="' + activeTab + '"]').tab('show');
         } else {
             $('.nav-tabs a:first').tab('show');
@@ -465,10 +462,11 @@
             selectMode: 3,
             source: {
                 cache: false,
-                url: "/ajax",
+                url: "/widget_settings",
                 type: "POST",
                 data: {
-                    "type": "settings_tree"
+                    request: "ajax",
+                    type: "settings_tree"
                 }
             },
             icon: false,
@@ -509,20 +507,22 @@
         var tree = $("#fancyTree").fancytree("getTree");
         tree.reload({
             cache: false,
-            url: "/ajax",
+            url: "/widget_settings",
             type: "POST",
             data: {
-                "type": "settings_tree",
-                "id": $(e.relatedTarget).data('id')
+                request: "ajax",
+                type: "settings_tree",
+                id: $(e.relatedTarget).data('id')
             }
         }).done();
 
         //load select lists
         $.ajax({
-            url: "/ajax",
+            url: "/widget_settings",
             type: "POST",
             data: {
-                "type": "settings_lists"
+                request: "ajax",
+                type: "settings_lists"
             },
             success: function (data) {
                 $('#chnl').empty();
@@ -531,9 +531,9 @@
                 data.channels.forEach(function (item, i, arr) {
                     $('#chnl').append('<option>' + item + '</option>');
                 });
-                for (var i in data.sources) {
-                    $('#src').append('<option value="' + i + '">' + data.sources[i] + '</option>');
-                }
+                data.sources.forEach(function (item, i, arr) {
+                    $('#src').append('<option>' + item + '</option>');
+                });
 
                 $('#chnl').selectpicker('refresh');
                 $('#src').selectpicker('refresh');
@@ -560,7 +560,9 @@
     }).on('hidden.bs.modal', function () {
         $('#chnl').empty().selectpicker('refresh');
         $('#src').empty().selectpicker('refresh');
-        $('#devices').val('');
+        $('#devices').selectpicker('val', 0);
+        $('#hourFrom').selectpicker('val', 0);
+        $('#hourTo').selectpicker('val', 24);
         $('#mon').prop('checked', true);
         $('#tue').prop('checked', true);
         $('#wed').prop('checked', true);
@@ -659,7 +661,7 @@
             type: "POST",
             data: {
                 "request": "ajax",
-                "type": "step2_all",
+                "type": "vendors_categories",
                 "categoryId": $(e.relatedTarget).data('category')
             },
             success: function (data) {
@@ -686,7 +688,7 @@
             type: "POST",
             data: {
                 "request": "ajax",
-                "type": "step2_vendors",
+                "type": "vendors",
                 "categoryId": $('#catSelect').selectpicker('val')
             },
             success: function (data) {
@@ -701,7 +703,7 @@
             url: "/widget_settings",
             type: "POST",
             data: {
-                type: "step2_save_discount",
+                type: "save_vendor_discount",
                 id: id,
                 ruleId: $('#segmentSelect').selectpicker('val'),
                 category: $('#catSelect').selectpicker('val'),
@@ -722,7 +724,7 @@
             url: "/widget_settings",
             type: "POST",
             data: {
-                type: "step2_delete_discount",
+                type: "delete_vendor_discount",
                 id: id
             }
         }).done(function (msg) {
@@ -739,51 +741,86 @@
     $('#editItemDiscount').on('show.bs.modal', function (e) {
         $('#discountItem1').val($(e.relatedTarget).data('discount1'));
         $('#discountItem2').val($(e.relatedTarget).data('discount2'));
+        id = $(e.relatedTarget).data('id');
 
-        $.ajax({
-            url: "/ajax",
-            type: "POST",
-            data: {
-                "type": "step3_vendors"
-            },
-            success: function (data) {
-                $('#vendorItemSelect').empty();
-                if (data != null) {
-                    for (var i = 0; i < data.length; i++) {
-                        $('#vendorItemSelect').append('<option>' + data[i] + '</option>');
-                    }
+        $('#itemSelect').select2({
+            theme: "bootstrap",
+            language: {
+                noResults: function(){
+                    return "Ничего не найдено";
+                },
+                searching: function(){
+                    return "Поиск...";
+                },
+                inputTooShort: function(){
+                    return "Начните вводить название товара";
                 }
-                $('#vendorItemSelect').selectpicker('refresh');
-                //  $('#vendorItemSelect').val($(e.relatedTarget).data('vendor'));
-                $('#itemSelect').val($(e.relatedTarget).data('id'));
-            }
+            },
+            ajax: {
+                url: "/widget_settings",
+                type: "POST",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        request: "ajax",
+                        type: "offers",
+                        search: params.term
+                    };
+                },
+                processResults: function (data) {
+                    // parse the results into the format expected by Select2.
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data
+                    return {
+                        results: data.map(function(obj) {
+                            return {id : obj.key, text: obj.value};
+                        })
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) {
+                return markup;
+            }, // let our custom formatter work
+            minimumInputLength: 1
         });
+        $('#itemSelect').val($(e.relatedTarget).data('id'));
     }).on('hidden.bs.modal', function () {
-        $('#vendorItemSelect').empty().selectpicker('refresh');
-        $('#itemSelect').empty().selectpicker('refresh');
         $('#discountItem1').val('');
         $('#discountItem2').val('');
     });
 
-    $('#vendorItemSelect').on('changed.bs.select', function (e) {
+    $('#saveItemDiscount').on('click', function (e) {
         $.ajax({
-            url: "/ajax",
+            url: "/widget_settings",
             type: "POST",
             data: {
-                "type": "step3_offers",
-                "vendor": $('#vendorItemSelect').selectpicker('val')
-            },
-            success: function (data) {
-                $('#itemSelect').empty();
-                if (data != null) {
-                    for (var i = 0; i < data.length; i++) {
-                        $('#itemSelect').append('<option value="' + data[i].key + '">' + data[i].value + '</option>');
-                    }
-                }
-                $('#itemSelect').selectpicker('refresh');
+                type: "save_offer_discount",
+                id: id,
+                offerId: $('#itemSelect').val(),
+                ruleId: $('#segmentSelect').selectpicker('val'),
+                discount1: $('#discountItem1').val(),
+                discount2: $('#discountItem2').val()
             }
+        }).done(function (msg) {
+            $('#editItemDiscount').modal('hide');
+            itemDiscounts.ajax.reload();
         });
-        // fillVendors($('#catSelect').selectpicker('val'));
+    });
+
+    $('#deleteItemDiscount').on('click', function (e) {
+        $.ajax({
+            url: "/widget_settings",
+            type: "POST",
+            data: {
+                type: "delete_offer_discount",
+                id: id
+            }
+        }).done(function (msg) {
+            $('#editItemDiscount').modal('hide');
+            itemDiscounts.ajax.reload();
+        });
     });
 
 

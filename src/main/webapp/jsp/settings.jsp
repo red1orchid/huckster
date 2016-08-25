@@ -200,6 +200,24 @@
         $('.toggle').bootstrapSwitch();
     });
 
+    //Settings
+    $('#saveSettings').on('click', function (e) {
+        $.ajax({
+            url: "/settings",
+            type: "POST",
+            data: {
+                type: "save_settings",
+                yml: $('#yml').val(),
+                orderEmails: $('#orderEmails').val(),
+                contactEmails: $('#contactEmails').val(),
+                yandexKey: $('#yandexKey').val(),
+                isEnabled: $('#isEnabled').bootstrapSwitch('state')
+            }
+        }).done(function (msg) {
+            location.reload();
+        });
+    });
+
     //Pages
     $('#editPage').on('show.bs.modal', function (e) {
         $('#url').val($(e.relatedTarget).data('url'));

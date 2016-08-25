@@ -5,7 +5,7 @@ import huckster.cabinet.StatisticPanel;
 import huckster.cabinet.Util;
 import huckster.cabinet.model.ChartData;
 import huckster.cabinet.model.TwoLineChartEntity;
-import huckster.cabinet.repository.MainPageDao;
+import huckster.cabinet.repository.DashbordDao;
 import huckster.cabinet.repository.UserData;
 
 import javax.servlet.ServletException;
@@ -24,7 +24,7 @@ import java.util.Map;
 
 @WebServlet("")
 public class DashboardServlet extends UserServlet {
-    private MainPageDao dao = new MainPageDao();
+    private DashbordDao dao = new DashbordDao();
 
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {

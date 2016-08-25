@@ -32,7 +32,7 @@ public class UserData {
     private List<String> vendorContainer = new ArrayList<>();
     private List<String> vendorOfferContainer = new ArrayList<>();
     private List<ListEntity<Integer, String>> categoryContainer = new ArrayList<>();
-    private Map<String, List<ListEntity>> offerContainer = new HashMap<>();
+    private List<ListEntity> offerContainer = new ArrayList<>();
     private static final Logger LOG = LoggerFactory.getLogger(UserData.class);
     private CompanyInfoDao dao = new CompanyInfoDao();
 
@@ -90,7 +90,7 @@ public class UserData {
         return chartContainer;
     }
 
-    public Map<String, List<ListEntity>> getOfferContainer() {
+    public List<ListEntity> getOfferContainer() {
         return offerContainer;
     }
 
@@ -160,7 +160,7 @@ public class UserData {
         this.categoryContainer = categoryContainer;
     }
 
-    public void setOfferContainer(Map<String, List<ListEntity>> itemContainer) {
+    public void setOfferContainer(List<ListEntity> itemContainer) {
         this.offerContainer = itemContainer;
     }
 

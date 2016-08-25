@@ -10,18 +10,18 @@ import java.util.List;
 /**
  * Created by PerevalovaMA on 04.08.2016.
  */
-public class MainPageDao extends DbDao {
+public class DashbordDao extends DbDao {
     public HashMap<Integer, String> getStatisticRates(int companyId, String period) throws SQLException {
         String sql = " SELECT report_id, " +
                 "             CASE" +
                 "               WHEN report_id IN (4, 7) THEN to_char(value, 'fm90.00')" +
                 "               ELSE value" +
                 "             END AS value" +
-                "   FROM analitic.reports_data" +
+                "   FROM reports_data" +
                 "  WHERE report_id IN (4, 5, 6, 7)" +
                 "    AND company_id = ?" +
                 "    AND decode(interval, 'ddd', 'day', 'iw', 'week', interval) = ?" +
-                "    AND metric_name = 'curr'";
+                "    AND metric = 'curr'";
 
         HashMap<Integer, String> rates = new HashMap<>();
 
@@ -34,16 +34,16 @@ public class MainPageDao extends DbDao {
     public HashMap<Integer, String> getStatisticPercents(int companyId, String period) throws SQLException {
         String sql = "SELECT r.report_id, (CASE WHEN sign(r.value-rr.value) = 1 THEN '+' END) || " +
                 "                       trim(to_char(round((r.value-rr.value)/decode(rr.value,0,1,rr.value)*100, 2), '999990.99')) AS value" +
-                "  FROM analitic.reports_data r" +
-                " INNER JOIN analitic.reports_data rr" +
+                "  FROM reports_data r" +
+                " INNER JOIN reports_data rr" +
                 "    ON rr.report_id = r.report_id" +
                 "   AND rr.company_id = r.company_id " +
                 "   AND rr.interval = r.interval " +
                 " WHERE r.report_id IN (4, 5, 6, 7) " +
                 "   AND r.company_id = ? " +
                 "   AND r.interval = decode(?, 'day', 'ddd', 'week', 'iw', 'month') " +
-                "   AND r.metric_name = 'curr' " +
-                "   AND rr.metric_name = 'last'";
+                "   AND r.metric = 'curr' " +
+                "   AND rr.metric = 'last'";
 
         HashMap<Integer, String> percents = new HashMap<>();
 
@@ -56,17 +56,17 @@ public class MainPageDao extends DbDao {
     public List<TwoLineChartEntity> getChartData(int companyId, String period) throws SQLException {
         String sql = "SELECT * " +
                 "FROM (" +
-                "  SELECT report_id, metric_name, period, CASE report_id" +
+                "  SELECT report_id, metric, period, CASE report_id" +
                 "                                            WHEN 3 THEN value*1000" +
                 "                                            ELSE to_number(value)" +
                 "                                         END AS value" +
-                "  FROM analitic.reports_data" +
+                "  FROM reports_data" +
                 "  WHERE report_id IN (1, 2, 3)" +
                 "        AND company_id = ?" +
                 "        AND interval = ?)" +
                 "  PIVOT (" +
                 "    sum(value)" +
-                "    FOR metric_name IN ('curr' AS curr, 'last' AS last))" +
+                "    FOR metric IN ('curr' AS curr, 'last' AS last))" +
                 "ORDER BY report_id";
 
         List<TwoLineChartEntity> chartData = new ArrayList<>();

@@ -23,6 +23,18 @@ public class SettingsDao extends DbDao {
                 , companyId);
     }
 
+    public void updateCompanySettings(int companyId, String yml, String orderEmails, String contactEmails, String yandexKey, int isActive) throws SQLException {
+        String sql = "UPDATE v_companies" +
+                "        SET feed_url         = ?," +
+                "            mailto           = ?," +
+                "            mailto_admin     = ?," +
+                "            metric_key       = ?," +
+                "            is_manual_enable = ?" +
+                "      WHERE company_id = ?";
+
+        executeUpdate(sql, yml, orderEmails, contactEmails, yandexKey, isActive, companyId);
+    }
+
     public List<UrlEntity> getBlockedUrls(int companyId) throws SQLException {
         List<UrlEntity> list = new ArrayList<>();
         String sql = "SELECT id," +
