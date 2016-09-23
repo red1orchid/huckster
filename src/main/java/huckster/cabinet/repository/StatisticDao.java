@@ -16,22 +16,18 @@ public class StatisticDao extends DbDao{
                 "                          t.vendor," +
                 "                          t.uniq_clients_views_%1$s," +
                 "                          t.uniq_clients_widget_%1$s," +
-                "                          t.orders_basket_%1$s," +
-                "                          t.orders1_%1$s," +
-                "                          t.orders2_%1$s," +
-                "                          t.orders3_%1$s," +
-                "                          nvl(t.image_info, t.reco)" +
-                "                     FROM analitic.offers_stats @DB_ORA_PRODUCT t" +
+                "                          t.orders_%1$s" +
+                "                     FROM offers_stats t" +
                 "                    WHERE t.company_id = ?" +
                 "                      AND rownum < 100" +
                 "                    ORDER BY t.uniq_clients_widget_%1$s DESC", period);
 
-        return makeTable(sql, 100, 11, companyId);
+        return makeTable(sql, 100, 7, companyId);
     }
 
     public List<List> getTraffic(int companyId, String period) throws SQLException {
         String sql = String.format("SELECT t.rule, t.ords_%1$s, t.trfc_%1$s, t.conv_%1$s, t.disc_%1$s" +
-                "                     FROM analitic.mv_traffic_rules t" +
+                "                     FROM traffic_stats t" +
                 "                    WHERE t.company_id = ?", period);
 
         return makeTable(sql, null, 5, companyId);
@@ -47,7 +43,7 @@ public class StatisticDao extends DbDao{
                 "            offers," +
                 "            offers24," +
                 "            offers168" +
-                "       FROM analitic.yml_stats" +
+                "       FROM yml_stats" +
                 "      WHERE id = ?";
 
         Map<String, String> map = new LinkedHashMap<>();

@@ -38,7 +38,7 @@ public class DashboardServlet extends UserServlet {
     @Override
     protected void initDataPost(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException {
         userData.setPeriod(req.getParameter("period"));
-        resp.sendRedirect("/");
+        resp.sendRedirect(".");
     }
 
     private List<StatisticPanel> getPanels(UserData userData) throws SQLException {

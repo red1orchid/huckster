@@ -11,20 +11,20 @@
 <html>
 <head>
     <title>Личный кабинет</title>
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/dashboard.css" rel="stylesheet">
-    <link href="../css/charts/chart.css" rel="stylesheet">
-    <link href="../css/charts/xcharts.min.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/dashboard.css" rel="stylesheet">
+    <link href="./css/charts/chart.css" rel="stylesheet">
+    <link href="./css/charts/xcharts.min.css" rel="stylesheet">
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script src='../js/jquery-1.9.1.min.js'></script>
-    <script src='../js/jquery-migrate-1.2.1.js'></script>
-    <script src='../js/jquery-ui-1.10.3-custom.min.js'></script>
-    <script src='../js/charts/d3.min.js'></script>
-    <script src='../js/charts/sugar.min.js'></script>
-    <script src='../js/charts/xcharts.min.js'></script>
-    <script src='../js/charts/script.js'></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src='./js/jquery-1.9.1.min.js'></script>
+    <script src='./js/jquery-migrate-1.2.1.js'></script>
+    <script src='./js/jquery-ui-1.10.3-custom.min.js'></script>
+    <script src='./js/charts/d3.min.js'></script>
+    <script src='./js/charts/sugar.min.js'></script>
+    <script src='./js/charts/xcharts.min.js'></script>
+    <script src='./js/charts/script.js'></script>
 </head>
 <body>
 <%--Top bar--%>

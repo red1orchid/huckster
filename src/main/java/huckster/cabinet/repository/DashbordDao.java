@@ -14,7 +14,7 @@ public class DashbordDao extends DbDao {
     public HashMap<Integer, String> getStatisticRates(int companyId, String period) throws SQLException {
         String sql = " SELECT report_id, " +
                 "             CASE" +
-                "               WHEN report_id IN (4, 7) THEN to_char(value, 'fm90.00')" +
+                "               WHEN report_id IN (4, 7) THEN to_char(value, 'fm9999990.00')" +
                 "               ELSE value" +
                 "             END AS value" +
                 "   FROM reports_data" +

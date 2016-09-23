@@ -15,7 +15,7 @@ public class SettingsDao extends DbDao {
     public Optional<CompanySettingsEntity> getCompanySettings(int companyId) throws SQLException {
         String sql = "SELECT feed_url, mailto, mailto_admin, metric_key, is_manual_enable" +
                 "       FROM companies" +
-                "      WHERE company_id = ?";
+                "      WHERE id = ?";
 
         return selectValue(sql, null, (rs) ->
                         new CompanySettingsEntity(companyId, rs.getString("feed_url"), rs.getString("mailto"), rs.getString("mailto_admin"),
@@ -40,14 +40,37 @@ public class SettingsDao extends DbDao {
         String sql = "SELECT id," +
                 "            regexp_replace(url, '^(http://|https://)|(www.)|(\\\\?\\\\S+)|(/$)') AS url," +
                 "            is_basket," +
-                "            to_char(ctime, 'DD.MM.YYYY') AS ctime" +
-                "       FROM analitic.companies_pages_blocked" +
+                "            to_char(atime, 'DD.MM.YYYY') AS atime" +
+                "       FROM block_pages" +
                 "      WHERE company_id = ?" +
                 "      ORDER BY ID DESC";
 
-        execute(sql, null, (rs) -> list.add(new UrlEntity(rs.getInt("id"), rs.getString("url"), rs.getInt("is_basket"), rs.getString("ctime")))
+        execute(sql, null, (rs) -> list.add(new UrlEntity(rs.getInt("id"), rs.getString("url"), rs.getInt("is_basket"), rs.getString("atime")))
                 , companyId);
 
         return list;
+    }
+
+    public void updateBlockedUrl(int companyId, int id, String url, int isBasket) throws SQLException {
+        String sql = "UPDATE block_pages" +
+                "        SET url = ?, " +
+                "            is_basket = ?, " +
+                "            atime = sysdate" +
+                "      WHERE id = ? AND company_id = ?";
+
+        executeUpdate(sql, url, isBasket, id, companyId);
+    }
+
+    public void insertBlockedUrl(int companyId, String url, int isBasket) throws SQLException {
+        String sql = "INSERT INTO block_pages(company_id, url, is_basket)" +
+                "     VALUES(?, ?, ?)";
+
+        executeUpdate(sql, companyId, url, isBasket);
+    }
+
+    public void deleteBlockedUrl(int companyId, int id) throws SQLException {
+        String sql = "DELETE FROM block_pages WHERE id = ? AND company_id = ?";
+
+        executeUpdate(sql, id, companyId);
     }
 }

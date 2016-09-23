@@ -28,6 +28,7 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String rememberMe = req.getParameter("rememberMe");
+        System.out.println(req.getHeader("referer"));
 
         try {
             if (dao.isUserExists(username, password)) {
@@ -37,14 +38,14 @@ public class LoginServlet extends HttpServlet {
                     loginCookie.setMaxAge(COOKIE_MAX_AGE);
                     resp.addCookie(loginCookie);
                 }
-                resp.sendRedirect("/");
+                resp.sendRedirect(".");
             } else {
                 req.setAttribute("message", "Неправильное имя пользователя или пароль");
                 req.getRequestDispatcher("/jsp/login.jsp").forward(req, resp);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            resp.sendRedirect("/jsp/error.jsp");
+            resp.sendRedirect("jsp/error.jsp");
         }
 
     }

@@ -13,7 +13,7 @@ import java.util.List;
 public class OrdersDao extends DbDao {
     public List<OrderEntity> getOrders(int companyId, Date startDate, Date endDate) throws SQLException {
         List<OrderEntity> orders = new ArrayList<>();
-        String sql = "SELECT h.remote_id as order_id," +
+        String sql = "SELECT h.id as order_id," +
                 "            h.rule_id," +
                 "            t.offer_id," +
                 "            f.vendor_code," +
@@ -30,7 +30,7 @@ public class OrdersDao extends DbDao {
                 "            h.processing_status" +
                 "       FROM orders_header h" +
                 "      INNER JOIN orders_items t" +
-                "         ON h.id = t.orders_headers_id" +
+                "         ON h.id = t.orders_header_id" +
                 "       LEFT JOIN offers f" +
                 "         ON f.company_id = h.company_id" +
                 "        AND f.offer_id = t.offer_id" +

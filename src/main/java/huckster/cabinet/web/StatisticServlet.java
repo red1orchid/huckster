@@ -40,7 +40,7 @@ public class StatisticServlet extends UserServlet implements JsonOutput {
             if (req.getParameter("periodTraffic") != null) {
                 userData.setPeriodTraffic(req.getParameter("periodTraffic"));
             }
-            resp.sendRedirect("/statistic");
+            resp.sendRedirect("statistic");
         }
     }
 

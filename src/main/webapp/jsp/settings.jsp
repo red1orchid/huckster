@@ -10,14 +10,14 @@
 <html>
 <head>
     <title>Общие настройки</title>
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/dashboard.css" rel="stylesheet">
-    <link href="../css/table.css" rel="stylesheet">
-    <link href="../css/bootstrap-switch.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/dashboard.css" rel="stylesheet">
+    <link href="./css/table.css" rel="stylesheet">
+    <link href="./css/bootstrap-switch.css" rel="stylesheet">
 
-    <script src="../js/jquery-2.2.4.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/bootstrap-switch.js"></script>
+    <script src="./js/jquery-2.2.4.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/bootstrap-switch.js"></script>
 </head>
 <body>
 <%--Top bar--%>
@@ -203,7 +203,7 @@
     //Settings
     $('#saveSettings').on('click', function (e) {
         $.ajax({
-            url: "/settings",
+            url: "settings",
             type: "POST",
             data: {
                 type: "save_settings",
@@ -219,9 +219,39 @@
     });
 
     //Pages
+    var id;
     $('#editPage').on('show.bs.modal', function (e) {
+        id = $(e.relatedTarget).data('id');
         $('#url').val($(e.relatedTarget).data('url'));
         $('#isTrash').bootstrapSwitch('state', Boolean($(e.relatedTarget).data('trash')));
+    });
+
+    $('#savePage').on('click', function (e) {
+        $.ajax({
+            url: "settings",
+            type: "POST",
+            data: {
+                type: "save_page",
+                id: id,
+                url: $('#url').val(),
+                isTrash: $('#isTrash').bootstrapSwitch('state') ? 1 : 0
+            }
+        }).done(function (msg) {
+            location.reload();
+        });
+    });
+
+    $('#deletePage').on('click', function (e) {
+        $.ajax({
+            url: "settings",
+            type: "POST",
+            data: {
+                type: "delete_page",
+                id: id
+            }
+        }).done(function (msg) {
+            location.reload();
+        });
     });
 </script>
 </html>

@@ -10,16 +10,16 @@
 <html>
 <head>
     <title>Статистика и аналитика</title>
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/dashboard.css" rel="stylesheet">
-    <link href="../css/datepicker.css" rel="stylesheet">
-    <link href="../css/table.css" rel="stylesheet">
-    <link href="../DataTables/datatables.min.css" rel="stylesheet" >
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/dashboard.css" rel="stylesheet">
+    <link href="./css/datepicker.css" rel="stylesheet">
+    <link href="./css/table.css" rel="stylesheet">
+    <link href="./DataTables/datatables.min.css" rel="stylesheet" >
 
-    <script src="../js/jquery-2.2.4.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="../DataTables/datatables.min.js"></script>
-    <script src="../js/bootstrap-datepicker.js"></script>
+    <script src="./js/jquery-2.2.4.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./DataTables/datatables.min.js"></script>
+    <script src="./js/bootstrap-datepicker.js"></script>
 </head>
 <body>
 <%--Top bar--%>
@@ -77,11 +77,7 @@
                             <th>вендор</th>
                             <th>просмотры, ${goodHeader}</th>
                             <th>показы виджета, ${goodHeader}</th>
-                            <th>заказ с корзины, ${goodHeader}</th>
-                            <th>заказ с 1-го виджета, ${goodHeader}</th>
-                            <th>заказ с 2-го виджета, ${goodHeader}</th>
-                            <th>заказ с 3-го виджета, ${goodHeader}</th>
-                            <th>рекомендации</th>
+                            <th>заказы, ${goodHeader}</th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -198,15 +194,15 @@
 
         $('#goodsTbl').DataTable({
             colReorder: true,
-            dom: 'lfrtipB',
+            /*           dom: 'lfrtipB',
             buttons: [
                 'excel'
-            ],
+            ],*/
             ordering: false,
             iDisplayLength: 25,
             language: language,
             ajax: {
-                url: "/statistic",
+                url: "statistic",
                 type: "POST",
                 data: {
                     "request": "ajax"

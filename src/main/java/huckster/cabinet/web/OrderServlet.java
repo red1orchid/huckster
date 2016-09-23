@@ -34,7 +34,7 @@ public class OrderServlet extends UserServlet implements JsonOutput {
         req.setAttribute("statuses", getOrderStatuses());
 
         Util.timeStone("orders start forward");
-        req.getRequestDispatcher("/jsp/orders.jsp").forward(req, resp);
+        req.getRequestDispatcher("jsp/orders.jsp").forward(req, resp);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class OrderServlet extends UserServlet implements JsonOutput {
                 }
                 //   System.out.println(req.getParameter("comment"));
             }
-            resp.sendRedirect("/orders");
+            resp.sendRedirect("orders");
         }
     }
 

@@ -10,30 +10,30 @@
 <html>
 <head>
     <title>Настройки виджета</title>
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/dashboard.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/dashboard.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css"/>
-    <link href="../css/table.css" rel="stylesheet">
-    <link href="../DataTables/datatables.min.css" rel="stylesheet">
+    <link href="./css/table.css" rel="stylesheet">
+    <link href="./DataTables/datatables.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.18.0/skin-win8-n/ui.fancytree.css"
           rel="stylesheet">
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
-    <link href="../Labelauty/jquery-labelauty.css" rel="stylesheet">
+    <link href="./Labelauty/jquery-labelauty.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.8/select2-bootstrap.css"
           rel="stylesheet"/>
     <%--    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.8/select2-bootstrap.min.css"
               rel="stylesheet"/>--%>
 
-    <script src="../js/jquery-2.2.4.min.js"></script>
+    <script src="./js/jquery-2.2.4.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
-    <script src="../DataTables/datatables.min.js"></script>
+    <script src="./DataTables/datatables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.18.0/jquery.fancytree.js"></script>
-    <script src="../js/bootstrap-select.min.js"></script>
-    <script src="../Labelauty/jquery-labelauty.js"></script>
+    <script src="./js/bootstrap-select.min.js"></script>
+    <script src="./Labelauty/jquery-labelauty.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
     <style type="text/css">
@@ -339,7 +339,7 @@
         searching: false,
         language: language,
         ajax: {
-            url: "/widget_settings",
+            url: "widget_settings",
             type: "POST",
             data: function (d) {
                 d.request = "ajax";
@@ -378,7 +378,7 @@
         searching: false,
         language: language,
         ajax: {
-            url: "/widget_settings",
+            url: "widget_settings",
             type: "POST",
             data: function (d) {
                 d.request = "ajax";
@@ -411,7 +411,7 @@
         searching: false,
         language: language,
         ajax: {
-            url: "/widget_settings",
+            url: "widget_settings",
             type: "POST",
             data: function (d) {
                 d.request = "ajax";
@@ -462,7 +462,7 @@
             selectMode: 3,
             source: {
                 cache: false,
-                url: "/widget_settings",
+                url: "widget_settings",
                 type: "POST",
                 data: {
                     request: "ajax",
@@ -507,7 +507,7 @@
         var tree = $("#fancyTree").fancytree("getTree");
         tree.reload({
             cache: false,
-            url: "/widget_settings",
+            url: "widget_settings",
             type: "POST",
             data: {
                 request: "ajax",
@@ -518,7 +518,7 @@
 
         //load select lists
         $.ajax({
-            url: "/widget_settings",
+            url: "widget_settings",
             type: "POST",
             data: {
                 request: "ajax",
@@ -592,7 +592,7 @@
 
         $.ajax({
             type: "POST",
-            url: "/widget_settings",
+            url: "widget_settings",
             data: {
                 type: "save_rule",
                 id: id,
@@ -612,7 +612,7 @@
 
     $('#deleteRule').on('click', function (e) {
         $.ajax({
-            url: "/widget_settings",
+            url: "widget_settings",
             type: "POST",
             data: {
                 type: "delete_rule",
@@ -657,7 +657,7 @@
         $('#discount2').val($(e.relatedTarget).data('discount2'));
 
         $.ajax({
-            url: "/widget_settings",
+            url: "widget_settings",
             type: "POST",
             data: {
                 "request": "ajax",
@@ -684,7 +684,7 @@
 
     $('#catSelect').on('changed.bs.select', function (e) {
         $.ajax({
-            url: "/widget_settings",
+            url: "widget_settings",
             type: "POST",
             data: {
                 "request": "ajax",
@@ -700,7 +700,7 @@
 
     $('#saveVendorDiscount').on('click', function (e) {
         $.ajax({
-            url: "/widget_settings",
+            url: "widget_settings",
             type: "POST",
             data: {
                 type: "save_vendor_discount",
@@ -721,7 +721,7 @@
 
     $('#deleteVendorDiscount').on('click', function (e) {
         $.ajax({
-            url: "/widget_settings",
+            url: "widget_settings",
             type: "POST",
             data: {
                 type: "delete_vendor_discount",
@@ -757,7 +757,7 @@
                 }
             },
             ajax: {
-                url: "/widget_settings",
+                url: "widget_settings",
                 type: "POST",
                 dataType: 'json',
                 delay: 250,
@@ -793,7 +793,7 @@
 
     $('#saveItemDiscount').on('click', function (e) {
         $.ajax({
-            url: "/widget_settings",
+            url: "widget_settings",
             type: "POST",
             data: {
                 type: "save_offer_discount",
@@ -811,7 +811,7 @@
 
     $('#deleteItemDiscount').on('click', function (e) {
         $.ajax({
-            url: "/widget_settings",
+            url: "widget_settings",
             type: "POST",
             data: {
                 type: "delete_offer_discount",

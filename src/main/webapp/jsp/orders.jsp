@@ -10,16 +10,16 @@
 <html>
 <head>
     <title>Работа с заказами</title>
-    <link href="../DataTables/datatables.min.css" rel="stylesheet">
-    <link href="../css/table.css" rel="stylesheet">
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/dashboard.css" rel="stylesheet">
-    <link href="../css/datepicker.css" rel="stylesheet">
+    <link href="./DataTables/datatables.min.css" rel="stylesheet">
+    <link href="./css/table.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/dashboard.css" rel="stylesheet">
+    <link href="./css/datepicker.css" rel="stylesheet">
 
-    <script src="../js/jquery-2.2.4.min.js"></script>
-    <script src="../DataTables/datatables.min.js"></script>
-    <script src="../js/bootstrap.min.js"></script>
-    <script src="../js/bootstrap-datepicker.js"></script>
+    <script src="./js/jquery-2.2.4.min.js"></script>
+    <script src="./DataTables/datatables.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/bootstrap-datepicker.js"></script>
 </head>
 <body>
 
@@ -127,7 +127,7 @@
                 }
             },
             ajax: {
-                url: "/orders",
+                url: "orders",
                 type: "POST",
                 data: {
                     "request" : "ajax"

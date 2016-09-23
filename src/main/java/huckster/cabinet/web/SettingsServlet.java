@@ -49,6 +49,40 @@ public class SettingsServlet extends UserServlet {
                     }
                 }
                 break;
+                case "save_page": {
+                    String url = req.getParameter("url");
+                    int isTrash = Integer.parseInt(req.getParameter("isTrash"));
+                    if (isNumber(req.getParameter("id"))) {
+                        try {
+                            dao.updateBlockedUrl(userData.getCompanyId(), Integer.parseInt(req.getParameter("id")), url, isTrash);
+                        } catch (SQLException e) {
+                            //TODO: error?
+                            Util.logError("Failed to update blocked url " + req.getParameter("id"), e, userData);
+                        }
+                    } else {
+                        try {
+                            dao.insertBlockedUrl(userData.getCompanyId(), url, isTrash);
+                        } catch (SQLException e) {
+                            //TODO: error?
+                            Util.logError("Failed to insert blocked url", e, userData);
+                        }
+                    }
+                }
+                break;
+                case "delete_page": {
+                    if (isNumber(req.getParameter("id"))) {
+                        try {
+                            dao.deleteBlockedUrl(userData.getCompanyId(), Integer.parseInt(req.getParameter("id")));
+                        } catch (SQLException e) {
+                            //TODO: error?
+                            Util.logError("Failed to delete blocked url " + req.getParameter("id"), e, userData);
+                        }
+                    } else {
+                        //TODO: error?
+                        Util.logError("Empty blocked url id", userData);
+                    }
+                }
+                break;
             }
         }
     }
@@ -61,5 +95,9 @@ public class SettingsServlet extends UserServlet {
             //TODO: fatal? 500? message?
             throw new RuntimeException("");
         }
+    }
+
+    private boolean isNumber(String src) {
+        return (src != null && !src.isEmpty());
     }
 }
