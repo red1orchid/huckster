@@ -26,6 +26,9 @@ import java.util.Map;
 public class DashboardServlet extends UserServlet {
     private DashbordDao dao = new DashbordDao();
 
+    public DashboardServlet() throws SQLException {
+    }
+
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
         userData.clear();

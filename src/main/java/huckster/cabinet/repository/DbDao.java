@@ -7,10 +7,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -88,6 +85,13 @@ public class DbDao {
                 ps.setObject(++cnt, param);
             }
             ps.executeUpdate();
+        }
+    }
+
+    protected void alterSession(String sql) throws SQLException {
+        try (Connection dbConnection = pool.getConnection();
+             Statement s = dbConnection.createStatement()) {
+            s.execute(sql);
         }
     }
 

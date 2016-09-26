@@ -2,6 +2,7 @@ package huckster.cabinet.web;
 
 import huckster.cabinet.Util;
 import huckster.cabinet.model.*;
+import huckster.cabinet.repository.CompanyInfoDao;
 import huckster.cabinet.repository.UserData;
 import huckster.cabinet.repository.WidgetSettingsDao;
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class WidgetSettingsServlet extends UserServlet implements JsonOutput {
     private static final Logger LOG = LoggerFactory.getLogger(WidgetSettingsServlet.class);
     private WidgetSettingsDao dao = new WidgetSettingsDao();
+    private CompanyInfoDao companyDao = new CompanyInfoDao();
     private Util util = new Util();
 
     @Override
@@ -31,6 +33,7 @@ public class WidgetSettingsServlet extends UserServlet implements JsonOutput {
         req.setAttribute("rules", getRules(userData));
         req.setAttribute("devices", dao.getDevices());
         req.setAttribute("segments", getSegments(userData));
+        req.setAttribute("isAutoMode", isAutoMode(userData));
         req.getRequestDispatcher("/jsp/widget_settings.jsp").forward(req, resp);
     }
 
@@ -163,8 +166,27 @@ public class WidgetSettingsServlet extends UserServlet implements JsonOutput {
                         }
                     }
                     break;
+                    case "auto_mode": {
+                        if (req.getParameter("mode") != null) {
+                            try {
+                                companyDao.setAutoMode(userData.getCompanyId(), Boolean.parseBoolean(req.getParameter("mode")));
+                            } catch (SQLException e) {
+                                Util.logError("Failed to set auto mode", userData);
+                            }
+                        }
+                    }
+                    break;
                 }
             }
+        }
+    }
+
+    private boolean isAutoMode(UserData userData) {
+        try {
+            return companyDao.isAutoMode(userData.getCompanyId());
+        } catch (SQLException e) {
+            Util.logError("Failed to select mode", e, userData);
+            return false;
         }
     }
 

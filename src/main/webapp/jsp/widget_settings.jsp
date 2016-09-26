@@ -23,6 +23,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.8/select2-bootstrap.css"
           rel="stylesheet"/>
+    <link href="./css/titatoggle-dist.css" rel="stylesheet">
     <%--    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.8/select2-bootstrap.min.css"
               rel="stylesheet"/>--%>
 
@@ -60,12 +61,19 @@
         <%--Sidebar--%>
         <%@ include file="menu.jsp" %>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <div class="checkbox checkbox-slider--b-flat checkbox-slider-info pull-right">
+                <label>
+                    <input id="isAutoMode" type="checkbox"
+                           <c:if test="${isAutoMode}">checked="checked"</c:if>><span>Авторежим</span>
+                </label>
+            </div>
             <ul class="nav nav-tabs" id="tabs">
-                <li><a data-toggle="tab" href="#step1">шаг 1: Сегменты</a></li>
-                <li><a data-toggle="tab" href="#step2">шаг 2: Скидки для категорий и вендоров</a></li>
-                <li><a data-toggle="tab" href="#step3">шаг 3: Скидки на отдельные товары</a></li>
+                <c:if test="${!isAutoMode}">
+                    <li><a data-toggle="tab" href="#step1">Сегменты</a></li>
+                </c:if>
+                <li><a data-toggle="tab" href="#step2">Скидки для категорий и вендоров</a></li>
+                <li><a data-toggle="tab" href="#step3">Скидки на отдельные товары</a></li>
             </ul>
-
             <div class="tab-content">
                 <%--Step 1--%>
                 <div id="step1" class="tab-pane fade">
@@ -442,11 +450,25 @@
             localStorage.setItem('wActiveTab', $(e.target).attr('href'));
         });
         var activeTab = localStorage.getItem('wActiveTab');
-        if (activeTab) {
+        if (activeTab && $('a[href="' + activeTab + '"]').val() != undefined) {
             $('a[href="' + activeTab + '"]').tab('show');
         } else {
+            console.log('here');
             $('.nav-tabs a:first').tab('show');
         }
+
+        $("#isAutoMode").change(function() {
+            $.ajax({
+                type: "POST",
+                url: "widget_settings",
+                data: {
+                    type: "auto_mode",
+                    mode: this.checked
+                }
+            }).done(function (msg) {
+                location.reload();
+            });
+        });
 
         //button select
         $(".button-checkbox").labelauty({
@@ -746,13 +768,13 @@
         $('#itemSelect').select2({
             theme: "bootstrap",
             language: {
-                noResults: function(){
+                noResults: function () {
                     return "Ничего не найдено";
                 },
-                searching: function(){
+                searching: function () {
                     return "Поиск...";
                 },
-                inputTooShort: function(){
+                inputTooShort: function () {
                     return "Начните вводить название товара";
                 }
             },
@@ -773,8 +795,8 @@
                     // since we are using custom formatting functions we do not need to
                     // alter the remote JSON data
                     return {
-                        results: data.map(function(obj) {
-                            return {id : obj.key, text: obj.value};
+                        results: data.map(function (obj) {
+                            return {id: obj.key, text: obj.value};
                         })
                     };
                 },

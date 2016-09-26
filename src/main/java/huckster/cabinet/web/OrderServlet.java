@@ -33,7 +33,6 @@ public class OrderServlet extends UserServlet implements JsonOutput {
         req.setAttribute("endDate", userData.getEndDate().format(FORMATTER));
         req.setAttribute("statuses", getOrderStatuses());
 
-        Util.timeStone("orders start forward");
         req.getRequestDispatcher("jsp/orders.jsp").forward(req, resp);
     }
 

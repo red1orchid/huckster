@@ -11,6 +11,10 @@ import java.util.List;
  * Created by PerevalovaMA on 04.08.2016.
  */
 public class DashbordDao extends DbDao {
+    public DashbordDao() throws SQLException {
+        alterSession("ALTER SESSION SET NLS_NUMERIC_CHARACTERS = ',.'");
+    }
+
     public HashMap<Integer, String> getStatisticRates(int companyId, String period) throws SQLException {
         String sql = " SELECT report_id, " +
                 "             CASE" +

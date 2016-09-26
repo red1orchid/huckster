@@ -35,7 +35,7 @@ abstract class UserServlet extends HttpServlet {
                 req.setAttribute("company", userData.getCompanyName());
                 initDataPost(req, resp, userData);
             } catch (Exception e) {
-                Util.logError("Error while loading a servlet " + this.getClass(), e, userData);
+                Util.logError("Response while loading a servlet " + this.getClass(), e, userData);
                 req.getRequestDispatcher("/jsp/error.jsp").forward(req, resp);
             }
         }

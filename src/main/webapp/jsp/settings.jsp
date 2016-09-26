@@ -43,9 +43,15 @@
 
             <div class="tab-content">
                 <div id="settings" class="tab-pane fade">
+                    <br>
+                    <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <strong>Внимание!</strong> Изменение общих настроек следует выполнять с большой осторожностью.
+                        Неверно указанные ссылки или значения могут критически повлиять на работу сервиса на Вашем сайте
+                    </div>
                     <div role="form">
                         <div class="form-group col-xs-6">
-                            <br>
                             <label for="yml">Ссылка на выгрузку с товарами (YML)</label>
                             <input id="yml" type="text" class="form-control" value="${settings.yml}">
                             <br>
@@ -151,29 +157,23 @@
                 <div id="password" class="tab-pane fade">
                     <div role="form">
                         <br>
-                        Для смены пароля доступа в личный кабинет введите текущий пароль, новый пароль и подтверждение нового пароля
+                        Для смены пароля доступа в личный кабинет введите текущий пароль, новый пароль и подтверждение
+                        нового пароля
                         <br>
-                        <div id="passDiffAlert" class="alert alert-danger alert-dismissible fade in" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            Введенные пароли не совпадают
-                        </div>
-                        <div id="passIncorrectAlert" class="alert alert-danger alert-dismissible fade in" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                            Текущий пароль не верный
-                        </div>
+                        <div id="passAlert"></div>
                         <div class="form-group password col-xs-4">
                             <br>
-                            <input id="oldPassword" type="password" class="form-control" placeholder="введите текущий пароль">
+                            <input id="oldPassword" type="password" class="form-control"
+                                   placeholder="введите текущий пароль">
                             <br>
-                            <input id="newPassword" type="password" class="form-control" placeholder="введите новый пароль">
+                            <input id="newPassword" type="password" class="form-control"
+                                   placeholder="введите новый пароль">
                             <br>
-                            <input id="newPasswordConfirm" type="password" class="form-control" placeholder="введите новый пароль еще раз">
+                            <input id="newPasswordConfirm" type="password" class="form-control"
+                                   placeholder="введите новый пароль еще раз">
                             <br>
-                            <button id="savePassword" type="submit" class="btn btn-primary center-block">Сохранить</button>
+                            <button id="savePassword" type="submit" class="btn btn-primary center-block">Сохранить
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -289,24 +289,56 @@
     });
 
     //Password
-    $('#passDiffAlert').hide();
-    $('#passIncorrectAlert').hide();
+    $('#passAlert').hide();
+    bootstrap_alert = function () {
+    }
+    bootstrap_alert.error = function (message, timeOut) {
+        $('#passAlert').html('<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                '<span aria-hidden="true">&times;</span></button>' + message + '</div>').fadeTo(timeOut, 500).slideUp(500, function () {
+            $("#passAlert").slideUp(500);
+        }).show();
+    };
+    bootstrap_alert.success = function (message, timeOut) {
+        $('#passAlert').html('<div class="alert alert-success alert-dismissible fade in" role="alert">' +
+                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                '<span aria-hidden="true">&times;</span></button>' + message + '</div>').fadeTo(timeOut, 500).slideUp(500, function () {
+            $("#passAlert").slideUp(500);
+        }).show();
+    };
+
+
     $('#savePassword').on('click', function (e) {
-        if ($('#newPasswordConfirm').val() != $('#newPassword').val()) {
-            $('#passDiffAlert').show();
+        if ($('#oldPassword').val() == '' || $('#newPassword').val() == '' || $('#newPasswordConfirm').val() == '') {
+            bootstrap_alert.error('Пароль не может быть пустым', 5000);
+        } else if ($('#newPasswordConfirm').val() != $('#newPassword').val()) {
+            bootstrap_alert.error('Введенные пароли не совпадают', 5000);
         } else {
             $.ajax({
                 url: "settings",
                 type: "POST",
                 data: {
-                    type: "check_password",
-                    password: $('#oldPassword').val()
+                    "request": "ajax",
+                    "type": "save_password",
+                    "oldPassword": $('#oldPassword').val(),
+                    "newPassword": $('#newPassword').val()
                 }
-            }).done(function (msg) {
-                location.reload();
-            });
+            }).done(function (data) {
+                console.log(data);
+                if (data.success) {
+                    bootstrap_alert.success('Пароль успешно сохранен', 2000);
+                } else {
+                    if (data.error == "wrong_password") {
+                        bootstrap_alert.error('Введен неверный пароль', 5000);
+                    } else {
+                        bootstrap_alert.error('В данный момент сохранение невозможно', 5000);
+                    }
+                }
+                $('#oldPassword').val('');
+                $('#newPassword').val('');
+                $('#newPasswordConfirm').val('');
+            })
         }
-
     });
 </script>
 </html>
