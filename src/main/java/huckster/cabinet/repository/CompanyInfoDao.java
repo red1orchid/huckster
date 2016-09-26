@@ -17,6 +17,22 @@ public class CompanyInfoDao extends DbDao {
         return selectValue(sql, null, (rs) -> rs.getInt("count") > 0, username, password).orElse(false);
     }
 
+    public boolean isPasswordCorrect(int companyId, String password) throws SQLException {
+        String sql = "SELECT count(*) AS count FROM auth " +
+                "      WHERE company_id = ? " +
+                "        AND password = sys.hash_md5(? || id || upper(user_name))";
+
+        return selectValue(sql, null, (rs) -> rs.getInt("count") > 0, companyId, password).orElse(false);
+    }
+
+    public void setPassword(int companyId, String password) throws SQLException {
+        String sql = "UPDATE auth" +
+                "        SET password = sys.hash_md5(? || id || upper(user_name))" +
+                "      WHERE companyId = ?";
+
+        executeUpdate(sql, null, password, companyId);
+    }
+
     public Optional<Integer> getCompanyId(String username) throws SQLException {
         return selectValue("SELECT company_id " +
                         "     FROM auth " +

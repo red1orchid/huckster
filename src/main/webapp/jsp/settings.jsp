@@ -18,6 +18,12 @@
     <script src="./js/jquery-2.2.4.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
     <script src="./js/bootstrap-switch.js"></script>
+
+    <style type="text/css">
+        .password {
+            padding-left: 1px;
+        }
+    </style>
 </head>
 <body>
 <%--Top bar--%>
@@ -142,7 +148,35 @@
                         </div>
                     </div>
                 </div>
-                <div id="password" class="tab-pane fade"></div>
+                <div id="password" class="tab-pane fade">
+                    <div role="form">
+                        <br>
+                        Для смены пароля доступа в личный кабинет введите текущий пароль, новый пароль и подтверждение нового пароля
+                        <br>
+                        <div id="passDiffAlert" class="alert alert-danger alert-dismissible fade in" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            Введенные пароли не совпадают
+                        </div>
+                        <div id="passIncorrectAlert" class="alert alert-danger alert-dismissible fade in" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                            Текущий пароль не верный
+                        </div>
+                        <div class="form-group password col-xs-4">
+                            <br>
+                            <input id="oldPassword" type="password" class="form-control" placeholder="введите текущий пароль">
+                            <br>
+                            <input id="newPassword" type="password" class="form-control" placeholder="введите новый пароль">
+                            <br>
+                            <input id="newPasswordConfirm" type="password" class="form-control" placeholder="введите новый пароль еще раз">
+                            <br>
+                            <button id="savePassword" type="submit" class="btn btn-primary center-block">Сохранить</button>
+                        </div>
+                    </div>
+                </div>
                 <div id="setup" class="tab-pane fade">
                     <br>
                     <br>
@@ -252,6 +286,27 @@
         }).done(function (msg) {
             location.reload();
         });
+    });
+
+    //Password
+    $('#passDiffAlert').hide();
+    $('#passIncorrectAlert').hide();
+    $('#savePassword').on('click', function (e) {
+        if ($('#newPasswordConfirm').val() != $('#newPassword').val()) {
+            $('#passDiffAlert').show();
+        } else {
+            $.ajax({
+                url: "settings",
+                type: "POST",
+                data: {
+                    type: "check_password",
+                    password: $('#oldPassword').val()
+                }
+            }).done(function (msg) {
+                location.reload();
+            });
+        }
+
     });
 </script>
 </html>
