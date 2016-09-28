@@ -73,4 +73,24 @@ public class SettingsDao extends DbDao {
 
         executeUpdate(sql, id, companyId);
     }
+
+    public boolean isAutoMode(int companyId) throws SQLException {
+        return selectValue("SELECT is_auto_mode " +
+                        "     FROM companies " +
+                        "    WHERE id = ?", null, (rs) -> rs.getInt("is_auto_mode") == 1
+                , companyId).orElse(false);
+    }
+
+    public void setAutoMode(int companyId, boolean isAutoMode) throws SQLException {
+        executeUpdate("UPDATE companies " +
+                "      SET is_auto_mode = ?" +
+                "    WHERE id = ?", isAutoMode ? 1 : 0, companyId);
+    }
+
+    public boolean isScriptInstalled(int companyId) throws SQLException {
+        return selectValue("SELECT COUNT(*) FROM companies" +
+                        "    WHERE id = ?" +
+                        "      AND atime < sysdate - 1", null, (rs) -> rs.getInt(1) == 0
+                , companyId).orElse(false);
+    }
 }

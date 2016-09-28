@@ -7,6 +7,9 @@ body {
   padding-top: 50px;
 }
 
+.glyphicon {
+	margin-right: 6px;
+}
 
 /*
  * Global add-ons

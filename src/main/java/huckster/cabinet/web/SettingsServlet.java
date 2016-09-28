@@ -3,9 +3,11 @@ package huckster.cabinet.web;
 import huckster.cabinet.Util;
 import huckster.cabinet.model.CompanySettingsEntity;
 import huckster.cabinet.model.Response;
+import huckster.cabinet.model.RuleEntity;
 import huckster.cabinet.repository.CompanyInfoDao;
 import huckster.cabinet.repository.SettingsDao;
 import huckster.cabinet.repository.UserData;
+import huckster.cabinet.repository.WidgetSettingsDao;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +16,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.NotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Perevalova Marina on 07.08.2016.
@@ -21,13 +27,21 @@ import java.sql.SQLException;
 @WebServlet("/settings")
 public class SettingsServlet extends UserServlet implements JsonOutput {
     private SettingsDao dao = new SettingsDao();
+    private WidgetSettingsDao widgetDao = new WidgetSettingsDao();
     private CompanyInfoDao companyDao = new CompanyInfoDao();
+    private Util util = new Util();
 
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
+        userData.clear();
         req.setAttribute("companyId", userData.getCompanyId());
         req.setAttribute("settings", getCompanySettings(userData));
         req.setAttribute("urls", dao.getBlockedUrls(userData.getCompanyId()));
+        req.setAttribute("rules", getRules(userData));
+        req.setAttribute("devices", widgetDao.getDevices());
+        req.setAttribute("segments", getSegments(userData));
+        req.setAttribute("isAutoMode", isAutoMode(userData));
+        req.setAttribute("isScriptInstalled", isScriptInstalled(userData));
         req.getRequestDispatcher("/jsp/settings.jsp").forward(req, resp);
     }
 
@@ -89,6 +103,16 @@ public class SettingsServlet extends UserServlet implements JsonOutput {
                         }
                     }
                     break;
+                    case "auto_mode": {
+                        if (req.getParameter("mode") != null) {
+                            try {
+                                dao.setAutoMode(userData.getCompanyId(), Boolean.parseBoolean(req.getParameter("mode")));
+                            } catch (SQLException e) {
+                                Util.logError("Failed to set auto mode", userData);
+                            }
+                        }
+                    }
+                    break;
                 }
             }
         }
@@ -137,5 +161,46 @@ public class SettingsServlet extends UserServlet implements JsonOutput {
 
     private boolean isNumber(String src) {
         return (src != null && !src.isEmpty());
+    }
+
+    // Step 1
+    private String getRules(UserData userData) {
+        List<RuleEntity> data = new ArrayList<>();
+        try {
+            data = widgetDao.getRules(userData.getCompanyId());
+        } catch (SQLException e) {
+            //TODO: some message?
+            Util.logError("Failed to load rules", e, userData);
+        }
+
+        return util.toJsonWithDataWrap(data);
+    }
+
+    private Map<Integer, String> getSegments(UserData userData) throws SQLException {
+        try {
+            return widgetDao.getSegments(userData.getCompanyId());
+        } catch (SQLException e) {
+            //TODO: fatal?
+            Util.logError("Failed to load segments", e, userData);
+            return new LinkedHashMap<>();
+        }
+    }
+
+    private boolean isAutoMode(UserData userData) {
+        try {
+            return dao.isAutoMode(userData.getCompanyId());
+        } catch (SQLException e) {
+            Util.logError("Failed to select mode", e, userData);
+            return false;
+        }
+    }
+
+    private boolean isScriptInstalled(UserData userData) {
+        try {
+            return dao.isScriptInstalled(userData.getCompanyId());
+        } catch (SQLException e) {
+            Util.logError("Failed to select info about script installation", e, userData);
+            return false;
+        }
     }
 }

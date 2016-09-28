@@ -29,12 +29,6 @@ public class WidgetSettingsServlet extends UserServlet implements JsonOutput {
 
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
-        userData.clear();
-        req.setAttribute("rules", getRules(userData));
-        req.setAttribute("devices", dao.getDevices());
-        req.setAttribute("segments", getSegments(userData));
-        req.setAttribute("isAutoMode", isAutoMode(userData));
-        req.getRequestDispatcher("/jsp/widget_settings.jsp").forward(req, resp);
     }
 
     @Override
@@ -166,27 +160,8 @@ public class WidgetSettingsServlet extends UserServlet implements JsonOutput {
                         }
                     }
                     break;
-                    case "auto_mode": {
-                        if (req.getParameter("mode") != null) {
-                            try {
-                                companyDao.setAutoMode(userData.getCompanyId(), Boolean.parseBoolean(req.getParameter("mode")));
-                            } catch (SQLException e) {
-                                Util.logError("Failed to set auto mode", userData);
-                            }
-                        }
-                    }
-                    break;
                 }
             }
-        }
-    }
-
-    private boolean isAutoMode(UserData userData) {
-        try {
-            return companyDao.isAutoMode(userData.getCompanyId());
-        } catch (SQLException e) {
-            Util.logError("Failed to select mode", e, userData);
-            return false;
         }
     }
 

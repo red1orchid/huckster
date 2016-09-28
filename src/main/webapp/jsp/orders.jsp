@@ -43,61 +43,60 @@
             ${sessionScope.activeTab}
             <c:if test="${sessionScope.activeTab == 'yml'}">in active</c:if>
 
-            <div class="row placeholders">
-                <!-- Modal -->
-                <form method="post" class="modal fade" id="editOrder" tabindex="-1" role="dialog"
-                      aria-labelledby="myModalLabel"
-                      aria-hidden="true">
-                    <div class="modal-dialog modal-sm">
-                        <div class="modal-content">
-                            <div class="modal-header" align="center">
-                                <button type="button" class="close" data-dismiss="modal"
-                                        aria-hidden="true">&times;</button>
-                                <h4 class="modal-title" id="orderTitle"></h4>
-                            </div>
-                            <div class="modal-body">
-                                <form role="form">
-                                    <div class="form-group">
-                                        <input type="hidden" id="orderId" name="orderId">
-                                        <label for="statuses">Статус:</label>
-                                        <select name="status" class="form-control" id="statuses">
-                                            <c:forEach var="entry" items="${statuses}">
-                                                <option value="<c:out value="${entry.key}"/>"><c:out
-                                                        value="${entry.value}"/></option>
-                                            </c:forEach>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="comment">Комментарий:</label>
-                                        <textarea name="comment" class="form-control" rows="5" id="comment"></textarea>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-                                <button type="submit" class="btn btn-primary">Сохранить</button>
-                            </div>
+            <div class="row">
+            <form method="post">
+                <div class="col-sm-2 form-group">
+                    <input id="startdate" type="text" name="startDate" value="${startDate}" class="span2"
+                           data-date-format="dd.mm.yyyy">
+                </div>
+                <div class="col-sm-2 form-group">
+                    <input id="enddate" type="text" name="endDate" value="${endDate}" class="span2"
+                           data-date-format="dd.mm.yyyy">
+                </div>
+                <div class="col-sm-2 form-group">
+                    <button type="submit" class="btn btn-primary btn-sm">OK</button>
+                </div>
+            </form></div>
+
+            <table id="orders" class="table table-hover table-bordered" cellspacing="0" width="100%">
+            </table>
+
+            <!-- Modal -->
+            <form method="post" class="modal fade" id="editOrder" tabindex="-1" role="dialog"
+                  aria-labelledby="myModalLabel"
+                  aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header" align="center">
+                            <button type="button" class="close" data-dismiss="modal"
+                                    aria-hidden="true">&times;</button>
+                            <h4 class="modal-title" id="orderTitle"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <form role="form">
+                                <div class="form-group">
+                                    <input type="hidden" id="orderId" name="orderId">
+                                    <label for="statuses">Статус:</label>
+                                    <select name="status" class="form-control" id="statuses">
+                                        <c:forEach var="entry" items="${statuses}">
+                                            <option value="<c:out value="${entry.key}"/>"><c:out
+                                                    value="${entry.value}"/></option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="comment">Комментарий:</label>
+                                    <textarea name="comment" class="form-control" rows="5" id="comment"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
                         </div>
                     </div>
-                </form>
-
-                <form method="post">
-                    <div class="col-sm-2 form-group">
-                        <input id="startdate" type="text" name="startDate" value="${startDate}" class="span2"
-                               data-date-format="dd.mm.yyyy">
-                    </div>
-                    <div class="col-sm-2 form-group">
-                        <input id="enddate" type="text" name="endDate" value="${endDate}" class="span2"
-                               data-date-format="dd.mm.yyyy">
-                    </div>
-                    <div class="col-sm-2 form-group">
-                        <button type="submit" class="btn btn-primary btn-sm">OK</button>
-                    </div>
-                </form>
-
-                <table id="orders" class="table table-hover table-bordered" cellspacing="0" width="100%">
-                </table>
-            </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -130,14 +129,15 @@
                 url: "orders",
                 type: "POST",
                 data: {
-                    "request" : "ajax"
+                    "request": "ajax"
                 }
             },
             columns: [
                 {
                     data: null, render: function (data, type, full, meta) {
                     return '<a data-id="' + full.id + '" data-status="' + full.status + '" data-comment="' + full.comment + '" data-toggle="modal" href="#editOrder"><span class="glyphicon glyphicon-pencil"></span></a>';
-                }},
+                }
+                },
                 {data: 'id', title: 'заказ', defaultContent: ''},
                 {data: 'ruleId', title: 'правило', defaultContent: ''},
                 {data: 'articul', title: 'артикул', defaultContent: ''},

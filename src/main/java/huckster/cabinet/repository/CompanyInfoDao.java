@@ -46,17 +46,4 @@ public class CompanyInfoDao extends DbDao {
                         "    WHERE id = ?", null, (rs) -> new CompanyEntity(companyId, rs.getString("name"), rs.getString("price_cur"))
                 , companyId);
     }
-
-    public boolean isAutoMode(int companyId) throws SQLException {
-        return selectValue("SELECT is_auto_mode " +
-                        "     FROM companies " +
-                        "    WHERE id = ?", null, (rs) -> rs.getInt("is_auto_mode") == 1
-                , companyId).orElse(false);
-    }
-
-    public void setAutoMode(int companyId, boolean isAutoMode) throws SQLException {
-        executeUpdate("UPDATE companies " +
-                "      SET is_auto_mode = ?" +
-                "    WHERE id = ?", isAutoMode ? 1 : 0, companyId);
-    }
 }
