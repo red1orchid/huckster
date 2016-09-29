@@ -65,12 +65,6 @@
     <%--Sidebar--%>
     <%@ include file="menu.jsp" %>
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-        <div class="checkbox checkbox-slider--b-flat checkbox-slider-info pull-right">
-            <label>
-                <input id="isAutoMode" type="checkbox"
-                       <c:if test="${isAutoMode}">checked="checked"</c:if>><span>Авторежим</span>
-            </label>
-        </div>
         <ul class="nav nav-tabs" id="tabs">
             <li><a data-toggle="tab" href="#settings">Общие настройки</a></li>
             <li><a data-toggle="tab" href="#geo">География</a></li>
@@ -144,6 +138,14 @@
                         <label>Регионы</label>
                         <div id="fancyTree" name="fancyTree"></div>
                     </div>
+                    <div class="col-sm-6">
+                        <div class="checkbox checkbox-slider--b-flat checkbox-slider-info pull-right">
+                            <label>
+                                <input id="isAutoMode" type="checkbox"
+                                       <c:if test="${!isAutoMode}">checked="checked"</c:if>><span>Расширенный режим</span>
+                            </label>
+                        </div>
+                    </div>
                     <c:if test="${!isAutoMode}">
                         <input type="hidden" id="selectedChannels" value="${rule.channels}">
                         <div class="col-sm-6 form-group">
@@ -156,7 +158,8 @@
                             <label for="devices">Устройства</label>
                             <select id="devices" class="selectpicker form-control">
                                 <c:forEach var="device" items="${devices}">
-                                    <option value="${device.key}" <c:if test="${rule.devices == device.key}">selected</c:if>>${device.value}</option>
+                                    <option value="${device.key}"
+                                            <c:if test="${rule.devices == device.key}">selected</c:if>>${device.value}</option>
                                 </c:forEach>
                             </select></div>
                         <div class="col-sm-6 form-group">
@@ -186,7 +189,8 @@
                                     <select id="hourFrom" class="selectpicker"
                                             data-live-search="true" data-width="auto">
                                         <c:forEach begin="0" end="24" varStatus="loop">
-                                            <option value="${loop.index}" <c:if test="${rule.timeFrom == loop.index}">selected</c:if>>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
+                                            <option value="${loop.index}"
+                                                    <c:if test="${rule.timeFrom == loop.index}">selected</c:if>>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -196,7 +200,8 @@
                                             data-live-search="true"
                                             data-width="auto">
                                         <c:forEach begin="0" end="24" varStatus="loop">
-                                            <option value="${loop.index}" <c:if test="${rule.timeTo == loop.index}">selected</c:if>>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
+                                            <option value="${loop.index}"
+                                                    <c:if test="${rule.timeTo == loop.index}">selected</c:if>>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -204,11 +209,13 @@
                         </div>
                     </c:if>
                 </div>
-                <div class="row center-block">
-                    <button type="button" class="btn btn-default">Отмена
-                    </button>
-                    <button id="saveRule" type="submit" class="btn btn-primary">Сохранить
-                    </button>
+                <div class="col-sm-4">
+                    <div class="row pull-right">
+                        <button type="button" class="btn btn-default">Отмена
+                        </button>
+                        <button id="saveRule" type="submit" class="btn btn-primary">Сохранить
+                        </button>
+                    </div>
                 </div>
             </div>
             <%--Categories and vendors discounts--%>
@@ -520,7 +527,7 @@
             url: "settings",
             data: {
                 type: "auto_mode",
-                mode: this.checked
+                mode: !this.checked
             }
         }).done(function (msg) {
             location.reload();
