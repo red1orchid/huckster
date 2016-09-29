@@ -32,7 +32,6 @@ public class DbDao {
     }
 
     protected <T> Optional<T> selectValue(String sql,
-                                          Integer fetchSize,
                                           ResultSetSelectProcessor<T> processor,
                                           Object... params) throws SQLException {
         T value = null;
@@ -42,10 +41,6 @@ public class DbDao {
             for (Object param : params) {
                 ps.setObject(++cnt, param);
             }
-            if (fetchSize != null) {
-                ps.setFetchSize(fetchSize);
-            }
-
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     value = processor.process(rs);

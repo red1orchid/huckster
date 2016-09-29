@@ -17,7 +17,7 @@ public class SettingsDao extends DbDao {
                 "       FROM companies" +
                 "      WHERE id = ?";
 
-        return selectValue(sql, null, (rs) ->
+        return selectValue(sql, (rs) ->
                         new CompanySettingsEntity(companyId, rs.getString("feed_url"), rs.getString("mailto"), rs.getString("mailto_admin"),
                                 rs.getString("metric_key"), rs.getInt("is_manual_enable"))
                 , companyId);
@@ -77,7 +77,7 @@ public class SettingsDao extends DbDao {
     public boolean isAutoMode(int companyId) throws SQLException {
         return selectValue("SELECT is_auto_mode " +
                         "     FROM companies " +
-                        "    WHERE id = ?", null, (rs) -> rs.getInt("is_auto_mode") == 1
+                        "    WHERE id = ?", (rs) -> rs.getInt("is_auto_mode") == 1
                 , companyId).orElse(false);
     }
 
@@ -90,7 +90,7 @@ public class SettingsDao extends DbDao {
     public boolean isScriptInstalled(int companyId) throws SQLException {
         return selectValue("SELECT COUNT(*) FROM companies" +
                         "    WHERE id = ?" +
-                        "      AND atime < sysdate - 1", null, (rs) -> rs.getInt(1) == 0
+                        "      AND atime < sysdate - 1", (rs) -> rs.getInt(1) == 0
                 , companyId).orElse(false);
     }
 }

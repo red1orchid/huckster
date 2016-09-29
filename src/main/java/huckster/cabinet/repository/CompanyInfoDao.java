@@ -14,7 +14,7 @@ public class CompanyInfoDao extends DbDao {
                 "      WHERE upper(user_name) = upper(?) " +
                 "        AND password = sys.hash_md5(? || id || upper(user_name))";
 
-        return selectValue(sql, null, (rs) -> rs.getInt("count") > 0, username, password).orElse(false);
+        return selectValue(sql, (rs) -> rs.getInt("count") > 0, username, password).orElse(false);
     }
 
     public boolean isPasswordCorrect(int companyId, String password) throws SQLException {
@@ -22,7 +22,7 @@ public class CompanyInfoDao extends DbDao {
                 "      WHERE company_id = ? " +
                 "        AND password = sys.hash_md5(? || id || upper(user_name))";
 
-        return selectValue(sql, null, (rs) -> rs.getInt("count") > 0, companyId, password).orElse(false);
+        return selectValue(sql, (rs) -> rs.getInt("count") > 0, companyId, password).orElse(false);
     }
 
     public void setPassword(int companyId, String password) throws SQLException {
@@ -37,13 +37,13 @@ public class CompanyInfoDao extends DbDao {
         return selectValue("SELECT company_id " +
                         "     FROM auth " +
                         "    WHERE upper(user_name) = upper(?)"
-                , null, (rs) -> rs.getInt("company_id"), username);
+                , (rs) -> rs.getInt("company_id"), username);
     }
 
     public Optional<CompanyEntity> getCompanyInfo(int companyId) throws SQLException {
         return selectValue("SELECT name, price_cur " +
                         "     FROM companies " +
-                        "    WHERE id = ?", null, (rs) -> new CompanyEntity(companyId, rs.getString("name"), rs.getString("price_cur"))
+                        "    WHERE id = ?", (rs) -> new CompanyEntity(companyId, rs.getString("name"), rs.getString("price_cur"))
                 , companyId);
     }
 }

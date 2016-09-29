@@ -1,5 +1,6 @@
 package huckster.cabinet.web;
 
+import huckster.cabinet.DataException;
 import huckster.cabinet.Util;
 import huckster.cabinet.model.*;
 import huckster.cabinet.repository.CompanyInfoDao;
@@ -47,26 +48,19 @@ public class WidgetSettingsServlet extends UserServlet implements JsonOutput {
                         Integer step2 = stringToInt(req.getParameter("discount2"));
                         Integer minPrice = stringToInt(req.getParameter("minPrice"));
                         Integer maxPrice = stringToInt(req.getParameter("maxPrice"));
-                        if (!isNumber(req.getParameter("ruleId"))) {
-                            Util.logError("empty segment for vendor discount " + req.getParameter("id"), userData);
-                            //TODO: error?
+                        if (isNumber(req.getParameter("id"))) {
+                            try {
+                                dao.updateVendorsDiscount(Integer.parseInt(req.getParameter("id")), userData.getCompanyId(), categoryId, vendor, step1, step2, minPrice, maxPrice);
+                            } catch (SQLException e) {
+                                //TODO: error?
+                                Util.logError("Failed to update vendor discount " + req.getParameter("id"), e, userData);
+                            }
                         } else {
-                            if (isNumber(req.getParameter("id"))) {
-                                try {
-                                    dao.updateVendorsDiscount(Integer.parseInt(req.getParameter("id")), userData.getCompanyId(), Integer.parseInt(req.getParameter("ruleId")),
-                                            categoryId, vendor, step1, step2, minPrice, maxPrice);
-                                } catch (SQLException e) {
-                                    //TODO: error?
-                                    Util.logError("Failed to update vendor discount " + req.getParameter("id"), e, userData);
-                                }
-                            } else {
-                                try {
-                                    dao.insertVendorsDiscount(userData.getCompanyId(), Integer.parseInt(req.getParameter("ruleId")),
-                                            categoryId, vendor, step1, step2, minPrice, maxPrice);
-                                } catch (SQLException e) {
-                                    //TODO: error?
-                                    Util.logError("Failed to insert new vendor discount", e, userData);
-                                }
+                            try {
+                                dao.insertVendorsDiscount(userData.getCompanyId(), categoryId, vendor, step1, step2, minPrice, maxPrice);
+                            } catch (SQLException e) {
+                                //TODO: error?
+                                Util.logError("Failed to insert new vendor discount", e, userData);
                             }
                         }
                     }
@@ -86,59 +80,30 @@ public class WidgetSettingsServlet extends UserServlet implements JsonOutput {
                     }
                     break;
                     case "save_rule": {
-                        String cities = req.getParameter("tree");
-                        String channels = req.getParameter("channels");
-                        String sources = req.getParameter("sources");
-                        String devices = req.getParameter("devices");
-                        String days = req.getParameter("days");
-                        String startHour = req.getParameter("hourFrom");
-                        String endHour = req.getParameter("hourTo");
-                        if (isNumber(req.getParameter("id"))) {
-                            try {
-                                dao.updateRule(Integer.parseInt(req.getParameter("id")), userData.getCompanyId(), cities, channels, sources, devices, days, startHour, endHour);
-                            } catch (SQLException e) {
-                                //TODO: error?
-                                Util.logError("Failed to update rule " + req.getParameter("id"), e, userData);
-                            }
-                        } else {
-                            try {
-                                dao.insertRule(userData.getCompanyId(), cities, channels, sources, devices, days, startHour, endHour);
-                            } catch (SQLException e) {
-                                //TODO: error?
-                                Util.logError("Failed to insert new rule", e, userData);
-                            }
-                        }
-                    }
-                    break;
-                    case "delete_rule": {
-                        if (isNumber(req.getParameter("id"))) {
-                            try {
-                                dao.deleteRule(Integer.parseInt(req.getParameter("id")), userData.getCompanyId());
-                            } catch (SQLException e) {
-                                //TODO: error?
-                                Util.logError("Failed to delete rule " + req.getParameter("id"), e, userData);
-                            }
-                        } else {
+                        try {
+                            RuleEntity rule = new RuleEntity(req.getParameter("channels"), Integer.parseInt(req.getParameter("devices")), req.getParameter("days"),
+                                    Integer.parseInt(req.getParameter("hourFrom")), Integer.parseInt(req.getParameter("hourTo")), req.getParameter("tree"));
+                            dao.updateRule(userData.getCompanyId(), rule);
+                        } catch (NumberFormatException | SQLException e) {
                             //TODO: error?
-                            Util.logError("Empty rule id", userData);
+                            Util.logError("Failed to update widget settings (rule)", e, userData);
                         }
                     }
                     break;
                     case "save_offer_discount": {
-                        int ruleId = Integer.parseInt(req.getParameter("ruleId"));
                         int offerId = Integer.parseInt(req.getParameter("offerId"));
                         Integer step1 = stringToInt(req.getParameter("discount1"));
                         Integer step2 = stringToInt(req.getParameter("discount2"));
                         if (isNumber(req.getParameter("id"))) {
                             try {
-                                dao.updateOfferDiscount(Integer.parseInt(req.getParameter("id")), userData.getCompanyId(), ruleId, offerId, step1, step2);
+                                dao.updateOfferDiscount(Integer.parseInt(req.getParameter("id")), userData.getCompanyId(), offerId, step1, step2);
                             } catch (SQLException e) {
                                 //TODO: error?
                                 Util.logError("Failed to update offer discount " + req.getParameter("id"), e, userData);
                             }
                         } else {
                             try {
-                                dao.insertOfferDiscount(userData.getCompanyId(), ruleId, offerId, step1, step2);
+                                dao.insertOfferDiscount(userData.getCompanyId(), offerId, step1, step2);
                             } catch (SQLException e) {
                                 //TODO: error?
                                 Util.logError("Failed to insert offer discount", e, userData);
@@ -176,30 +141,20 @@ public class WidgetSettingsServlet extends UserServlet implements JsonOutput {
         return (src != null && !src.isEmpty());
     }
 
-    private Map<Integer, String> getSegments(UserData userData) throws SQLException {
-        try {
-            return dao.getSegments(userData.getCompanyId());
-        } catch (SQLException e) {
-            //TODO: fatal?
-            Util.logError("Failed to load segments", e, userData);
-            return new LinkedHashMap<>();
-        }
-    }
-
     private String getAjaxData(String type, HttpServletRequest req, UserData userData) {
         String data = "";
         switch (type) {
-            case "rules":
-                data = getRules(userData);
+            case "rule":
+                data = getRule(userData);
                 break;
             case "settings_tree":
                 data = getTree(req, userData);
                 break;
-            case "settings_lists":
-                data = getSettings(userData);
+            case "channels":
+                data = getChannels(userData);
                 break;
             case "vendors_discounts":
-                data = getVendorDiscounts(req, userData);
+                data = getVendorDiscounts(userData);
                 break;
             case "vendors_categories":
                 data = getVendorCategories(req, userData);
@@ -218,55 +173,38 @@ public class WidgetSettingsServlet extends UserServlet implements JsonOutput {
     }
 
     // Step 1
-    private String getRules(UserData userData) {
-        List<RuleEntity> data = new ArrayList<>();
+    private String getRule(UserData userData) {
         try {
-            data = dao.getRules(userData.getCompanyId());
-        } catch (SQLException e) {
-            //TODO: some message?
-            Util.logError("Failed to load rules", e, userData);
+            RuleEntity data = dao.getRule(userData.getCompanyId()).get();
+            return util.toJsonWithDataWrap(data);
+        } catch (SQLException | NoSuchElementException e) {
+            Util.logError("Failed to load rule", e, userData);
+            //TODO: fatal
+            throw new DataException("Failed to load rule");
         }
-
-        return util.toJsonWithDataWrap(data);
     }
 
-    private String getSettings(UserData userData) {
-        HashMap<String, Object> map = new HashMap<>();
+    private String getChannels(UserData userData) {
         List<String> channels = new ArrayList<>();
-        List<String> sources = new ArrayList<>();
 
-        try {
-            sources = dao.getSources(userData.getCompanyId());
-        } catch (SQLException e) {
-            //TODO: kill modal?
-            Util.logError("Failed to load sources", e, userData);
-        }
         try {
             channels = dao.getChannels(userData.getCompanyId());
         } catch (SQLException e) {
-            //TODO: kill modal?
+            //TODO: fatal?
             Util.logError("Failed to load channels", e, userData);
         }
-        map.put("sources", sources);
-        map.put("channels", channels);
-        return Util.toJson(map);
+        return Util.toJson(channels);
     }
 
     private String getTree(HttpServletRequest req, UserData userData) {
         Map<Integer, JsonTreeNode> map = new TreeMap<>();
-        String ruleId = req.getParameter("id");
         try {
-            List<SelectedTreeEntity> selectedTreeEntities;
-            if (ruleId != null) {
-                selectedTreeEntities = dao.getSelectedTree(Integer.parseInt(ruleId));
-            } else {
-                selectedTreeEntities = dao.getSelectedTree();
-            }
+            List<TreeEntity> selectedTreeEntities = dao.getTree(userData.getCompanyId());
             map = selectedTreeEntities.stream()
-                    .collect(Collectors.toMap(SelectedTreeEntity::getId, v -> new JsonTreeNode(v.getId(), v.getTitle(), v.getParentId(), v.isSelected(), null)));
+                    .collect(Collectors.toMap(TreeEntity::getId, v -> new JsonTreeNode(v.getId(), v.getTitle(), v.getParentId(), v.isSelected(), null)));
         } catch (SQLException e) {
             //TODO: kill modal?
-            Util.logError("Failed to load tree for rule " + ruleId, e, userData);
+            Util.logError("Failed to load tree", e, userData);
         }
         List list = new ArrayList<>();
 
@@ -283,20 +221,14 @@ public class WidgetSettingsServlet extends UserServlet implements JsonOutput {
         return Util.toJson(list);
     }
 
-    // Step 2
-    private String getVendorDiscounts(HttpServletRequest req, UserData userData) {
+    // Vendor and categories discounts
+    private String getVendorDiscounts(UserData userData) {
         List<DiscountEntity> data = new ArrayList<>();
-        String segmentId = req.getParameter("ruleId");
-        if (!segmentId.isEmpty()) {
-            try {
-                data = dao.getVendorsDiscounts(userData.getCompanyId(), Integer.parseInt(segmentId));
-            } catch (SQLException e) {
-                //TODO: some message?
-                Util.logError("Failed to load vendor discounts", e, userData);
-            }
-        } else {
+        try {
+            data = dao.getVendorsDiscounts(userData.getCompanyId());
+        } catch (SQLException e) {
             //TODO: some message?
-            Util.logError("Empty segment", userData);
+            Util.logError("Failed to load vendor discounts", e, userData);
         }
 
         return util.toJsonWithDataWrap(data);
@@ -372,17 +304,11 @@ public class WidgetSettingsServlet extends UserServlet implements JsonOutput {
     // Step 3
     private String getOfferDiscounts(HttpServletRequest req, UserData userData) {
         List<DiscountEntity> data = new ArrayList<>();
-        String segmentId = req.getParameter("ruleId");
-        if (!segmentId.isEmpty()) {
-            try {
-                data = dao.getOfferDiscounts(userData.getCompanyId(), Integer.parseInt(segmentId));
-            } catch (SQLException e) {
-                //TODO: some message?
-                Util.logError("Failed to load item discounts", e, userData);
-            }
-        } else {
+        try {
+            data = dao.getOfferDiscounts(userData.getCompanyId());
+        } catch (SQLException e) {
             //TODO: some message?
-            Util.logError("Empty segment", userData);
+            Util.logError("Failed to load item discounts", e, userData);
         }
 
         return util.toJsonWithDataWrap(data);

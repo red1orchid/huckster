@@ -3,7 +3,8 @@ package huckster.cabinet.repository;
 import huckster.cabinet.model.DiscountEntity;
 import huckster.cabinet.model.ListEntity;
 import huckster.cabinet.model.RuleEntity;
-import huckster.cabinet.model.SelectedTreeEntity;
+import huckster.cabinet.model.TreeEntity;
+import org.apache.commons.codec.language.bm.Rule;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -12,100 +13,33 @@ import java.util.*;
  * Created by PerevalovaMA on 04.08.2016.
  */
 public class WidgetSettingsDao extends DbDao {
-    public List<RuleEntity> getRules(int companyId) throws SQLException {
-        List<RuleEntity> list = new ArrayList<>();
-        String sql = "SELECT r.id AS empno," +
-                "            replace(nvl(r.utm_medium,'все'), 'all', 'все') AS utm_medium," +
-                "            replace(nvl(r.utm_source,'все'), 'all', 'все') AS utm_source," +
-                "            r.destination," +
-                "            r.days," +
-                "            r.start_hour," +
-                "            r.end_hour" +
-                "  FROM sync_rules r" +
-                " WHERE r.company_id = ?" +
-                " ORDER BY utm_medium desc, utm_source DESC, id ASC";
+    public Optional<RuleEntity> getRule(int companyId) throws SQLException {
+        String sql = "SELECT id AS empno," +
+                "            utm_medium," +
+                "            destination," +
+                "            days," +
+                "            start_hour," +
+                "            end_hour," +
+                "            geo" +
+                "  FROM companies" +
+                " WHERE id = ?";
 
         Map<Integer, String> devices = getDevices();
-        execute(sql, null,
-                (rs) -> list.add(new RuleEntity(rs.getInt("empno"), rs.getString("utm_medium"), rs.getString("utm_source"), rs.getInt("destination"),
-                        devices.get(rs.getInt("destination")), rs.getString("days"), rs.getInt("start_hour"), rs.getInt("end_hour"))), companyId);
-        return list;
+        return selectValue(sql, (rs) -> new RuleEntity(rs.getString("utm_medium"), rs.getInt("destination"),
+                        devices.get(rs.getInt("destination")), rs.getString("days"), rs.getInt("start_hour"), rs.getInt("end_hour"), rs.getString("geo")), companyId);
     }
 
-    public void insertRule(int companyId, String cities, String channels, String sources, String devices, String days, String startHour, String endHour) throws SQLException {
-        String sql = "INSERT INTO sync_rules(company_id, geo, utm_medium, utm_source, days, destination, start_hour, end_hour) " +
-                "     VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
-
-        //TODO: hours: 00 and 0
-        executeUpdate(sql, companyId, cities, channels, sources, days, devices, startHour, endHour);
-    }
-
-    public void updateRule(int id, int companyId, String cities, String channels, String sources, String devices, String days, String startHour, String endHour) throws SQLException {
-        String sql = "UPDATE sync_rules" +
+    public void updateRule(int companyId, RuleEntity rule) throws SQLException {
+        String sql = "UPDATE companies" +
                 "        SET geo         = ?," +
                 "            utm_medium  = ?," +
-                "            utm_source  = ?," +
                 "            days        = ?," +
                 "            destination = ?," +
                 "            start_hour  = ?," +
                 "            end_hour    = ?" +
-                "      WHERE id = ?" +
-                "        AND company_id = ?";
+                "      WHERE id = ?";
 
-        //TODO: hours: 00 and 0
-        executeUpdate(sql, cities, channels, sources, days, devices, startHour, endHour, id, companyId);
-    }
-
-    public void deleteRule(int id, int companyId) throws SQLException {
-        String sql = "DELETE FROM sync_rules WHERE id = ? AND company_id = ?";
-
-        executeUpdate(sql, id, companyId);
-    }
-
-    public void updateRules(Integer ruleId, int companyId, String cities, String channels, String sources, String devices, String days, String startHour, String endHour) throws SQLException {
-        String sql = "MERGE INTO sync_rules r" +
-                "     USING (SELECT ? AS id," +
-                "                   ? AS company_id," +
-                "                   ? AS geo," +
-                "                   ? AS utm_medium," +
-                "                   ? AS utm_source," +
-                "                   ? AS days," +
-                "                   ? AS destination," +
-                "                   ? AS start_hour," +
-                "                   ? AS end_hour" +
-                "              FROM dual) d" +
-                "     ON (r.id = d.id)" +
-                "     WHEN MATCHED THEN" +
-                "       UPDATE" +
-                "           SET r.company_id  = d.company_id," +
-                "               r.geo         = d.geo," +
-                "               r.utm_medium  = d.utm_medium," +
-                "               r.utm_source  = d.utm_source," +
-                "               r.days        = d.days," +
-                "               r.destination = d.destination," +
-                "               r.start_hour  = d.start_hour," +
-                "               r.end_hour    = d.end_hour" +
-                "     WHEN NOT MATCHED THEN" +
-                "       INSERT" +
-                "          (r.company_id," +
-                "           r.geo," +
-                "           r.utm_medium," +
-                "           r.utm_source," +
-                "           r.days," +
-                "           r.destination," +
-                "           r.start_hour," +
-                "           r.end_hour)" +
-                "       VALUES" +
-                "          (d.company_id," +
-                "           d.geo," +
-                "           d.utm_medium," +
-                "           d.utm_source," +
-                "           d.days," +
-                "           d.destination," +
-                "           d.start_hour," +
-                "           d.end_hour)";
-        //TODO: hours: 00 and 0
-        executeUpdate(sql, ruleId, companyId, cities, channels, sources, days, devices, startHour, endHour);
+        executeUpdate(sql, rule.getGeo(), rule.getChannels(), rule.getDays(), rule.getDevices(), rule.getTimeFrom(), rule.getTimeTo(), companyId);
     }
 
     public Map<Integer, String> getDevices() {
@@ -135,76 +69,23 @@ public class WidgetSettingsDao extends DbDao {
         return channels;
     }
 
-    public List<String> getSources(int companyId) throws SQLException {
-        String sql = "SELECT replace(c.name, 'all', null) AS name" +
-                "       FROM cabinet_utm_source c" +
-                "       JOIN (SELECT id," +
-                "                    row_number() over(partition by name order by company_id nulls first) r" +
-                "               FROM cabinet_utm_source c" +
-                "              WHERE c.company_id = ?" +
-                "                 OR c.company_id IS NULL" +
-                "              ORDER BY name) n" +
-                "         ON c.id = n.id" +
-                "        AND n.r = 1" +
-                "      ORDER BY rating desc";
-
-        List<String> sources = new ArrayList<>();
-        execute(sql, 500, (rs) -> sources.add(rs.getString("name")), companyId);
-        return sources;
-    }
-
-    public List<SelectedTreeEntity> getSelectedTree(Integer ruleId) throws SQLException {
-        List<SelectedTreeEntity> list = new ArrayList<>();
+    public List<TreeEntity> getTree(int companyId) throws SQLException {
+        List<TreeEntity> list = new ArrayList<>();
         String sql = "SELECT t.id," +
-                "     title," +
-                "     parent_id," +
-                "     (SELECT least(count(*), 1) FROM sync_rules" +
-                "       WHERE id = ?" +
-                "         AND (geo LIKE '%:' || t.id || ':%' OR geo LIKE '%:' || t.id OR geo LIKE t.id || ':%')) AS is_selected " +
-                "FROM cidr_tree t";
+                "            title," +
+                "            parent_id," +
+                "           (SELECT least(count(*), 1) FROM companies" +
+                "             WHERE id = ?" +
+                "               AND (geo LIKE '%:' || t.id || ':%' OR geo LIKE '%:' || t.id OR geo LIKE t.id || ':%')) AS is_selected " +
+                "       FROM cidr_tree t";
         execute(sql, 1000,
-                (rs) -> list.add(new SelectedTreeEntity(rs.getInt("id"), rs.getString("title"), rs.getInt("parent_id"), rs.getInt("is_selected") == 1))
-                , ruleId);
+                (rs) -> list.add(new TreeEntity(rs.getInt("id"), rs.getString("title"), rs.getInt("parent_id"), rs.getInt("is_selected") == 1))
+                , companyId);
 
         return list;
     }
 
-    public List<SelectedTreeEntity> getSelectedTree() throws SQLException {
-        List<SelectedTreeEntity> list = new ArrayList<>();
-        String sql = " SELECT id, title, parent_id, 0 AS is_selected" +
-                "      FROM cidr_tree";
-        execute(sql, 1000,
-                (rs) -> list.add(new SelectedTreeEntity(rs.getInt("id"), rs.getString("title"), rs.getInt("parent_id"), rs.getInt("is_selected") == 1)));
-        return list;
-    }
-
-    /*    List<List> getRules(int companyId) throws SQLException {
-        String sql = "SELECT r.id AS empno," +
-                "            replace(nvl(r.utm_medium,'все'), 'all', 'все') AS utm_medium," +
-                "            replace(nvl(r.utm_source,'все'), 'all', 'все') AS utm_source," +
-                "            decode(r.destination, 0, 'все', 1, 'ПК и ноутбуки', 2, 'мобильные') AS destination," +
-                "            r.days || ', ' || r.start_hour || '-' || r.end_hour || 'чч' AS runmode" +
-                "  FROM analitic.clients_rules r" +
-                " WHERE r.company_id = ?" +
-                " ORDER BY utm_medium desc, utm_source DESC, id ASC";
-
-        return makeTable(sql, null, 5, companyId);
-    }*/
-
-    public Map<Integer, String> getSegments(int companyId) throws SQLException {
-        String sql = "SELECT id || ' - ' || REPLACE(NVL(utm_medium, 'все каналы'), 'all', 'все каналы') || ', ' ||" +
-                "                           REPLACE(NVL(utm_source, 'все источники'), 'all', 'все источники') AS display_value," +
-                "            id AS return_value" +
-                "       FROM sync_rules" +
-                "      WHERE company_id = ?" +
-                "      ORDER BY ID DESC";
-
-        Map<Integer, String> rules = new LinkedHashMap<>();
-        execute(sql, 500, (rs) -> rules.put(rs.getInt("return_value"), rs.getString("display_value")), companyId);
-        return rules;
-    }
-
-    public List<DiscountEntity> getVendorsDiscounts(int companyId, int ruleId) throws SQLException {
+    public List<DiscountEntity> getVendorsDiscounts(int companyId) throws SQLException {
         List<DiscountEntity> discounts = new ArrayList<>();
         String sql = "SELECT id," +
                 "            category_id," +
@@ -220,28 +101,26 @@ public class WidgetSettingsDao extends DbDao {
                 "            max_price" +
                 "       FROM sync_discounts_cat_vndrs t" +
                 "      WHERE company_id = ?" +
-                "        AND sync_rules_id = ?" +
                 "      ORDER BY category DESC, vendors DESC";
 
         execute(sql, 100, (rs) -> {
             discounts.add(new DiscountEntity(rs.getInt("id"), rs.getInt("category_id"), rs.getString("category"), rs.getString("vendors"), rs.getInt("min_price"), rs.getInt("max_price"),
                     rs.getInt("step1"), rs.getInt("step2")));
-        }, companyId, ruleId);
+        }, companyId);
 
         return discounts;
     }
 
-    public void insertVendorsDiscount(int companyId, int ruleId, Integer categoryId, String vendor, Integer step1, Integer step2, Integer minPrice, Integer maxPrice) throws SQLException {
-        String sql = "INSERT INTO sync_discounts_cat_vndrs(company_id, sync_rules_id, category_id, vendors, step1, step2, min_price, max_price)" +
-                "     VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+    public void insertVendorsDiscount(int companyId, Integer categoryId, String vendor, Integer step1, Integer step2, Integer minPrice, Integer maxPrice) throws SQLException {
+        String sql = "INSERT INTO sync_discounts_cat_vndrs(company_id, category_id, vendors, step1, step2, min_price, max_price)" +
+                "     VALUES(?, ?, ?, ?, ?, ?, ?)";
 
-        executeUpdate(sql, companyId, ruleId, categoryId, vendor, step1, step2, minPrice, maxPrice);
+        executeUpdate(sql, companyId, categoryId, vendor, step1, step2, minPrice, maxPrice);
     }
 
-    public void updateVendorsDiscount(int id, int companyId, int ruleId, Integer categoryId, String vendor, Integer step1, Integer step2, Integer minPrice, Integer maxPrice) throws SQLException {
+    public void updateVendorsDiscount(int id, int companyId, Integer categoryId, String vendor, Integer step1, Integer step2, Integer minPrice, Integer maxPrice) throws SQLException {
         String sql = "UPDATE sync_discounts_cat_vndrs" +
-                "        SET sync_rules_id     = ?," +
-                "            category_id = ?," +
+                "        SET category_id = ?," +
                 "            vendors     = ?," +
                 "            step1       = ?," +
                 "            step2       = ?," +
@@ -250,7 +129,7 @@ public class WidgetSettingsDao extends DbDao {
                 "            atime       = sysdate" +
                 "      WHERE id = ? AND company_id = ?";
 
-        executeUpdate(sql, ruleId, categoryId, vendor, step1, step2, minPrice, maxPrice, id, companyId);
+        executeUpdate(sql, categoryId, vendor, step1, step2, minPrice, maxPrice, id, companyId);
     }
 
     public void deleteVendorsDiscount(int id, int companyId) throws SQLException {
@@ -303,7 +182,7 @@ public class WidgetSettingsDao extends DbDao {
         return vendors;
     }
 
-    public List<DiscountEntity> getOfferDiscounts(int companyId, int ruleId) throws SQLException {
+    public List<DiscountEntity> getOfferDiscounts(int companyId) throws SQLException {
         List<DiscountEntity> discounts = new ArrayList<>();
         String sql = "SELECT d.id," +
                 "            d.offer_id," +
@@ -317,30 +196,29 @@ public class WidgetSettingsDao extends DbDao {
                 "         ON f.company_id = d.company_id" +
                 "        AND f.offer_id = d.offer_id" +
                 "      WHERE d.company_id = ?" +
-                "        AND d.sync_rules_id = ?" +
                 "      ORDER BY d.atime DESC";
 
         execute(sql, 100, (rs) -> {
             discounts.add(new DiscountEntity(rs.getInt("id"), rs.getString("offer_id"), rs.getString("name"), rs.getInt("step1"), rs.getInt("step2"), rs.getString("url")));
-        }, companyId, ruleId);
+        }, companyId);
 
         return discounts;
     }
 
-    public void insertOfferDiscount(int companyId, int ruleId, int offerId, Integer step1, Integer step2) throws SQLException {
-        String sql = "INSERT INTO sync_discounts_offers(company_id, offer_id, sync_rules_id, step1, step2)" +
-                "     VALUES(?, ?, ?, ?, ?)";
+    public void insertOfferDiscount(int companyId, int offerId, Integer step1, Integer step2) throws SQLException {
+        String sql = "INSERT INTO sync_discounts_offers(company_id, offer_id, step1, step2)" +
+                "     VALUES(?, ?, ?, ?)";
 
-        executeUpdate(sql, companyId, offerId, ruleId, step1, step2);
+        executeUpdate(sql, companyId, offerId, step1, step2);
     }
 
-    public void updateOfferDiscount(int id, int companyId, int ruleId, int offerId, Integer step1, Integer step2) throws SQLException {
+    public void updateOfferDiscount(int id, int companyId, int offerId, Integer step1, Integer step2) throws SQLException {
         String sql = "UPDATE sync_discounts_offers" +
-                "        SET sync_rules_id = ?, offer_id = ?, step1 = ?, step2 = ?" +
+                "        SET offer_id = ?, step1 = ?, step2 = ?" +
                 "      WHERE id = ?" +
                 "        AND company_id = ?";
 
-        executeUpdate(sql, ruleId, offerId, step1, step2, id, companyId);
+        executeUpdate(sql, offerId, step1, step2, id, companyId);
     }
 
     public void deleteOfferDiscount(int id, int companyId) throws SQLException {

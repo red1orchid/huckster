@@ -1,5 +1,6 @@
 package huckster.cabinet.web;
 
+import huckster.cabinet.DataException;
 import huckster.cabinet.Util;
 import huckster.cabinet.model.CompanySettingsEntity;
 import huckster.cabinet.model.Response;
@@ -16,10 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.NotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Perevalova Marina on 07.08.2016.
@@ -34,14 +32,18 @@ public class SettingsServlet extends UserServlet implements JsonOutput {
     @Override
     void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
         userData.clear();
+
+        boolean isAutoMode = isAutoMode(userData);
         req.setAttribute("companyId", userData.getCompanyId());
         req.setAttribute("settings", getCompanySettings(userData));
         req.setAttribute("urls", dao.getBlockedUrls(userData.getCompanyId()));
-        req.setAttribute("rules", getRules(userData));
-        req.setAttribute("devices", widgetDao.getDevices());
-        req.setAttribute("segments", getSegments(userData));
-        req.setAttribute("isAutoMode", isAutoMode(userData));
+        req.setAttribute("isAutoMode", isAutoMode);
         req.setAttribute("isScriptInstalled", isScriptInstalled(userData));
+        req.setAttribute("rule", getRule(userData));
+        if (!isAutoMode) {
+            req.setAttribute("devices", widgetDao.getDevices());
+        }
+
         req.getRequestDispatcher("/jsp/settings.jsp").forward(req, resp);
     }
 
@@ -163,29 +165,6 @@ public class SettingsServlet extends UserServlet implements JsonOutput {
         return (src != null && !src.isEmpty());
     }
 
-    // Step 1
-    private String getRules(UserData userData) {
-        List<RuleEntity> data = new ArrayList<>();
-        try {
-            data = widgetDao.getRules(userData.getCompanyId());
-        } catch (SQLException e) {
-            //TODO: some message?
-            Util.logError("Failed to load rules", e, userData);
-        }
-
-        return util.toJsonWithDataWrap(data);
-    }
-
-    private Map<Integer, String> getSegments(UserData userData) throws SQLException {
-        try {
-            return widgetDao.getSegments(userData.getCompanyId());
-        } catch (SQLException e) {
-            //TODO: fatal?
-            Util.logError("Failed to load segments", e, userData);
-            return new LinkedHashMap<>();
-        }
-    }
-
     private boolean isAutoMode(UserData userData) {
         try {
             return dao.isAutoMode(userData.getCompanyId());
@@ -201,6 +180,15 @@ public class SettingsServlet extends UserServlet implements JsonOutput {
         } catch (SQLException e) {
             Util.logError("Failed to select info about script installation", e, userData);
             return false;
+        }
+    }
+
+    private RuleEntity getRule(UserData userData) {
+        try {
+            return widgetDao.getRule(userData.getCompanyId()).get();
+        } catch (SQLException | NoSuchElementException e) {
+            Util.logError("Failed to select widget settings (rule)", e, userData);
+            throw new DataException("Failed to select widget settings");
         }
     }
 }

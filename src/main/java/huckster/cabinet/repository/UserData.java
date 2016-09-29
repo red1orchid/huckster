@@ -45,16 +45,6 @@ public class UserData {
             //TODO: fatal error, go to 500
         }
     }
-    /*
-
-        public void setUser(String username) {
-            this.username = username;
-            companyId = 0;
-            companyName = null;
-            currency = null;
-            clear();
-        }
-    */
 
     public String getPeriod() {
         return period;
@@ -173,26 +163,4 @@ public class UserData {
         categoryContainer.clear();
         offerContainer.clear();
     }
-/*
-
-
-    public Map<Integer, JsonTreeNode> getSelectedTree(String ruleId) {
-        List<SelectedTreeEntity> selectedTreeEntities;
-        try {
-            WidgetSettingsDao dao = new WidgetSettingsDao();
-            if (ruleId != null) {
-                selectedTreeEntities = dao.getSelectedTree(Integer.parseInt(ruleId));
-            } else {
-                selectedTreeEntities = dao.getSelectedTree();
-            }
-        } catch (SQLException e) {
-            //TODO
-            e.printStackTrace();
-            return new TreeMap<>();
-        }
-
-        return selectedTreeEntities.stream()
-                .collect(Collectors.toMap(SelectedTreeEntity::getId, v -> new JsonTreeNode(v.getId(), v.getTitle(), v.getParentId(), v.isSelected(), null)));
-    }
-*/
 }
