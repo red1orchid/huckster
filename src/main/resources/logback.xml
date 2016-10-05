@@ -23,10 +23,16 @@
             <pattern>%-5level %logger{0} [%file:%line] %msg%n</pattern>
         </encoder>
     </appender>
-<!--
-    <logger name="huckster.cabinet" level="ERROR"/>-->
-    <logger name="JDBC.sqlonly" level="INFO"/>
-    <logger name="JDBC.resultset" level="INFO"/>
+
+    <logger name="huckster.cabinet" level="ERROR">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="JDBC.resultset" level="ERROR">
+        <appender-ref ref="console"/>
+    </logger>
+    <logger name="JDBC.sqlonly" level="INFO">
+        <appender-ref ref="console"/>
+    </logger>
 
     <root level="ERROR">
         <appender-ref ref="file"/>

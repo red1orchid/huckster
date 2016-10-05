@@ -31,6 +31,7 @@
         <%@ include file="menu.jsp" %>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <ul class="nav nav-tabs" id="tabs">
+                <li><a href=".">Дашбоард</a></li>
                 <li><a data-toggle="tab" href="#goods">Товары и рекомендации</a></li>
                 <li><a data-toggle="tab" href="#traffic">Трафик и конверсия</a></li>
                 <li><a data-toggle="tab" href="#yml">Информация по YML</a></li>
@@ -43,15 +44,15 @@
                         <br>
                         <div class="btn-group">
                             <button type="submit" name="periodGoods" value="day"
-                                    class="btn btn-primary <c:if test="${periodGoods == 'day'}">active</c:if>">Текущий
+                                    class="btn btn-default <c:if test="${periodGoods == 'day'}">active</c:if>">Текущий
                                 день
                             </button>
                             <button type="submit" name="periodGoods" value="week"
-                                    class="btn btn-primary <c:if test="${periodGoods == 'week'}">active</c:if>">Текущая
+                                    class="btn btn-default <c:if test="${periodGoods == 'week'}">active</c:if>">Текущая
                                 неделя
                             </button>
                             <button type="submit" name="periodGoods" value="month"
-                                    class="btn btn-primary <c:if test="${periodGoods == 'month'}">active</c:if>">Текущий
+                                    class="btn btn-default <c:if test="${periodGoods == 'month'}">active</c:if>">Текущий
                                 месяц
                             </button>
                         </div>
@@ -92,15 +93,15 @@
                         <br>
                         <div class="btn-group">
                             <button type="submit" name="periodTraffic" value="day"
-                                    class="btn btn-primary <c:if test="${periodTraffic == 'day'}">active</c:if>">Текущий
+                                    class="btn btn-default <c:if test="${periodTraffic == 'day'}">active</c:if>">Текущий
                                 день
                             </button>
                             <button type="submit" name="periodTraffic" value="week"
-                                    class="btn btn-primary <c:if test="${periodTraffic == 'week'}">active</c:if>">
+                                    class="btn btn-default <c:if test="${periodTraffic == 'week'}">active</c:if>">
                                 Текущая неделя
                             </button>
                             <button type="submit" name="periodTraffic" value="month"
-                                    class="btn btn-primary <c:if test="${periodTraffic == 'month'}">active</c:if>">
+                                    class="btn btn-default <c:if test="${periodTraffic == 'month'}">active</c:if>">
                                 Текущий месяц
                             </button>
                         </div>
@@ -189,7 +190,7 @@
         if (activeTab) {
             $('a[href="' + activeTab + '"]').tab('show');
         } else {
-            $('.nav-tabs a:first').tab('show');
+            $('.nav-tabs a[href="#goods"]').tab('show');
         }
 
         $('#goodsTbl').DataTable({

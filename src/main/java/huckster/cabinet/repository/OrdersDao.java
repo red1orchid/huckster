@@ -14,7 +14,6 @@ public class OrdersDao extends DbDao {
     public List<OrderEntity> getOrders(int companyId, Date startDate, Date endDate) throws SQLException {
         List<OrderEntity> orders = new ArrayList<>();
         String sql = "SELECT h.id as order_id," +
-                "            h.rule_id," +
                 "            t.offer_id," +
                 "            f.vendor_code," +
                 "            f.name as model," +
@@ -38,7 +37,7 @@ public class OrdersDao extends DbDao {
                 "        AND trunc(h.ctime) BETWEEN ? AND ?";
 
         execute(sql, 500, (rs) -> {
-            orders.add(new OrderEntity(rs.getInt("order_id"), rs.getInt("rule_id"), rs.getString("offer_id"), rs.getString("vendor_code"), rs.getString("model"),
+            orders.add(new OrderEntity(rs.getInt("order_id"), rs.getString("offer_id"), rs.getString("vendor_code"), rs.getString("model"),
                     rs.getDouble("base_price"), rs.getDouble("end_price"), rs.getInt("discount"), rs.getString("phone"), rs.getString("city"), rs.getString("ctime"),
                     rs.getString("phrase"), rs.getInt("processing_status"), rs.getString("status_title"), rs.getString("processing_comment")));
         }, companyId, startDate, endDate);

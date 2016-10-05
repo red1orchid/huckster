@@ -40,13 +40,13 @@
                 <h3 class="page-header">Показать данные за
                     <div class="btn-group">
                         <button type="submit" name="period" value="day"
-                                class="btn btn-primary <c:if test="${period == 'day'}">active</c:if>">Текущий день
+                                class="btn btn-default <c:if test="${period == 'day'}">active</c:if>">Текущий день
                         </button>
                         <button type="submit" name="period" value="week"
-                                class="btn btn-primary <c:if test="${period == 'week'}">active</c:if>">Текущую неделю
+                                class="btn btn-default <c:if test="${period == 'week'}">active</c:if>">Текущую неделю
                         </button>
                         <button type="submit" name="period" value="month"
-                                class="btn btn-primary <c:if test="${period == 'month'}">active</c:if>">Текущий месяц
+                                class="btn btn-default <c:if test="${period == 'month'}">active</c:if>">Текущий месяц
                         </button>
                     </div>
                 </h3>
@@ -68,13 +68,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">
-                                <div class="panel-footer">
-                                    <span class="pull-left">${panel.getFooter()}</span>
-                                    <span class="pull-right"><span class="${panel.getIcon()}" aria-hidden="true"></span></span>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </a>
+                            <div class="panel-footer">
+                                <span class="pull-left">${panel.getFooter()}</span>
+                                <span class="pull-right"><span class="${panel.getIcon()}"
+                                                               aria-hidden="true"></span></span>
+                                <div class="clearfix"></div>
+                            </div>
                         </div>
                     </div>
                 </c:forEach>

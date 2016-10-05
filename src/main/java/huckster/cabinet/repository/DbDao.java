@@ -47,7 +47,7 @@ public class DbDao {
                 }
             }
         }
-        return Optional.of(value);
+        return Optional.ofNullable(value);
     }
 
     protected void execute(String sql,

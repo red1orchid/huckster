@@ -46,4 +46,17 @@ public class CompanyInfoDao extends DbDao {
                         "    WHERE id = ?", (rs) -> new CompanyEntity(companyId, rs.getString("name"), rs.getString("price_cur"))
                 , companyId);
     }
+
+    public Optional<CompanyEntity> getCompanyInfoByToken(String token) throws SQLException {
+        return selectValue("SELECT id, name, price_cur " +
+                        "     FROM companies " +
+                        "    WHERE reg_token = ?", (rs) -> new CompanyEntity(rs.getInt("id"), rs.getString("name"), rs.getString("price_cur"))
+                , token);
+    }
+
+    public void deleteToken(int companyId) throws SQLException {
+        executeUpdate("UPDATE companies " +
+                "         SET reg_token = null" +
+                "       WHERE id = ?", companyId);
+    }
 }

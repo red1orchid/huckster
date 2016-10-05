@@ -2,6 +2,7 @@
 package huckster.cabinet.web;
 
 import huckster.cabinet.repository.CompanyInfoDao;
+import huckster.cabinet.repository.UserData;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,11 +29,10 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String rememberMe = req.getParameter("rememberMe");
-        System.out.println(req.getHeader("referer"));
 
         try {
             if (dao.isUserExists(username, password)) {
-                req.getSession().setAttribute("user", username);
+                req.getSession().setAttribute("userData", new UserData(username));
                 if (rememberMe != null) {
                     Cookie loginCookie = new Cookie("user", username);
                     loginCookie.setMaxAge(COOKIE_MAX_AGE);

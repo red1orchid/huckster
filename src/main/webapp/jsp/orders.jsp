@@ -39,7 +39,7 @@
                 </div>
             </c:if>
             <h5 class="page-header">Если вам необходимо выгружать заказы по API - напишите нам на
-                support@hucksterbot.ru</h5>
+                <a href="mailto:support@hucksterbot.ru">support@hucksterbot.ru</a>.</h5>
             ${sessionScope.activeTab}
             <c:if test="${sessionScope.activeTab == 'yml'}">in active</c:if>
 
@@ -139,7 +139,6 @@
                 }
                 },
                 {data: 'id', title: 'заказ', defaultContent: ''},
-                {data: 'ruleId', title: 'правило', defaultContent: ''},
                 {data: 'articul', title: 'артикул', defaultContent: ''},
                 {data: 'vendorCode', title: 'код вендора', defaultContent: ''},
                 {data: 'model', title: 'модель', defaultContent: ''},

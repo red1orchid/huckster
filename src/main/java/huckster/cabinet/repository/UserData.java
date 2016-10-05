@@ -46,6 +46,10 @@ public class UserData {
         }
     }
 
+    public UserData(CompanyEntity companyInfo) throws ServletException {
+        this.companyInfo = companyInfo;
+    }
+
     public String getPeriod() {
         return period;
     }
@@ -60,8 +64,8 @@ public class UserData {
         return companyInfo.getId();
     }
 
-    public String getCompanyName() {
-        return companyInfo.getName();
+    public CompanyEntity getCompanyInfo() {
+        return companyInfo;
     }
 
     public String getCurrency() {

@@ -109,10 +109,10 @@
                             <input id="contactEmails" type="text" class="form-control"
                                    value="${settings.contactEmails}">
                             <br>
-                            <label for="yandexKey">Ключ Яндекс.Метрика</label>
+                            <label for="yandexKey">Ключ Яндекс.Метрики</label>
                             <input id="yandexKey" type="text" class="form-control" value="${settings.yandexKey}">
                             <br>
-                            <label for="isEnabled">Виджет, состояние</label><br>
+                            <label for="isEnabled">Состояние виджета</label><br>
                             <input id="isEnabled" type="checkbox" class="toggle form-control" data-on-text="Включен"
                                    data-off-text="Выключен" <c:if test="${settings.isActive == 1}">checked</c:if>>
                             <%--                            <select id="isEnabled" class="selectpicker form-control">
@@ -133,8 +133,8 @@
             <%--Geo--%>
             <div id="geo" class="tab-pane fade">
                 <div class="row">
-                    <br>
                     <div class="col-sm-5 form-group">
+                        <br>
                         <label>Регионы</label>
                         <div id="fancyTree" name="fancyTree"></div>
                     </div>
@@ -143,80 +143,84 @@
                             <label>
                                 <input id="isAutoMode" type="checkbox"
                                        <c:if test="${!isAutoMode}">checked="checked"</c:if>><span>Расширенный режим</span>
-                            </label>
-                        </div>
-                    </div>
-                    <c:if test="${!isAutoMode}">
-                        <input type="hidden" id="selectedChannels" value="${rule.channels}">
-                        <div class="col-sm-6 form-group">
-                            <label for="chnl">Каналы</label>
-                            <select id="chnl" class="selectpicker form-control"
-                                    multiple title="Все каналы"
-                                    data-live-search="true">
-                            </select></div>
-                        <div class="col-sm-6 form-group">
-                            <label for="devices">Устройства</label>
-                            <select id="devices" class="selectpicker form-control">
-                                <c:forEach var="device" items="${devices}">
-                                    <option value="${device.key}"
-                                            <c:if test="${rule.devices == device.key}">selected</c:if>>${device.value}</option>
-                                </c:forEach>
-                            </select></div>
-                        <div class="col-sm-6 form-group">
-                            <label for="days">Дни</label>
-                            <div id="days" class="form-inline">
-                                <input id="day0" class="button-checkbox" type="checkbox"
-                                       data-labelauty="ПН|ПН" <c:if test="${rule.daysArray[0]}">checked</c:if>/>
-                                <input id="day1" class="button-checkbox" type="checkbox"
-                                       data-labelauty="ВТ|ВТ" <c:if test="${rule.daysArray[1]}">checked</c:if>/>
-                                <input id="day2" class="button-checkbox" type="checkbox"
-                                       data-labelauty="СР|СР" <c:if test="${rule.daysArray[2]}">checked</c:if>/>
-                                <input id="day3" class="button-checkbox" type="checkbox"
-                                       data-labelauty="ЧТ|ЧТ" <c:if test="${rule.daysArray[3]}">checked</c:if>/>
-                                <input id="day4" class="button-checkbox" type="checkbox"
-                                       data-labelauty="ПТ|ПТ" <c:if test="${rule.daysArray[4]}">checked</c:if>/>
-                                <input id="day5" class="button-checkbox" type="checkbox"
-                                       data-labelauty="СБ|СБ" <c:if test="${rule.daysArray[5]}">checked</c:if>/>
-                                <input id="day6" class="button-checkbox" type="checkbox"
-                                       data-labelauty="ВС|ВС" <c:if test="${rule.daysArray[6]}">checked</c:if>/>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 form-group">
-                            <label for="hours">Часы</label>
-                            <div id="hours" class="form-inline">
-                                <div class="form-group">
-                                    <label for="hourFrom">C</label>
-                                    <select id="hourFrom" class="selectpicker"
-                                            data-live-search="true" data-width="auto">
-                                        <c:forEach begin="0" end="24" varStatus="loop">
-                                            <option value="${loop.index}"
-                                                    <c:if test="${rule.timeFrom == loop.index}">selected</c:if>>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
-                                        </c:forEach>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label for="hourTo">По</label>
-                                    <select id="hourTo" class="selectpicker"
-                                            data-live-search="true"
-                                            data-width="auto">
-                                        <c:forEach begin="0" end="24" varStatus="loop">
-                                            <option value="${loop.index}"
-                                                    <c:if test="${rule.timeTo == loop.index}">selected</c:if>>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
-                                        </c:forEach>
-                                    </select>
+                            </label></div><br>
+                        <c:if test="${!isAutoMode}">
+                            <input type="hidden" id="selectedChannels" value="${rule.channels}">
+                            <div class="form-group">
+                                <label for="chnl">Каналы</label>
+                                <select id="chnl" class="selectpicker form-control"
+                                        multiple title="Все каналы"
+                                        data-live-search="true">
+                                </select></div>
+                            <div class="form-group">
+                                <label for="devices">Устройства</label>
+                                <select id="devices" class="selectpicker form-control">
+                                    <c:forEach var="device" items="${devices}">
+                                        <option value="${device.key}"
+                                                <c:if test="${rule.devices == device.key}">selected</c:if>>${device.value}</option>
+                                    </c:forEach>
+                                </select></div>
+                            <div class="form-group">
+                                <label for="days">Дни</label>
+                                <div id="days" class="form-inline">
+                                    <input id="day0" class="button-checkbox" type="checkbox"
+                                           data-labelauty="ПН|ПН" <c:if test="${rule.daysArray[0]}">checked</c:if>/>
+                                    <input id="day1" class="button-checkbox" type="checkbox"
+                                           data-labelauty="ВТ|ВТ" <c:if test="${rule.daysArray[1]}">checked</c:if>/>
+                                    <input id="day2" class="button-checkbox" type="checkbox"
+                                           data-labelauty="СР|СР" <c:if test="${rule.daysArray[2]}">checked</c:if>/>
+                                    <input id="day3" class="button-checkbox" type="checkbox"
+                                           data-labelauty="ЧТ|ЧТ" <c:if test="${rule.daysArray[3]}">checked</c:if>/>
+                                    <input id="day4" class="button-checkbox" type="checkbox"
+                                           data-labelauty="ПТ|ПТ" <c:if test="${rule.daysArray[4]}">checked</c:if>/>
+                                    <input id="day5" class="button-checkbox" type="checkbox"
+                                           data-labelauty="СБ|СБ" <c:if test="${rule.daysArray[5]}">checked</c:if>/>
+                                    <input id="day6" class="button-checkbox" type="checkbox"
+                                           data-labelauty="ВС|ВС" <c:if test="${rule.daysArray[6]}">checked</c:if>/>
                                 </div>
                             </div>
-                        </div>
-                    </c:if>
-                </div>
-                <div class="col-sm-4">
-                    <div class="row pull-right">
-                        <button type="button" class="btn btn-default">Отмена
-                        </button>
-                        <button id="saveRule" type="submit" class="btn btn-primary">Сохранить
-                        </button>
+                            <div class="form-group">
+                                <label for="hours">Часы</label>
+                                <div id="hours" class="form-inline">
+                                    <div class="form-group">
+                                        <label for="hourFrom">C</label>
+                                        <select id="hourFrom" class="selectpicker"
+                                                data-live-search="true" data-width="auto">
+                                            <c:forEach begin="0" end="24" varStatus="loop">
+                                                <option value="${loop.index}"
+                                                        <c:if test="${rule.timeFrom == loop.index}">selected</c:if>>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="hourTo">По</label>
+                                        <select id="hourTo" class="selectpicker"
+                                                data-live-search="true"
+                                                data-width="auto">
+                                            <c:forEach begin="0" end="24" varStatus="loop">
+                                                <option value="${loop.index}"
+                                                        <c:if test="${rule.timeTo == loop.index}">selected</c:if>>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
+                                            </c:forEach>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:if>
                     </div>
                 </div>
+                <br>
+                <button type="button" class="btn btn-default">Отмена
+                </button>
+                <button id="saveRule" type="submit" class="btn btn-primary">Сохранить
+                </button>
+                <%--                <div class="col-sm-4">
+                                    <div class="row pull-right">
+                                        <button type="button" class="btn btn-default">Отмена
+                                        </button>
+                                        <button id="saveRule" type="submit" class="btn btn-primary">Сохранить
+                                        </button>
+                                    </div>
+                                </div>--%>
             </div>
             <%--Categories and vendors discounts--%>
             <div id="step2" class="tab-pane fade">
@@ -377,8 +381,6 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
-                                </button>
-                                <button id="deletePage" type="submit" class="btn btn-danger">Удалить
                                 </button>
                                 <button id="savePage" type="submit" class="btn btn-primary">Сохранить
                                 </button>
@@ -859,19 +861,6 @@
                 id: id,
                 url: $('#url').val(),
                 isTrash: $('#isTrash').bootstrapSwitch('state') ? 1 : 0
-            }
-        }).done(function (msg) {
-            location.reload();
-        });
-    });
-
-    $('#deletePage').on('click', function (e) {
-        $.ajax({
-            url: "settings",
-            type: "POST",
-            data: {
-                type: "delete_page",
-                id: id
             }
         }).done(function (msg) {
             location.reload();

@@ -32,11 +32,11 @@ public class Util {
     }
 
     public static void logError(String message, Exception e, UserData userData) {
-        LOG.error(message + " for company " + userData.getCompanyName(), e);
+        LOG.error(message + " for company " + userData.getCompanyId(), e);
     }
 
     public static void logError(String message, UserData userData) {
-        LOG.error(message + " for company " + userData.getCompanyName());
+        LOG.error(message + " for company " + userData.getCompanyId());
     }
 
     public class JsonDataWrapper<T> {

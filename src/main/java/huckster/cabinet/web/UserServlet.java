@@ -1,24 +1,31 @@
 package huckster.cabinet.web;
 
 import huckster.cabinet.Util;
+import huckster.cabinet.model.CompanyEntity;
+import huckster.cabinet.repository.CompanyInfoDao;
 import huckster.cabinet.repository.UserData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  * Created by PerevalovaMA on 17.05.2016.
  */
 abstract class UserServlet extends HttpServlet {
+    private static final Logger LOG = LoggerFactory.getLogger(UserServlet.class);
+    CompanyInfoDao dao = new CompanyInfoDao();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (auth(req, resp)) {
             UserData userData = (UserData) req.getSession().getAttribute("userData");
             try {
-                req.setAttribute("company", userData.getCompanyName());
+                req.setAttribute("company", userData.getCompanyInfo());
                 initDataGet(req, resp, userData);
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -32,7 +39,7 @@ abstract class UserServlet extends HttpServlet {
         if (auth(req, resp)) {
             UserData userData = (UserData) req.getSession().getAttribute("userData");
             try {
-                req.setAttribute("company", userData.getCompanyName());
+                req.setAttribute("company", userData.getCompanyInfo());
                 initDataPost(req, resp, userData);
             } catch (Exception e) {
                 Util.logError("Response while loading a servlet " + this.getClass(), e, userData);
@@ -44,34 +51,51 @@ abstract class UserServlet extends HttpServlet {
     abstract void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException;
     abstract void initDataPost(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException;
 
-    private String getUser(HttpServletRequest req) {
-        String user = (String) req.getSession().getAttribute("user");
-        if (user == null) {
+    private UserData getUser(HttpServletRequest req) throws ServletException {
+        HttpSession session = req.getSession();
+        UserData userData = (UserData) session.getAttribute("userData");
+        if (userData == null) {
             Cookie[] cookies = req.getCookies();
             if (cookies != null) {
                 for (Cookie c : cookies) {
                     if (c.getName().equals("user")) {
-                        user = c.getValue();
+                        userData = new UserData(c.getValue());
+                        session.setAttribute("userData", userData);
                     }
                 }
             }
         }
 
-        return user;
+        return userData;
     }
 
     private boolean auth(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
-        String user = getUser(req);
-        HttpSession session = req.getSession();
-        if (user != null) {
-            if (session.getAttribute("userData") == null) {
-                UserData userData = new UserData(user);
-                session.setAttribute("userData", userData);
-            }
+        UserData userData = getUser(req);
+        if (userData != null) {
             return true;
         } else {
-            resp.sendRedirect("login");
-            return false;
+            boolean isAuthByToken = false;
+            String token = req.getParameter("token");
+            if (token != null) {
+                try {
+                    Optional <CompanyEntity> companyInfo = dao.getCompanyInfoByToken(token);
+                    if (companyInfo.isPresent()) {
+                        userData = new UserData(companyInfo.get());
+                        req.getSession().setAttribute("userData", userData);
+                        isAuthByToken = true;
+                        dao.deleteToken(userData.getCompanyId());
+                    }
+                } catch (SQLException e) {
+                    LOG.error("Failed to get company information by token " + token, e);
+                }
+            }
+            if (isAuthByToken) {
+                resp.sendRedirect("settings#settings");
+                return false;
+            } else {
+                resp.sendRedirect("login");
+                return false;
+            }
         }
     }
 }

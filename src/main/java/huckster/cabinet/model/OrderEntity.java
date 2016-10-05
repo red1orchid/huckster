@@ -5,7 +5,6 @@ package huckster.cabinet.model;
  */
 public class OrderEntity {
     private int id;
-    private int ruleId;
     private String articul;
     private String vendorCode;
     private String model;
@@ -20,9 +19,8 @@ public class OrderEntity {
     private String statusTitle;
     private String comment;
 
-    public OrderEntity(int id, int ruleId, String articul, String vendorCode, String model, Double basePrice, Double resultPrice, int discount, String phone, String city, String creationDate, String phrase, int status, String statusTitle, String comment) {
+    public OrderEntity(int id, String articul, String vendorCode, String model, Double basePrice, Double resultPrice, int discount, String phone, String city, String creationDate, String phrase, int status, String statusTitle, String comment) {
         this.id = id;
-        this.ruleId = ruleId;
         this.articul = articul;
         this.vendorCode = vendorCode;
         this.model = model;
@@ -40,10 +38,6 @@ public class OrderEntity {
 
     public int getId() {
         return id;
-    }
-
-    public int getRuleId() {
-        return ruleId;
     }
 
     public String getArticul() {
