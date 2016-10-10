@@ -24,16 +24,7 @@
         </encoder>
     </appender>
 
-    <logger name="huckster.cabinet" level="ERROR">
-        <appender-ref ref="console"/>
-    </logger>
-    <logger name="JDBC.resultset" level="ERROR">
-        <appender-ref ref="console"/>
-    </logger>
-    <logger name="JDBC.sqlonly" level="INFO">
-        <appender-ref ref="console"/>
-    </logger>
-
+<!--    <logger name="JDBC.sqlonly" level="INFO"/>-->
     <root level="ERROR">
         <appender-ref ref="file"/>
         <appender-ref ref="console"/>

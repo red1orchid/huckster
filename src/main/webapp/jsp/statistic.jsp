@@ -31,7 +31,7 @@
         <%@ include file="menu.jsp" %>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <ul class="nav nav-tabs" id="tabs">
-                <li><a href=".">Дашбоард</a></li>
+                <li><a href=".">Дашборд</a></li>
                 <li><a data-toggle="tab" href="#goods">Товары и рекомендации</a></li>
                 <li><a data-toggle="tab" href="#traffic">Трафик и конверсия</a></li>
                 <li><a data-toggle="tab" href="#yml">Информация по YML</a></li>
@@ -121,7 +121,6 @@
                     <table id="trafficTbl" class="table table-hover table-bordered" cellspacing="0" width="100%">
                         <thead>
                         <tr>
-                            <th>правило</th>
                             <th>заказы, ${trafficHeader}</th>
                             <th>трафик, ${trafficHeader}</th>
                             <th>конверсия, ${trafficHeader}</th>

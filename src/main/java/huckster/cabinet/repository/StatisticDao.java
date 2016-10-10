@@ -26,11 +26,11 @@ public class StatisticDao extends DbDao{
     }
 
     public List<List> getTraffic(int companyId, String period) throws SQLException {
-        String sql = String.format("SELECT t.rule, t.ords_%1$s, t.trfc_%1$s, t.conv_%1$s, t.disc_%1$s" +
+        String sql = String.format("SELECT t.ords_%1$s, t.trfc_%1$s, t.conv_%1$s, t.disc_%1$s" +
                 "                     FROM traffic_stats t" +
                 "                    WHERE t.company_id = ?", period);
 
-        return makeTable(sql, null, 5, companyId);
+        return makeTable(sql, null, 4, companyId);
     }
 
     public Map<String, String> getYml(int companyId) throws SQLException {

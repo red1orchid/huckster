@@ -12,14 +12,14 @@ import java.util.List;
  */
 public class DashbordDao extends DbDao {
     public DashbordDao() throws SQLException {
-        alterSession("ALTER SESSION SET NLS_NUMERIC_CHARACTERS = ',.'");
+      //   alterSession("ALTER SESSION SET NLS_NUMERIC_CHARACTERS = ',.'");
     }
 
     public HashMap<Integer, String> getStatisticRates(int companyId, String period) throws SQLException {
         String sql = " SELECT report_id, " +
                 "             CASE" +
                 "               WHEN report_id IN (4, 7) THEN to_char(value, 'fm9999990.00')" +
-                "               ELSE value" +
+                "               ELSE to_char(value)" +
                 "             END AS value" +
                 "   FROM reports_data" +
                 "  WHERE report_id IN (4, 5, 6, 7)" +
@@ -62,7 +62,7 @@ public class DashbordDao extends DbDao {
                 "FROM (" +
                 "  SELECT report_id, metric, period, CASE report_id" +
                 "                                            WHEN 3 THEN value*1000" +
-                "                                            ELSE to_number(value)" +
+                "                                            ELSE value" +
                 "                                         END AS value" +
                 "  FROM reports_data" +
                 "  WHERE report_id IN (1, 2, 3)" +
