@@ -24,13 +24,13 @@ public class SettingsDao extends DbDao {
     }
 
     public void updateCompanySettings(int companyId, String yml, String orderEmails, String contactEmails, String yandexKey, int isActive) throws SQLException {
-        String sql = "UPDATE v_companies" +
+        String sql = "UPDATE companies" +
                 "        SET feed_url         = ?," +
                 "            mailto           = ?," +
                 "            mailto_admin     = ?," +
                 "            metric_key       = ?," +
                 "            is_manual_enable = ?" +
-                "      WHERE company_id = ?";
+                "      WHERE id = ?";
 
         executeUpdate(sql, yml, orderEmails, contactEmails, yandexKey, isActive, companyId);
     }

@@ -33,36 +33,33 @@
         <%--Sidebar--%>
         <%@ include file="menu.jsp" %>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <c:if test="${not empty error}">
-                <div class="alert alert-danger">
-                        ${error}
-                </div>
-            </c:if>
             <h5 class="page-header">Если вам необходимо выгружать заказы по API - напишите нам на
                 <a href="mailto:support@hucksterbot.ru">support@hucksterbot.ru</a>.</h5>
             ${sessionScope.activeTab}
             <c:if test="${sessionScope.activeTab == 'yml'}">in active</c:if>
 
             <div class="row">
-            <form method="post">
-                <div class="col-sm-2 form-group">
-                    <input id="startdate" type="text" name="startDate" value="${startDate}" class="span2"
-                           data-date-format="dd.mm.yyyy">
-                </div>
-                <div class="col-sm-2 form-group">
-                    <input id="enddate" type="text" name="endDate" value="${endDate}" class="span2"
-                           data-date-format="dd.mm.yyyy">
-                </div>
-                <div class="col-sm-2 form-group">
-                    <button type="submit" class="btn btn-primary btn-sm">OK</button>
-                </div>
-            </form></div>
+                <div id="alerts"></div>
+                <form method="post">
+                    <div class="col-sm-2 form-group">
+                        <input id="startdate" type="text" name="startDate" value="${startDate}" class="span2"
+                               data-date-format="dd.mm.yyyy">
+                    </div>
+                    <div class="col-sm-2 form-group">
+                        <input id="enddate" type="text" name="endDate" value="${endDate}" class="span2"
+                               data-date-format="dd.mm.yyyy">
+                    </div>
+                    <div class="col-sm-2 form-group">
+                        <button type="submit" class="btn btn-primary btn-sm">OK</button>
+                    </div>
+                </form>
+            </div>
 
             <table id="orders" class="table table-hover table-bordered" cellspacing="0" width="100%">
             </table>
 
             <!-- Modal -->
-            <form method="post" class="modal fade" id="editOrder" tabindex="-1" role="dialog"
+            <form class="modal fade" id="editOrder" tabindex="-1" role="dialog"
                   aria-labelledby="myModalLabel"
                   aria-hidden="true">
                 <div class="modal-dialog modal-sm">
@@ -73,11 +70,10 @@
                             <h4 class="modal-title" id="orderTitle"></h4>
                         </div>
                         <div class="modal-body">
-                            <form role="form">
+                            <div role="form">
                                 <div class="form-group">
-                                    <input type="hidden" id="orderId" name="orderId">
-                                    <label for="statuses">Статус:</label>
-                                    <select name="status" class="form-control" id="statuses">
+                                    <label for="status">Статус:</label>
+                                    <select id="status" class="form-control">
                                         <c:forEach var="entry" items="${statuses}">
                                             <option value="<c:out value="${entry.key}"/>"><c:out
                                                     value="${entry.value}"/></option>
@@ -86,13 +82,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="comment">Комментарий:</label>
-                                    <textarea name="comment" class="form-control" rows="5" id="comment"></textarea>
+                                    <textarea id="comment" class="form-control" rows="5" id="comment"></textarea>
                                 </div>
-                            </form>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                            <button type="submit" id="saveOrder" class="btn btn-primary">Сохранить</button>
                         </div>
                     </div>
                 </div>
@@ -102,59 +98,58 @@
 </div>
 
 <script type="text/javascript">
+    var ordersTable = $('#orders').DataTable({
+        colReorder: true,
+        iDisplayLength: 25,
+        order: [[1, 'desc']],
+        columnDefs: [
+            {orderable: false, targets: 0}
+        ],
+        language: {
+            "lengthMenu": "Показать _MENU_ записей",
+            "zeroRecords": "По Вашему запросу ничего не найдено",
+            "search": "Поиск:",
+            "info": "Показаны _START_-_END_ из _TOTAL_ записей",
+            "infoEmpty": "Нет записей",
+            "infoFiltered": "(всего _MAX_)",
+            "loadingRecords": "Загрузка...",
+            "paginate": {
+                "first": "1",
+                "last": "_PAGES_",
+                "next": ">>",
+                "previous": "<<"
+            }
+        },
+        ajax: {
+            url: "orders",
+            type: "POST",
+            data: {
+                "request": "ajax"
+            }
+        },
+        columns: [
+            {
+                data: null, render: function (data, type, full, meta) {
+                return '<a data-id="' + full.id + '" data-status="' + full.status + '" data-comment="' + full.comment + '" data-toggle="modal" href="#editOrder"><span class="glyphicon glyphicon-pencil"></span></a>';
+            }
+            },
+            {data: 'id', title: 'заказ', defaultContent: ''},
+            {data: 'articul', title: 'артикул', defaultContent: ''},
+            {data: 'vendorCode', title: 'код вендора', defaultContent: ''},
+            {data: 'model', title: 'модель', defaultContent: ''},
+            {data: 'basePrice', title: 'цена базовая', defaultContent: ''},
+            {data: 'resultPrice', title: 'цена итоговая', defaultContent: ''},
+            {data: 'discount', title: 'скидка', defaultContent: ''},
+            {data: 'phone', title: 'телефон', defaultContent: ''},
+            {data: 'city', title: 'город', defaultContent: ''},
+            {data: 'creationDate', title: 'создан', defaultContent: ''},
+            {data: 'phrase', title: 'фраза', defaultContent: ''},
+            {data: 'statusTitle', title: 'статус', defaultContent: ''},
+            {data: 'comment', title: 'комментарий', defaultContent: ''}
+        ]
+    });
+
     $(document).ready(function () {
-        $('#orders').DataTable({
-            colReorder: true,
-            iDisplayLength: 25,
-            order: [[1, 'desc']],
-            columnDefs: [
-                {orderable: false, targets: 0}
-            ],
-            language: {
-                "lengthMenu": "Показать _MENU_ записей",
-                "zeroRecords": "По Вашему запросу ничего не найдено",
-                "search": "Поиск:",
-                "info": "Показаны _START_-_END_ из _TOTAL_ записей",
-                "infoEmpty": "Нет записей",
-                "infoFiltered": "(всего _MAX_)",
-                "loadingRecords": "Загрузка...",
-                "paginate": {
-                    "first": "1",
-                    "last": "_PAGES_",
-                    "next": ">>",
-                    "previous": "<<"
-                }
-            },
-            ajax: {
-                url: "orders",
-                type: "POST",
-                data: {
-                    "request": "ajax"
-                }
-            },
-            columns: [
-                {
-                    data: null, render: function (data, type, full, meta) {
-                    return '<a data-id="' + full.id + '" data-status="' + full.status + '" data-comment="' + full.comment + '" data-toggle="modal" href="#editOrder"><span class="glyphicon glyphicon-pencil"></span></a>';
-                }
-                },
-                {data: 'id', title: 'заказ', defaultContent: ''},
-                {data: 'articul', title: 'артикул', defaultContent: ''},
-                {data: 'vendorCode', title: 'код вендора', defaultContent: ''},
-                {data: 'model', title: 'модель', defaultContent: ''},
-                {data: 'basePrice', title: 'цена базовая', defaultContent: ''},
-                {data: 'resultPrice', title: 'цена итоговая', defaultContent: ''},
-                {data: 'discount', title: 'скидка', defaultContent: ''},
-                {data: 'phone', title: 'телефон', defaultContent: ''},
-                {data: 'city', title: 'город', defaultContent: ''},
-                {data: 'creationDate', title: 'создан', defaultContent: ''},
-                {data: 'phrase', title: 'фраза', defaultContent: ''},
-                {data: 'statusTitle', title: 'статус', defaultContent: ''},
-                {data: 'comment', title: 'комментарий', defaultContent: ''}
-            ]
-        });
-
-
         var checkin = $('#startdate').datepicker().on('changeDate', function (ev) {
             if (ev.date.valueOf() > checkout.date.valueOf()) {
                 var startDate = new Date(ev.date);
@@ -174,15 +169,52 @@
         }).data('datepicker');
     });
 
+    function alert(message, type, time) {
+        $('#alerts').html('<div class="alert alert-' + type + ' alert-dismissible fade in" role="alert"> ' +
+                ' <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                message + '</div>');
+
+        if (time != null) {
+            $('#alerts').fadeTo(time, 500).slideUp(500, function () {
+                $("#alerts").slideUp(500);
+            });
+        }
+    }
+
+    var id;
+
     $('#editOrder').on('show.bs.modal', function (e) {
-        var id = $(e.relatedTarget).data('id');
+        id = $(e.relatedTarget).data('id');
         var status = $(e.relatedTarget).data('status');
         var comment = $(e.relatedTarget).data('comment');
-        document.getElementById('orderId').value = id;
         document.getElementById('orderTitle').innerHTML = "Заказ №".concat(id);
-        document.getElementById("statuses").selectedIndex = status;
+        document.getElementById('status').selectedIndex = status;
         document.getElementById('comment').value = comment;
     });
+
+    $('#editOrder').on('submit', function (e) {
+        $.ajax({
+            url: "orders",
+            type: "POST",
+            data: {
+                type: "save_order",
+                id: id,
+                status: $('#status').val(),
+                comment: $('#comment').val()
+            },
+            success: function (data) {
+                if (!data.success) {
+                    $('#editOrder').modal('hide');
+                    alert(data.error, 'danger', 5000);
+                } else {
+                    location.reload();
+                }
+            }
+        });
+
+        e.preventDefault();
+    });
+
     /*{
      "processing": true,
      "serverSide": true,

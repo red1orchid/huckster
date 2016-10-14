@@ -761,7 +761,6 @@
         id = $(e.relatedTarget).data('id');
 
         if (id != null) {
-            console.log("lalala");
             $("#itemSelect").append("<option value='" + $(e.relatedTarget).data('articul') + "'>" + $(e.relatedTarget).data('name') + "</option>");
             $('#itemSelect').val($(e.relatedTarget).data('articul'));
         }

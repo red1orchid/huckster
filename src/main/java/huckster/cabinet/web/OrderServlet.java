@@ -1,5 +1,6 @@
 package huckster.cabinet.web;
 
+import huckster.cabinet.OperationStatus;
 import huckster.cabinet.Util;
 import huckster.cabinet.model.OrderEntity;
 import huckster.cabinet.repository.OrdersDao;
@@ -27,54 +28,62 @@ public class OrderServlet extends UserServlet implements JsonOutput {
     private OrdersDao dao = new OrdersDao();
     private Util util = new Util();
 
-    @Override
-    void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException {
+    private void init(HttpServletRequest req, UserData userData) {
         req.setAttribute("startDate", userData.getStartDate().format(FORMATTER));
         req.setAttribute("endDate", userData.getEndDate().format(FORMATTER));
         req.setAttribute("statuses", getOrderStatuses());
+    }
+
+    @Override
+    void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException {
+        init(req, userData);
 
         req.getRequestDispatcher("jsp/orders.jsp").forward(req, resp);
     }
 
     @Override
     protected void initDataPost(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException {
+        req.setCharacterEncoding("UTF-8");
+
         if ("ajax".equals(req.getParameter("request"))) {
             writeJson(resp, getOrders(userData));
         } else {
-            req.setCharacterEncoding("UTF-8");
-            if (req.getParameter("orderId") == null) {
+            if (req.getParameter("type") != null && req.getParameter("type").equals("save_order")) {
+                OperationStatus status = new OperationStatus(false, "Сохранение невозможно в данный момент. Попробуйте еще раз позднее");
+                // Update order
+                try {
+                    dao.updateOrder(Integer.parseInt(req.getParameter("id")), Integer.parseInt(req.getParameter("status")), req.getParameter("comment"));
+                    status = new OperationStatus(true);
+                } catch (SQLException e) {
+                    Util.logError("Failed to update order №" + req.getParameter("id"), e, userData);
+                    status = new OperationStatus(false, "Сохранение невозможно в данный момент. Попробуйте еще раз позднее");
+                }
+                writeJson(resp, Util.toJson(status));
+            } else {
                 //Get list of orders from startDate to endDate
                 String startDateStr = req.getParameter("startDate");
-                String endDateStr = req.getParameter("endDate");
                 LocalDate startDate;
-                LocalDate endDate;
-
-                if (req.getParameter("startDate") == null || req.getParameter("startDate").isEmpty()) {
+                if (startDateStr == null || startDateStr.isEmpty()) {
                     startDate = LocalDate.of(2000, 1, 1);
                 } else {
                     startDate = LocalDate.parse(startDateStr, FORMATTER);
                 }
+                userData.setStartDate(startDate);
 
-                if (req.getParameter("endDate") == null || req.getParameter("endDate").isEmpty()) {
+                String endDateStr = req.getParameter("endDate");
+                LocalDate endDate;
+                if (endDateStr == null || endDateStr.isEmpty()) {
                     endDate = LocalDate.now();
                 } else {
                     endDate = LocalDate.parse(endDateStr, FORMATTER);
                 }
-
-                userData.setStartDate(startDate);
                 userData.setEndDate(endDate);
-            } else {
-                // Update order
-                try {
-                    dao.updateOrder(Integer.parseInt(req.getParameter("orderId")), Integer.parseInt(req.getParameter("status")), req.getParameter("comment"));
-                } catch (SQLException e) {
-                    Util.logError("Failed to update order №" + req.getParameter("orderId"), e, userData);
-                    req.setAttribute("error", "Сохранение невозможно в данный момент. Попробуйте еще раз позднее");
-                    //TODO: something!  initDataGet(req, resp);
-                }
-                //   System.out.println(req.getParameter("comment"));
+
+                init(req, userData);
+                req.getRequestDispatcher("jsp/orders.jsp").forward(req, resp);
             }
-            resp.sendRedirect("orders");
+
+            //resp.sendRedirect("orders");
         }
     }
 

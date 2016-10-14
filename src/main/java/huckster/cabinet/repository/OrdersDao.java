@@ -50,7 +50,7 @@ public class OrdersDao extends DbDao {
         String sql = " UPDATE orders_header" +
                 "         SET processing_status = ?," +
                 "             processing_comment = ?" +
-                "       WHERE remote_id = ?";
+                "       WHERE id = ?";
 
         executeUpdate(sql, status, comment, orderId);
     }
