@@ -17,7 +17,7 @@ import java.util.Optional;
  */
 public class DbDao {
     private static final Logger LOG = LoggerFactory.getLogger(DbDao.class);
-    private DataSource pool;
+    protected DataSource pool;
 
     public DbDao() {
         try {
@@ -80,13 +80,6 @@ public class DbDao {
                 ps.setObject(++cnt, param);
             }
             ps.executeUpdate();
-        }
-    }
-
-    protected void alterSession(String sql) throws SQLException {
-        try (Connection dbConnection = pool.getConnection();
-             Statement s = dbConnection.createStatement()) {
-            s.execute(sql);
         }
     }
 

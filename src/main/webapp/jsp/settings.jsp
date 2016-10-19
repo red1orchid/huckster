@@ -403,7 +403,7 @@
                         var
                         h=document.getElementById('huckster'),r=d.createElement('script');w.Huckster={};w.Huckster.config=c||{};w.Huckster.config.server=s;r.setAttribute('src',
                         '//'+Huckster.config.server+'/app/huckster.min.js');h.parentNode.insertBefore(r,h.nextSibling);
-                        })(window,document,'files.hucksterbot.com',{companyId:${companyId});
+                        })(window,document,'files.hucksterbot.com',{companyId:${companyId}});
                         &lt;/script&gt;
                     </code></p></div>
             </div>

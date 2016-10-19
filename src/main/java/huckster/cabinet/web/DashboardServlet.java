@@ -35,7 +35,7 @@ public class DashboardServlet extends UserServlet {
         req.setAttribute("period", userData.getPeriod());
         req.setAttribute("panels", getPanels(userData));
         req.setAttribute("charts", getCharts(userData));
-        req.getRequestDispatcher("/jsp/dashboard.jsp").forward(req, resp);
+        req.getRequestDispatcher("jsp/dashboard.jsp").forward(req, resp);
     }
 
     @Override

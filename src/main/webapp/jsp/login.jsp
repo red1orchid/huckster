@@ -23,12 +23,16 @@
 <div class="container">
     <c:choose>
         <c:when test="${status.success}">
-            <div class="alert alert-success">
+            <div class="alert alert-success alert-dismissible fade in" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
                 Инструкция по смене пароля отправлена на почту
             </div>
         </c:when>
         <c:when test="${not empty status.error}">
-            <div class="alert alert-danger">
+            <div class="alert alert-danger alert-dismissible fade in">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
                     ${status.error}
             </div>
         </c:when>
@@ -69,10 +73,12 @@
                     <div role="form">
                         <div class="form-group">
                             <label for="email">Введите свой email:</label>
-                            <input id="email" type="text" class="form-control">
+                            <input id="email" name="email" type="text" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <button type="submit" name="restorePassword" value="true" id="saveOrder" class="btn btn-primary pull-right">OK</button>
+                            <button type="submit" name="restorePassword" value="true" id="saveOrder"
+                                    class="btn btn-primary pull-right">OK
+                            </button>
                             <br>
                         </div>
                     </div>
@@ -80,7 +86,11 @@
             </div>
         </div>
     </form>
-
 </div>
+
+<script type="text/javascript">
+    $('.alert-success').fadeTo(1500, 500).slideUp(500, function () {
+        $(".alert-success").slideUp(500);
+    });</script>
 </body>
 </html>

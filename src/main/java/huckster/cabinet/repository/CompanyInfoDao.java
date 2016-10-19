@@ -2,7 +2,10 @@ package huckster.cabinet.repository;
 
 import huckster.cabinet.model.CompanyEntity;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.Optional;
 
 /**
@@ -31,6 +34,20 @@ public class CompanyInfoDao extends DbDao {
                 "      WHERE company_id = ?";
 
         executeUpdate(sql, password, companyId);
+    }
+
+    public boolean isEmailExists(String email) throws SQLException {
+        return (selectValue("SELECT count(*) FROM auth WHERE UPPER(user_name) = UPPER(?)", (rs) -> rs.getInt(1), email).orElse(0) > 0);
+    }
+
+    public boolean restorePassword(String email) throws SQLException {
+        try (Connection dbConnection = pool.getConnection();
+             CallableStatement cs = dbConnection.prepareCall("{? = call CHANGEPASS(?)}")) {
+            cs.registerOutParameter(1, Types.INTEGER);
+            cs.setString(2, email);
+            cs.execute();
+            return (cs.getInt(1) == 1);
+        }
     }
 
     public Optional<Integer> getCompanyId(String username) throws SQLException {

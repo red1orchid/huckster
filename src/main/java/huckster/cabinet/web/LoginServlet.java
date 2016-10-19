@@ -33,17 +33,10 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String rememberMe = req.getParameter("rememberMe");
-        System.out.println("restore: " + req.getParameter("restorePassword"));
 
-        OperationStatus status;
         try {
             if (req.getParameter("restorePassword") != null) {
-                if (true) {
-                    status = new OperationStatus(true, "Инструкция по смене пароля отправлена на почту");
-                } else {
-                    status = new OperationStatus(false, "Не существует пользователя с указанным email");
-                }
-                sendResp(req, resp, status);
+                sendResp(req, resp, restorePassword(req.getParameter("email")));
             } else {
                 if (dao.isUserExists(username, password)) {
                     req.getSession().setAttribute("userData", new UserData(username));
@@ -61,6 +54,22 @@ public class LoginServlet extends HttpServlet {
             LOG.error("Failed to login with username " + username, e);
             resp.sendRedirect("jsp/error.jsp");
         }
+    }
+
+    private OperationStatus restorePassword(String email) throws SQLException {
+        OperationStatus status;
+        if (!dao.isEmailExists(email)) {
+            status = new OperationStatus(false, "Пользователя с указанным email не существует");
+        } else {
+            if (dao.restorePassword(email)) {
+                status = new OperationStatus(true, "Инструкция по смене пароля отправлена на почту");
+            } else {
+                LOG.error("Failed to restore password for user " + email);
+                status = new OperationStatus(false, "Операция временно невозможна. Повторите попытку позднее");
+            }
+        }
+
+        return status;
     }
 
     private void sendResp(HttpServletRequest req, HttpServletResponse resp, OperationStatus status) throws ServletException, IOException  {
