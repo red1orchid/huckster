@@ -26,6 +26,7 @@ abstract class UserServlet extends HttpServlet {
             UserData userData = (UserData) req.getSession().getAttribute("userData");
             try {
                 req.setAttribute("company", userData.getCompanyInfo());
+                req.setAttribute("isWidgetActive", dao.isWidgetActive(userData.getCompanyId()));
                 initDataGet(req, resp, userData);
             } catch (SQLException e) {
                 e.printStackTrace();

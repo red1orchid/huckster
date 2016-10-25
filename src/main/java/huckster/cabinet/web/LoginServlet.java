@@ -62,7 +62,7 @@ public class LoginServlet extends HttpServlet {
             status = new OperationStatus(false, "Пользователя с указанным email не существует");
         } else {
             if (dao.restorePassword(email)) {
-                status = new OperationStatus(true, "Инструкция по смене пароля отправлена на почту");
+                status = new OperationStatus(true);
             } else {
                 LOG.error("Failed to restore password for user " + email);
                 status = new OperationStatus(false, "Операция временно невозможна. Повторите попытку позднее");

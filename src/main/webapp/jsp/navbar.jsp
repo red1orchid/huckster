@@ -12,12 +12,16 @@
             <a class="navbar-brand" href=".">${company.name}, ID ${company.id}</a>
         </div>
         <ul class="nav navbar-nav navbar-right">
+            <c:if test="${isWidgetActive}">
+                <li><a data-placement="bottom" title="Предпросмотр виджета"><span class="glyphicon glyphicon-play green widget_preview"></span></a></li>
+            </c:if>
             <li>
-                <a href="#" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span>
-                    <span class="caret"></span></a>
+                <a href="#" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span><span
+                        class="caret"></span></a>
                 <ul class="dropdown-menu">
                     <li><a href="#editPassword" data-toggle="modal"><span class="glyphicon glyphicon-wrench"></span>Изменить пароль</a></li>
                 </ul>
+            </li>
             <li><a href="logout"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
         </ul>
     </div>
@@ -51,9 +55,14 @@
     </div>
 </div>
 
+<style type="text/css">
+    .green {
+        color: green;
+    }
+</style>
 <script>
     bootstrap_alert = function () {
-    }
+    };
     bootstrap_alert.error = function (message) {
         $('#passAlert').html('<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
                 '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
@@ -66,6 +75,21 @@
             $("#passAlert").slideUp(500);
         }).show();
     };
+
+    $('.widget_preview').on('click', function (e) {
+        console.log('PRR');
+        $.ajax({
+            url: "settings_data",
+            type: "GET",
+            async: false,
+            data: {
+                type: "widget_url"
+            },
+            success: function(data) {
+                window.open(data, '_blank');
+            }
+        });
+    });
 
     $('#editPassword').on('hidden.bs.modal', function () {
         $('#passAlert').hide();

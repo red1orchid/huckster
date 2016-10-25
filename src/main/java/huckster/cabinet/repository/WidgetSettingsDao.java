@@ -13,6 +13,15 @@ import java.util.*;
  * Created by PerevalovaMA on 04.08.2016.
  */
 public class WidgetSettingsDao extends DbDao {
+    public Optional<String> getUrl(int companyId) throws SQLException {
+        String sql = "SELECT 'http://www.' || t.url || '?utm_medium=' || t.utm_medium || chr(38) || 'utm_campaign=gold' AS url" +
+                "       FROM (SELECT t.* FROM sync_offers_auto t ORDER BY DBMS_RANDOM.RANDOM) t" +
+                "      WHERE rownum = 1" +
+                "        AND company_id = ?";
+
+        return selectValue(sql, (rs) -> rs.getString("url"), companyId);
+    }
+
     public Optional<RuleEntity> getRule(int companyId) throws SQLException {
         String sql = "SELECT id AS empno," +
                 "            utm_medium," +
@@ -145,7 +154,6 @@ public class WidgetSettingsDao extends DbDao {
                 "       FROM categories c" +
                 "      WHERE c.company_id = ?" +
                 "        AND c.name IS NOT NULL" +
-                "        AND rownum < 500" +
                 "      ORDER BY c.name";
 
         execute(sql, 500, (rs) -> list.add(new ListEntity<Integer, String>(rs.getInt("return_value"), rs.getString("display_value"))), companyId);

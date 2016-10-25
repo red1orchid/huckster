@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class DashbordDao extends DbDao {
     public DashbordDao() throws SQLException {
-      //   alterSession("ALTER SESSION SET NLS_NUMERIC_CHARACTERS = ',.'");
+        //   alterSession("ALTER SESSION SET NLS_NUMERIC_CHARACTERS = ',.'");
     }
 
     public HashMap<Integer, String> getStatisticRates(int companyId, String period) throws SQLException {
@@ -58,20 +58,15 @@ public class DashbordDao extends DbDao {
     }
 
     public List<TwoLineChartEntity> getChartData(int companyId, String period) throws SQLException {
-        String sql = "SELECT * " +
-                "FROM (" +
-                "  SELECT report_id, metric, period, CASE report_id" +
-                "                                            WHEN 3 THEN value*1000" +
-                "                                            ELSE value" +
-                "                                         END AS value" +
-                "  FROM reports_data" +
-                "  WHERE report_id IN (1, 2, 3)" +
-                "        AND company_id = ?" +
-                "        AND interval = ?)" +
-                "  PIVOT (" +
-                "    sum(value)" +
-                "    FOR metric IN ('curr' AS curr, 'last' AS last))" +
-                "ORDER BY report_id";
+        String sql = "SELECT *" +
+                "       FROM (SELECT report_id, metric, period, value" +
+                "               FROM reports_data" +
+                "              WHERE report_id IN (1, 2, 3)" +
+                "                AND company_id = ?" +
+                "                AND interval = ?)" +
+                "     PIVOT(sum(value)" +
+                "        FOR metric IN('curr' AS curr, 'last' AS last))" +
+                "      ORDER BY report_id";
 
         List<TwoLineChartEntity> chartData = new ArrayList<>();
 

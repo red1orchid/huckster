@@ -26,7 +26,7 @@
             <div class="alert alert-success alert-dismissible fade in" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                Инструкция по смене пароля отправлена на почту
+                Новый пароль отправлен на почту
             </div>
         </c:when>
         <c:when test="${not empty status.error}">

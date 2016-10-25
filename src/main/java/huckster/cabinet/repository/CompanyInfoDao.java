@@ -64,6 +64,13 @@ public class CompanyInfoDao extends DbDao {
                 , companyId);
     }
 
+    public boolean isWidgetActive(int companyId) throws SQLException {
+        return (selectValue("SELECT is_widget_active" +
+                        "     FROM companies " +
+                        "    WHERE id = ?", (rs) -> rs.getInt("is_widget_active")
+                , companyId).orElse(0) == 1);
+    }
+
     public Optional<CompanyEntity> getCompanyInfoByToken(String token) throws SQLException {
         return selectValue("SELECT id, name, price_cur " +
                         "     FROM companies " +

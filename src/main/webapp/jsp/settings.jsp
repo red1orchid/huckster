@@ -112,17 +112,13 @@
                             <label for="yandexKey">Ключ Яндекс.Метрики</label>
                             <input id="yandexKey" type="text" class="form-control" value="${settings.yandexKey}">
                             <br>
-                            <label for="isEnabled">Состояние виджета</label><br>
-                            <input id="isEnabled" type="checkbox" class="toggle form-control" data-on-text="Включен"
-                                   data-off-text="Выключен" <c:if test="${settings.isActive == 1}">checked</c:if>>
-                            <%--                            <select id="isEnabled" class="selectpicker form-control">
-                                                            <option value="1" <c:if test="${settings.isActive == 1}">selected="selected"</c:if>>
-                                                                Включен
-                                                            </option>
-                                                            <option value="0" <c:if test="${settings.isActive == 0}">selected="selected"</c:if>>
-                                                                Выключен
-                                                            </option>
-                                                        </select>--%>
+                            <label for="isEnabled">Виджет</label><br>
+                            <button id="widgetPreview" type="submit" class="btn btn-success <c:if test="${!isWidgetActive}">disabled</c:if>"><span class="glyphicon glyphicon-play"></span>Предпросмотр
+                            </button>
+                            <form class="input-group pull-right">
+                                <input id="isEnabled" type="checkbox" class="toggle form-control" data-on-text="Включен"
+                                       data-off-text="Выключен" <c:if test="${settings.isActive == 1}">checked</c:if>>
+                            </form>
                             <br><br>
                             <button id="saveSettings" type="submit" class="btn btn-primary center-block">Сохранить
                             </button>
@@ -143,7 +139,8 @@
                             <label>
                                 <input id="isAutoMode" type="checkbox"
                                        <c:if test="${!isAutoMode}">checked="checked"</c:if>><span>Расширенный режим</span>
-                            </label></div><br>
+                            </label></div>
+                        <br>
                         <c:if test="${!isAutoMode}">
                             <input type="hidden" id="selectedChannels" value="${rule.channels}">
                             <div class="form-group">
@@ -453,10 +450,9 @@
             selectMode: 3,
             source: {
                 cache: false,
-                url: "widget_settings",
+                url: "settings_data",
                 type: "POST",
                 data: {
-                    request: "ajax",
                     type: "settings_tree"
                 }
             },
@@ -499,10 +495,9 @@
 
             //load channels
             $.ajax({
-                url: "widget_settings",
+                url: "settings_data",
                 type: "POST",
                 data: {
-                    request: "ajax",
                     type: "channels"
                 },
                 success: function (data) {
@@ -523,7 +518,7 @@
     });
 
     //Change auto mode
-    $("#isAutoMode").change(function () {
+    $('#isAutoMode').change(function () {
         $.ajax({
             type: "POST",
             url: "settings",
@@ -537,6 +532,20 @@
     });
 
     //General settings
+    $('#widgetPreview').on('submit', function (e) {
+        $.ajax({
+            url: "settings_data",
+            type: "GET",
+            async: false,
+            data: {
+                type: "widget_url"
+            },
+            success: function(data) {
+                window.open(data, '_blank');
+            }
+        });
+    });
+
     $('#saveSettings').on('click', function (e) {
         $.ajax({
             url: "settings",
@@ -597,10 +606,9 @@
         searching: false,
         language: language,
         ajax: {
-            url: "widget_settings",
+            url: "settings_data",
             type: "POST",
             data: function (d) {
-                d.request = "ajax";
                 d.type = "vendors_discounts"
             }
         },
@@ -649,12 +657,11 @@
         $('#discount2').val($(e.relatedTarget).data('discount2'));
 
         $.ajax({
-            url: "widget_settings",
+            url: "settings_data",
             type: "POST",
             data: {
-                "request": "ajax",
-                "type": "vendors_categories",
-                "categoryId": $(e.relatedTarget).data('category')
+                type: "vendors_categories",
+                categoryId: $(e.relatedTarget).data('category')
             },
             success: function (data) {
                 fillCategories(data.categories);
@@ -676,12 +683,11 @@
 
     $('#catSelect').on('changed.bs.select', function (e) {
         $.ajax({
-            url: "widget_settings",
+            url: "settings_data",
             type: "POST",
             data: {
-                "request": "ajax",
-                "type": "vendors",
-                "categoryId": $('#catSelect').selectpicker('val')
+                type: "vendors",
+                categoryId: $('#catSelect').selectpicker('val')
             },
             success: function (data) {
                 fillVendors(data);
@@ -732,10 +738,9 @@
         searching: false,
         language: language,
         ajax: {
-            url: "widget_settings",
+            url: "settings_data",
             type: "POST",
             data: function (d) {
-                d.request = "ajax";
                 d.type = "offers_discounts";
             }
         },
@@ -779,13 +784,12 @@
                 }
             },
             ajax: {
-                url: "widget_settings",
+                url: "settings_data",
                 type: "POST",
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
                     return {
-                        request: "ajax",
                         type: "offers",
                         search: params.term
                     };
