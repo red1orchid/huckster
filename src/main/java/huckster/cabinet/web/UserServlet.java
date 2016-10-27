@@ -1,5 +1,6 @@
 package huckster.cabinet.web;
 
+import huckster.cabinet.OperationStatus;
 import huckster.cabinet.Util;
 import huckster.cabinet.model.CompanyEntity;
 import huckster.cabinet.repository.CompanyInfoDao;
@@ -51,6 +52,21 @@ abstract class UserServlet extends HttpServlet {
 
     abstract void initDataGet(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException;
     abstract void initDataPost(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException;
+
+    protected Integer stringToInt(String src) {
+        if (src != null && !src.isEmpty())
+            return Integer.parseInt(src);
+        else
+            return null;
+    }
+
+    protected OperationStatus getOperationStatus(boolean res, String errorMessage) {
+        if (res) {
+            return new OperationStatus(true);
+        } else {
+            return new OperationStatus(false, errorMessage);
+        }
+    }
 
     private UserData getUser(HttpServletRequest req) throws ServletException {
         HttpSession session = req.getSession();

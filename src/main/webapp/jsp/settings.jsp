@@ -80,6 +80,7 @@
             <%--General settings--%>
             <div id="settings" class="tab-pane fade">
                 <br>
+                <div id="settingsAlert"></div>
                 <c:if test="${!isScriptInstalled}">
                     <div class="alert alert-danger alert-dismissible fade in" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
@@ -110,7 +111,7 @@
                                    value="${settings.contactEmails}">
                             <br>
                             <label for="yandexKey">Ключ Яндекс.Метрики</label>
-                            <input id="yandexKey" type="text" class="form-control" value="${settings.yandexKey}">
+                            <input id="yandexKey" type="number" class="form-control" value="${settings.yandexKey}">
                             <br>
                             <label for="isEnabled">Виджет</label><br>
                             <button id="widgetPreview" type="submit" class="btn btn-success <c:if test="${!isWidgetActive}">disabled</c:if>"><span class="glyphicon glyphicon-play"></span>Предпросмотр
@@ -129,6 +130,8 @@
             <%--Geo--%>
             <div id="geo" class="tab-pane fade">
                 <div class="row">
+                    <br>
+                    <div id="geoAlert"></div>
                     <div class="col-sm-5 form-group">
                         <br>
                         <label>Регионы</label>
@@ -206,7 +209,7 @@
                     </div>
                 </div>
                 <br>
-                <button type="button" class="btn btn-default">Отмена
+                <button type="button" class="btn btn-default cancel">Отмена
                 </button>
                 <button id="saveRule" type="submit" class="btn btn-primary">Сохранить
                 </button>
@@ -222,6 +225,7 @@
             <%--Categories and vendors discounts--%>
             <div id="step2" class="tab-pane fade">
                 <br>
+                <div id="vendorDiscountsAlert"></div>
                 <a data-toggle="modal" href="#editVendorDiscount" type="button" class="btn btn-success">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить скидку
                 </a>
@@ -275,7 +279,9 @@
                 </div>
             </div>
             <%--Items discounts--%>
-            <div id="step3" class="tab-pane fade"><br>
+            <div id="step3" class="tab-pane fade">
+                <br>
+                <div id="itemDiscountsAlert"></div>
                 <a data-toggle="modal" href="#editItemDiscount" type="button" class="btn btn-success">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить скидку
                 </a>
@@ -320,6 +326,7 @@
             <%--Blocked pages--%>
             <div id="pages" class="tab-pane fade">
                 <br>
+                <div id="pagesAlert"></div>
                 Добавьте (или отредактируйте) страницы сайта, при заходе на которые показ виджета клиенту будет
                 блокироваться на несколько дней (например, адрес корзины)
                 <br><br>
@@ -427,6 +434,18 @@
         }
     };
 
+    function alert(id, message, type, time) {
+        $('#' + id).html('<div class="alert alert-' + type + ' alert-dismissible fade in" role="alert"> ' +
+                ' <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                message + '</div>');
+
+        if (time != null) {
+            $('#' + id).fadeTo(time, 500).slideUp(500, function () {
+                $('#' + id).slideUp(500);
+            });
+        }
+    }
+
     $(document).ready(function () {
         //select last tab or first tab by default
         $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
@@ -450,10 +469,10 @@
             selectMode: 3,
             source: {
                 cache: false,
-                url: "settings_data",
-                type: "POST",
+                url: "geo",
+                type: "GET",
                 data: {
-                    type: "settings_tree"
+                    type: "tree"
                 }
             },
             icon: false,
@@ -495,13 +514,12 @@
 
             //load channels
             $.ajax({
-                url: "settings_data",
-                type: "POST",
+                url: "geo",
+                type: "GET",
                 data: {
                     type: "channels"
                 },
                 success: function (data) {
-                    console.log($("#selectedChannels").val());
                     $('#chnl').empty();
                     data.forEach(function (item, i, arr) {
                         $('#chnl').append('<option>' + item + '</option>');
@@ -515,6 +533,10 @@
                 }
             });
         }
+    });
+
+    $('.cancel').on('click', function () {
+        location.reload();
     });
 
     //Change auto mode
@@ -532,9 +554,9 @@
     });
 
     //General settings
-    $('#widgetPreview').on('submit', function (e) {
+    $('#widgetPreview').on('click', function (e) {
         $.ajax({
-            url: "settings_data",
+            url: "settings",
             type: "GET",
             async: false,
             data: {
@@ -558,8 +580,12 @@
                 yandexKey: $('#yandexKey').val(),
                 isEnabled: $('#isEnabled').bootstrapSwitch('state')
             }
-        }).done(function (msg) {
-            location.reload();
+        }).done(function (data) {
+            if (!data.success) {
+                alert('settingsAlert', data.error, 'danger', 5000);
+            } else {
+                location.reload();
+            }
         });
     });
 
@@ -581,9 +607,8 @@
 
         $.ajax({
             type: "POST",
-            url: "widget_settings",
+            url: "geo",
             data: {
-                type: "save_rule",
                 tree: selection.join(":"),
                 channels: ($('#chnl').selectpicker('val') || []).join(":"),
                 devices: $('#devices').selectpicker('val'),
@@ -591,8 +616,12 @@
                 hourFrom: $('#hourFrom').selectpicker('val'),
                 hourTo: $('#hourTo').selectpicker('val')
             }
-        }).done(function (msg) {
-            location.reload();
+        }).done(function (data) {
+            if (!data.success) {
+                alert('geoAlert', data.error, 'danger', 5000);
+            } else {
+                location.reload();
+            }
         });
     });
 
@@ -606,10 +635,10 @@
         searching: false,
         language: language,
         ajax: {
-            url: "settings_data",
-            type: "POST",
+            url: "vendor_discounts",
+            type: "GET",
             data: function (d) {
-                d.type = "vendors_discounts"
+                d.type = "discounts"
             }
         },
         columns: [
@@ -657,8 +686,8 @@
         $('#discount2').val($(e.relatedTarget).data('discount2'));
 
         $.ajax({
-            url: "settings_data",
-            type: "POST",
+            url: "vendor_discounts",
+            type: "GET",
             data: {
                 type: "vendors_categories",
                 categoryId: $(e.relatedTarget).data('category')
@@ -683,8 +712,8 @@
 
     $('#catSelect').on('changed.bs.select', function (e) {
         $.ajax({
-            url: "settings_data",
-            type: "POST",
+            url: "vendor_discounts",
+            type: "GET",
             data: {
                 type: "vendors",
                 categoryId: $('#catSelect').selectpicker('val')
@@ -698,10 +727,10 @@
 
     $('#saveVendorDiscount').on('click', function (e) {
         $.ajax({
-            url: "widget_settings",
+            url: "vendor_discounts",
             type: "POST",
             data: {
-                type: "save_vendor_discount",
+                type: "save",
                 id: id,
                 category: $('#catSelect').selectpicker('val'),
                 vendors: ($('#vendorSelect').selectpicker('val') || []).join(":"),
@@ -710,7 +739,10 @@
                 discount1: $('#discount1').val(),
                 discount2: $('#discount2').val()
             }
-        }).done(function (msg) {
+        }).done(function (data) {
+            if (!data.success) {
+                alert('vendorDiscountsAlert', data.error, 'danger', 5000);
+            }
             $('#editVendorDiscount').modal('hide');
             vendorDiscounts.ajax.reload();
         });
@@ -718,13 +750,16 @@
 
     $('#deleteVendorDiscount').on('click', function (e) {
         $.ajax({
-            url: "widget_settings",
+            url: "vendor_discounts",
             type: "POST",
             data: {
-                type: "delete_vendor_discount",
+                type: "delete",
                 id: id
             }
-        }).done(function (msg) {
+        }).done(function (data) {
+            if (!data.success) {
+                alert('vendorDiscountsAlert', data.error, 'danger', 5000);
+            }
             $('#editVendorDiscount').modal('hide');
             vendorDiscounts.ajax.reload();
         });
@@ -738,10 +773,10 @@
         searching: false,
         language: language,
         ajax: {
-            url: "settings_data",
-            type: "POST",
+            url: "offer_discounts",
+            type: "GET",
             data: function (d) {
-                d.type = "offers_discounts";
+                d.type = "discounts";
             }
         },
         columns: [
@@ -784,8 +819,8 @@
                 }
             },
             ajax: {
-                url: "settings_data",
-                type: "POST",
+                url: "offer_discounts",
+                type: "GET",
                 dataType: 'json',
                 delay: 250,
                 data: function (params) {
@@ -819,16 +854,19 @@
 
     $('#saveItemDiscount').on('click', function (e) {
         $.ajax({
-            url: "widget_settings",
+            url: "offer_discounts",
             type: "POST",
             data: {
-                type: "save_offer_discount",
+                type: "save",
                 id: id,
                 offerId: $('#itemSelect').val(),
                 discount1: $('#discountItem1').val(),
                 discount2: $('#discountItem2').val()
             }
-        }).done(function (msg) {
+        }).done(function (data) {
+            if (!data.success) {
+                alert('itemDiscountsAlert', data.error, 'danger', 5000);
+            }
             $('#editItemDiscount').modal('hide');
             itemDiscounts.ajax.reload();
         });
@@ -836,13 +874,16 @@
 
     $('#deleteItemDiscount').on('click', function (e) {
         $.ajax({
-            url: "widget_settings",
+            url: "offer_discounts",
             type: "POST",
             data: {
-                type: "delete_offer_discount",
+                type: "delete",
                 id: id
             }
-        }).done(function (msg) {
+        }).done(function (data) {
+            if (!data.success) {
+                alert('itemDiscountsAlert', data.error, 'danger', 5000);
+            }
             $('#editItemDiscount').modal('hide');
             itemDiscounts.ajax.reload();
         });
@@ -857,16 +898,21 @@
 
     $('#savePage').on('click', function (e) {
         $.ajax({
-            url: "settings",
+            url: "blocked_pages",
             type: "POST",
             data: {
-                type: "save_page",
+                type: "save",
                 id: id,
                 url: $('#url').val(),
                 isTrash: $('#isTrash').bootstrapSwitch('state') ? 1 : 0
             }
-        }).done(function (msg) {
-            location.reload();
+        }).done(function (data) {
+            if (!data.success) {
+                $('#editPage').modal('hide');
+                alert('pagesAlert', data.error, 'danger', 5000);
+            } else {
+                location.reload();
+            }
         });
     });
 </script>

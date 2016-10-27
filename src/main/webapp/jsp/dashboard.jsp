@@ -16,9 +16,8 @@
     <link href="./css/charts/chart.css" rel="stylesheet">
     <link href="./css/charts/xcharts.min.css" rel="stylesheet">
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
     <script src='./js/jquery-1.9.1.min.js'></script>
+    <script src="./js/bootstrap.min.js"></script>
     <script src='./js/jquery-migrate-1.2.1.js'></script>
     <script src='./js/jquery-ui-1.10.3-custom.min.js'></script>
     <script src='./js/charts/d3.min.js'></script>

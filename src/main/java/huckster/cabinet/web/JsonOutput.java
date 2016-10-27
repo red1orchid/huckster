@@ -15,4 +15,9 @@ interface JsonOutput {
         resp.setContentType("application/json; charset=utf-8");
         resp.getWriter().print(data);
     }
+
+    default void writeObject(HttpServletResponse resp, Object obj) throws IOException {
+        resp.setContentType("application/json; charset=utf-8");
+        resp.getWriter().print(Util.toJson(obj));
+    }
 }

@@ -26,8 +26,15 @@
         </ul>
     </div>
 </nav>
+<%--<div class="alert alert-success alert-dismissible fade in pull-right" role="alert" style="position: absolute; width: 40%; z-index: 3">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+</div>--%>
+<div id="passSuccess"></div>
 <%--Modal--%>
-<div class="modal fade" id="editPassword">
+<div class="modal fade" id="editPassword" role="dialog">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
@@ -61,6 +68,19 @@
     }
 </style>
 <script>
+    function passAlert(id, message, type, time, style) {
+        console.log('style: ' + style);
+        $('#' + id).html('<div class="alert alert-' + type + ' alert-dismissible fade in" role="alert" ' + (style != null ? ' style="' + style + '"' : null) +
+                '><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+                message + '</div>');
+
+        if (time != null) {
+            $('#' + id).fadeTo(time, 500).slideUp(500, function () {
+                $('#' + id).slideUp(500);
+            });
+        }
+    }
+/*
     bootstrap_alert = function () {
     };
     bootstrap_alert.error = function (message) {
@@ -74,12 +94,11 @@
                 '<span aria-hidden="true">&times;</span></button>' + message + '</div>').fadeTo(timeOut, 500).slideUp(500, function () {
             $("#passAlert").slideUp(500);
         }).show();
-    };
+    };*/
 
     $('.widget_preview').on('click', function (e) {
-        console.log('PRR');
         $.ajax({
-            url: "settings_data",
+            url: "settings",
             type: "GET",
             async: false,
             data: {
@@ -100,33 +119,28 @@
 
     $('#savePassword').on('click', function (e) {
         if ($('#oldPassword').val() == '' || $('#newPassword').val() == '' || $('#newPasswordConfirm').val() == '') {
-            bootstrap_alert.error('Пароль не может быть пустым');
+            passAlert('passAlert', 'Пароль не может быть пустым', 'danger', 5000);
         } else if ($('#newPasswordConfirm').val() != $('#newPassword').val()) {
-            bootstrap_alert.error('Введенные пароли не совпадают', 5000);
+            passAlert('passAlert', 'Введенные пароли не совпадают', 'danger', 5000);
         } else {
             $.ajax({
                 url: "settings",
                 type: "POST",
                 data: {
-                    "request": "ajax",
                     "type": "save_password",
                     "oldPassword": $('#oldPassword').val(),
                     "newPassword": $('#newPassword').val()
                 }
             }).done(function (data) {
-                console.log(data);
-                if (data.success) {
-                    bootstrap_alert.success('Пароль успешно сохранен', 2000);
-                } else {
-                    if (data.error == "wrong_password") {
-                        bootstrap_alert.error('Введен неверный пароль');
-                    } else {
-                        bootstrap_alert.error('В данный момент сохранение невозможно');
-                    }
-                }
                 $('#oldPassword').val('');
                 $('#newPassword').val('');
                 $('#newPasswordConfirm').val('');
+                if (data.success) {
+                    $('#editPassword').modal('hide');
+                    passAlert('passSuccess', 'Пароль успешно изменен', 'success', 2500, 'position: absolute; right: 0; width: 40%; z-index: 3');
+                } else {
+                    passAlert('passAlert', data.error, 'danger');
+                }
             })
         }
     });
