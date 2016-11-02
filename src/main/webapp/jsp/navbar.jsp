@@ -12,16 +12,21 @@
             <a class="navbar-brand" href=".">${company.name}, ID ${company.id}</a>
         </div>
         <ul class="nav navbar-nav navbar-right">
-            <c:if test="${isWidgetActive}">
-                <li><a data-placement="bottom" title="Предпросмотр виджета"><span class="glyphicon glyphicon-play green widget_preview"></span></a></li>
-            </c:if>
             <li>
                 <a href="#" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span><span
                         class="caret"></span></a>
                 <ul class="dropdown-menu">
-                    <li><a href="#editPassword" data-toggle="modal"><span class="glyphicon glyphicon-wrench"></span>Изменить пароль</a></li>
+                    <li><a href="#editPassword" data-toggle="modal"><span class="glyphicon glyphicon-wrench"></span>Изменить
+                        пароль</a></li>
                 </ul>
             </li>
+            <c:if test="${isWidgetActive}">
+                <li><a data-placement="bottom" title="Предпросмотр виджета" href="#"><span
+                        class="glyphicon glyphicon-play green widget_preview"></span></a></li>
+            </c:if>
+
+            <li><a data-placement="bottom" title="Скачать инструкцию" href="http://hucksterbot.ru/HucksterBot_Guide_2016.pdf" download><span
+                    class="glyphicon glyphicon-question-sign"></span></a></li>
             <li><a href="logout"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
         </ul>
     </div>
@@ -69,7 +74,6 @@
 </style>
 <script>
     function passAlert(id, message, type, time, style) {
-        console.log('style: ' + style);
         $('#' + id).html('<div class="alert alert-' + type + ' alert-dismissible fade in" role="alert" ' + (style != null ? ' style="' + style + '"' : null) +
                 '><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
                 message + '</div>');
@@ -80,21 +84,21 @@
             });
         }
     }
-/*
-    bootstrap_alert = function () {
-    };
-    bootstrap_alert.error = function (message) {
-        $('#passAlert').html('<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                '<span aria-hidden="true">&times;</span></button>' + message + '</div>').show();
-    };
-    bootstrap_alert.success = function (message, timeOut) {
-        $('#passAlert').html('<div class="alert alert-success alert-dismissible fade in" role="alert">' +
-                '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                '<span aria-hidden="true">&times;</span></button>' + message + '</div>').fadeTo(timeOut, 500).slideUp(500, function () {
-            $("#passAlert").slideUp(500);
-        }).show();
-    };*/
+    /*
+     bootstrap_alert = function () {
+     };
+     bootstrap_alert.error = function (message) {
+     $('#passAlert').html('<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
+     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+     '<span aria-hidden="true">&times;</span></button>' + message + '</div>').show();
+     };
+     bootstrap_alert.success = function (message, timeOut) {
+     $('#passAlert').html('<div class="alert alert-success alert-dismissible fade in" role="alert">' +
+     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+     '<span aria-hidden="true">&times;</span></button>' + message + '</div>').fadeTo(timeOut, 500).slideUp(500, function () {
+     $("#passAlert").slideUp(500);
+     }).show();
+     };*/
 
     $('.widget_preview').on('click', function (e) {
         $.ajax({
@@ -104,7 +108,7 @@
             data: {
                 type: "widget_url"
             },
-            success: function(data) {
+            success: function (data) {
                 window.open(data, '_blank');
             }
         });

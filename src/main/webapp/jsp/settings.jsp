@@ -13,49 +13,40 @@
     <link href="./css/bootstrap.min.css" rel="stylesheet">
     <link href="./css/dashboard.css" rel="stylesheet">
     <link href="./css/table.css" rel="stylesheet">
-    <link href="./css/bootstrap-switch.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" rel="stylesheet">
     <link href="./DataTables/datatables.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.18.0/skin-win8-n/ui.fancytree.css"
-          rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css"
           rel="stylesheet">
-    <link href="./Labelauty/jquery-labelauty.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" rel="stylesheet"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.8/select2-bootstrap.css"
-          rel="stylesheet"/>
-    <link href="./css/titatoggle-dist.css" rel="stylesheet">
 
     <script src="./js/jquery-2.2.4.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/bootstrap-switch.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
     <script src="./DataTables/datatables.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.fancytree/2.18.0/jquery.fancytree.js"></script>
     <script src="./js/bootstrap-select.min.js"></script>
-    <script src="./Labelauty/jquery-labelauty.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 
     <style type="text/css">
         .password {
             padding-left: 1px;
         }
-
-        /* Remove system outline for focused container */
-        .ui-fancytree.fancytree-container:focus {
-            outline: none;
-        }
-
-        .ui-fancytree.fancytree-container {
-            border: none;
-        }
-
-        #editRuleStyle {
-            width: 1100px;
-            max-width: 95%; /* respsonsive width */
-        }
     </style>
+
+    <script>
+        var language = {
+            "lengthMenu": "Показать _MENU_ записей",
+            "zeroRecords": "По Вашему запросу ничего не найдено",
+            "search": "Поиск:",
+            "info": "Показаны _START_-_END_ из _TOTAL_ записей",
+            "infoEmpty": "Нет записей",
+            "infoFiltered": "(всего _MAX_)",
+            "loadingRecords": "Загрузка...",
+            "paginate": {
+                "first": "1",
+                "last": "_PAGES_",
+                "next": ">>",
+                "previous": "<<"
+            }
+        };
+    </script>
 </head>
 <body>
 <%--Top bar--%>
@@ -71,6 +62,7 @@
             <li><a data-toggle="tab" href="#step2">Скидки для категорий и вендоров</a></li>
             <li><a data-toggle="tab" href="#step3">Скидки на отдельные товары</a></li>
             <li><a data-toggle="tab" href="#pages">Страницы-исключения</a></li>
+            <li><a data-toggle="tab" href="#widget">Виджет</a></li>
             <c:if test="${!isScriptInstalled}">
                 <li><a data-toggle="tab" href="#script">Ваш код установки</a></li>
             </c:if>
@@ -78,251 +70,13 @@
         <input type="hidden" id="isAuto" value="${isAutoMode}">
         <div class="tab-content">
             <%--General settings--%>
-            <div id="settings" class="tab-pane fade">
-                <br>
-                <div id="settingsAlert"></div>
-                <c:if test="${!isScriptInstalled}">
-                    <div class="alert alert-danger alert-dismissible fade in" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                aria-hidden="true">&times;</span></button>
-                        <strong>Установите JS-скрипт!</strong> Без установленного скрипта функционирование сервиса
-                        невозможно. Информация в разделе "Ваш код установки".
-                    </div>
-                </c:if>
-                <div class="alert alert-warning alert-dismissible fade in" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
-                    <strong>Внимание!</strong> Изменение общих настроек следует выполнять с большой осторожностью.
-                    Неверно указанные ссылки или значения могут критически повлиять на работу сервиса на Вашем сайте
-                </div>
-                <div role="form">
-                    <div class="row">
-                        <div class="form-group col-xs-6">
-                            <label for="yml">Ссылка на выгрузку с товарами (YML)</label>
-                            <input id="yml" type="text" class="form-control" value="${settings.yml}">
-                            <br>
-                            <label for="orderEmails">Email для рассылки заказов (возможно несколько адресов через точку
-                                с запятой)</label>
-                            <input id="orderEmails" type="text" class="form-control" value="${settings.orderEmails}">
-                            <br>
-                            <label for="contactEmails">Email для контактов и уведомлений (возможно несколько адресов
-                                через точку с запятой)</label>
-                            <input id="contactEmails" type="text" class="form-control"
-                                   value="${settings.contactEmails}">
-                            <br>
-                            <label for="yandexKey">Ключ Яндекс.Метрики</label>
-                            <input id="yandexKey" type="number" class="form-control" value="${settings.yandexKey}">
-                            <br>
-                            <label for="isEnabled">Виджет</label><br>
-                            <button id="widgetPreview" type="submit" class="btn btn-success <c:if test="${!isWidgetActive}">disabled</c:if>"><span class="glyphicon glyphicon-play"></span>Предпросмотр
-                            </button>
-                            <form class="input-group pull-right">
-                                <input id="isEnabled" type="checkbox" class="toggle form-control" data-on-text="Включен"
-                                       data-off-text="Выключен" <c:if test="${settings.isActive == 1}">checked</c:if>>
-                            </form>
-                            <br><br>
-                            <button id="saveSettings" type="submit" class="btn btn-primary center-block">Сохранить
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <%@ include file="general_settings.jsp" %>
             <%--Geo--%>
-            <div id="geo" class="tab-pane fade">
-                <div class="row">
-                    <br>
-                    <div id="geoAlert"></div>
-                    <div class="col-sm-5 form-group">
-                        <br>
-                        <label>Регионы</label>
-                        <div id="fancyTree" name="fancyTree"></div>
-                    </div>
-                    <div class="col-sm-6">
-                        <div class="checkbox checkbox-slider--b-flat checkbox-slider-info pull-right">
-                            <label>
-                                <input id="isAutoMode" type="checkbox"
-                                       <c:if test="${!isAutoMode}">checked="checked"</c:if>><span>Расширенный режим</span>
-                            </label></div>
-                        <br>
-                        <c:if test="${!isAutoMode}">
-                            <input type="hidden" id="selectedChannels" value="${rule.channels}">
-                            <div class="form-group">
-                                <label for="chnl">Каналы</label>
-                                <select id="chnl" class="selectpicker form-control"
-                                        multiple title="Все каналы"
-                                        data-live-search="true">
-                                </select></div>
-                            <div class="form-group">
-                                <label for="devices">Устройства</label>
-                                <select id="devices" class="selectpicker form-control">
-                                    <c:forEach var="device" items="${devices}">
-                                        <option value="${device.key}"
-                                                <c:if test="${rule.devices == device.key}">selected</c:if>>${device.value}</option>
-                                    </c:forEach>
-                                </select></div>
-                            <div class="form-group">
-                                <label for="days">Дни</label>
-                                <div id="days" class="form-inline">
-                                    <input id="day0" class="button-checkbox" type="checkbox"
-                                           data-labelauty="ПН|ПН" <c:if test="${rule.daysArray[0]}">checked</c:if>/>
-                                    <input id="day1" class="button-checkbox" type="checkbox"
-                                           data-labelauty="ВТ|ВТ" <c:if test="${rule.daysArray[1]}">checked</c:if>/>
-                                    <input id="day2" class="button-checkbox" type="checkbox"
-                                           data-labelauty="СР|СР" <c:if test="${rule.daysArray[2]}">checked</c:if>/>
-                                    <input id="day3" class="button-checkbox" type="checkbox"
-                                           data-labelauty="ЧТ|ЧТ" <c:if test="${rule.daysArray[3]}">checked</c:if>/>
-                                    <input id="day4" class="button-checkbox" type="checkbox"
-                                           data-labelauty="ПТ|ПТ" <c:if test="${rule.daysArray[4]}">checked</c:if>/>
-                                    <input id="day5" class="button-checkbox" type="checkbox"
-                                           data-labelauty="СБ|СБ" <c:if test="${rule.daysArray[5]}">checked</c:if>/>
-                                    <input id="day6" class="button-checkbox" type="checkbox"
-                                           data-labelauty="ВС|ВС" <c:if test="${rule.daysArray[6]}">checked</c:if>/>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="hours">Часы</label>
-                                <div id="hours" class="form-inline">
-                                    <div class="form-group">
-                                        <label for="hourFrom">C</label>
-                                        <select id="hourFrom" class="selectpicker"
-                                                data-live-search="true" data-width="auto">
-                                            <c:forEach begin="0" end="24" varStatus="loop">
-                                                <option value="${loop.index}"
-                                                        <c:if test="${rule.timeFrom == loop.index}">selected</c:if>>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
-                                            </c:forEach>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="hourTo">По</label>
-                                        <select id="hourTo" class="selectpicker"
-                                                data-live-search="true"
-                                                data-width="auto">
-                                            <c:forEach begin="0" end="24" varStatus="loop">
-                                                <option value="${loop.index}"
-                                                        <c:if test="${rule.timeTo == loop.index}">selected</c:if>>${loop.index < 10 ? '0'.concat(loop.index) : loop.index}</option>
-                                            </c:forEach>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </c:if>
-                    </div>
-                </div>
-                <br>
-                <button type="button" class="btn btn-default cancel">Отмена
-                </button>
-                <button id="saveRule" type="submit" class="btn btn-primary">Сохранить
-                </button>
-                <%--                <div class="col-sm-4">
-                                    <div class="row pull-right">
-                                        <button type="button" class="btn btn-default">Отмена
-                                        </button>
-                                        <button id="saveRule" type="submit" class="btn btn-primary">Сохранить
-                                        </button>
-                                    </div>
-                                </div>--%>
-            </div>
+            <%@ include file="geo.jsp" %>
             <%--Categories and vendors discounts--%>
-            <div id="step2" class="tab-pane fade">
-                <br>
-                <div id="vendorDiscountsAlert"></div>
-                <a data-toggle="modal" href="#editVendorDiscount" type="button" class="btn btn-success">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить скидку
-                </a>
-                <table id="vendorDiscountsTbl" class="table table-hover table-bordered" cellspacing="0"
-                       width="100%">
-                </table>
-                <!-- Modal -->
-                <div class="modal fade" id="editVendorDiscount" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header" align="center">
-                                <button type="button" class="close" data-dismiss="modal"
-                                        aria-hidden="true">&times;</button>
-                                <h4 class="modal-title">Скидки для категорий товаров и вендоров</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div role="form">
-                                    <div class="form-group">
-                                        <label for="catSelect">Категория</label>
-                                        <select id="catSelect" class="selectpicker form-control"
-                                                title="<Все категории>" data-live-search="true">
-                                        </select>
-                                        <label for="vendorSelect">Вендоры</label>
-                                        <select id="vendorSelect" class="selectpicker form-control"
-                                                multiple title="<Все вендоры>"
-                                                data-live-search="true">
-                                        </select>
-                                        <label for="priceFrom">Цена, от</label>
-                                        <input id="priceFrom" type="number" class="form-control">
-                                        <label for="priceTo">Цена, до</label>
-                                        <input id="priceTo" type="number" class="form-control">
-                                        <label for="discount1">Cкидка 1 уровня, %</label>
-                                        <input id="discount1" type="number" class="form-control">
-                                        <label for="discount2">Cкидка 2 уровня, %</label>
-                                        <input id="discount2" type="number" class="form-control">
-                                        <br>
-                                        <br>
-                                        <br>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
-                                <button id="deleteVendorDiscount" type="submit" class="btn btn-danger">Удалить
-                                </button>
-                                <button id="saveVendorDiscount" type="submit" class="btn btn-primary">Сохранить
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <%@ include file="vendor_discounts.jsp" %>
             <%--Items discounts--%>
-            <div id="step3" class="tab-pane fade">
-                <br>
-                <div id="itemDiscountsAlert"></div>
-                <a data-toggle="modal" href="#editItemDiscount" type="button" class="btn btn-success">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Добавить скидку
-                </a>
-                <table id="itemDiscountsTbl" class="table table-hover table-bordered" cellspacing="0"
-                       width="100%">
-                </table>
-                <!-- Modal -->
-                <div class="modal fade" id="editItemDiscount" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header" align="center">
-                                <button type="button" class="close" data-dismiss="modal"
-                                        aria-hidden="true">&times;</button>
-                                <h4 class="modal-title">Скидки на отдельные товары</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div role="form">
-                                    <div class="form-group">
-                                        <label for="itemSelect">Товар</label>
-                                        <select class="js-example-basic-single form-control" style="width: 100%"
-                                                id="itemSelect"></select>
-                                        <label for="discountItem1">Cкидка 1 уровня, %</label>
-                                        <input id="discountItem1" type="number" class="form-control">
-                                        <label for="discountItem2">Cкидка 2 уровня, %</label>
-                                        <input id="discountItem2" type="number" class="form-control">
-                                        <br><br><br><br>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
-                                </button>
-                                <button id="deleteItemDiscount" type="submit" class="btn btn-danger">Удалить
-                                </button>
-                                <button id="saveItemDiscount" type="submit" class="btn btn-primary">Сохранить
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <%@ include file="item_discounts.jsp" %>
             <%--Blocked pages--%>
             <div id="pages" class="tab-pane fade">
                 <br>
@@ -411,29 +165,14 @@
                         &lt;/script&gt;
                     </code></p></div>
             </div>
+            <%--Widget--%>
+            <%@ include file="widget.jsp" %>
         </div>
     </div>
 </div>
 </body>
 
-
 <script type="text/javascript">
-    var language = {
-        "lengthMenu": "Показать _MENU_ записей",
-        "zeroRecords": "По Вашему запросу ничего не найдено",
-        "search": "Поиск:",
-        "info": "Показаны _START_-_END_ из _TOTAL_ записей",
-        "infoEmpty": "Нет записей",
-        "infoFiltered": "(всего _MAX_)",
-        "loadingRecords": "Загрузка...",
-        "paginate": {
-            "first": "1",
-            "last": "_PAGES_",
-            "next": ">>",
-            "previous": "<<"
-        }
-    };
-
     function alert(id, message, type, time) {
         $('#' + id).html('<div class="alert alert-' + type + ' alert-dismissible fade in" role="alert"> ' +
                 ' <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
@@ -458,435 +197,10 @@
             console.log('here');
             $('.nav-tabs a:first').tab('show');
         }
-
-        //auto mode selector
-        $('.toggle').bootstrapSwitch();
-
-        //Geo
-        //tree
-        $("#fancyTree").fancytree({
-            checkbox: true,
-            selectMode: 3,
-            source: {
-                cache: false,
-                url: "geo",
-                type: "GET",
-                data: {
-                    type: "tree"
-                }
-            },
-            icon: false,
-            select: function (event, data) {
-                // Get a list of all selected nodes, and convert to a key array:
-                var selKeys = $.map(data.tree.getSelectedNodes(), function (node) {
-                    return node.key;
-                });
-                $("#echoSelection3").text(selKeys.join(", "));
-
-                // Get a list of all selected TOP nodes
-                var selRootNodes = data.tree.getSelectedNodes(true);
-                // ... and convert to a key array:
-                var selRootKeys = $.map(selRootNodes, function (node) {
-                    return node.key;
-                });
-                $("#echoSelectionRootKeys3").text(selRootKeys.join(", "));
-                $("#echoSelectionRoots3").text(selRootNodes.join(", "));
-            },
-            dblclick: function (event, data) {
-                data.node.toggleSelected();
-            },
-            keydown: function (event, data) {
-                if (event.which === 32) {
-                    data.node.toggleSelected();
-                    return false;
-                }
-            }
-        });
-
-        if ($("#isAuto").val()) {
-            //button select
-            $(".button-checkbox").labelauty({
-                class: "labelauty",
-                label: true,
-                separator: "|",
-                same_width: true
-            });
-
-            //load channels
-            $.ajax({
-                url: "geo",
-                type: "GET",
-                data: {
-                    type: "channels"
-                },
-                success: function (data) {
-                    $('#chnl').empty();
-                    data.forEach(function (item, i, arr) {
-                        $('#chnl').append('<option>' + item + '</option>');
-                    });
-                    $('#chnl').selectpicker('refresh');
-
-                    //set selected values
-                    if ($("#selectedChannels").val() != null) {
-                        $('#chnl').selectpicker('val', $("#selectedChannels").val().split(":"));
-                    }
-                }
-            });
-        }
     });
 
     $('.cancel').on('click', function () {
         location.reload();
-    });
-
-    //Change auto mode
-    $('#isAutoMode').change(function () {
-        $.ajax({
-            type: "POST",
-            url: "settings",
-            data: {
-                type: "auto_mode",
-                mode: !this.checked
-            }
-        }).done(function (msg) {
-            location.reload();
-        });
-    });
-
-    //General settings
-    $('#widgetPreview').on('click', function (e) {
-        $.ajax({
-            url: "settings",
-            type: "GET",
-            async: false,
-            data: {
-                type: "widget_url"
-            },
-            success: function(data) {
-                window.open(data, '_blank');
-            }
-        });
-    });
-
-    $('#saveSettings').on('click', function (e) {
-        $.ajax({
-            url: "settings",
-            type: "POST",
-            data: {
-                type: "save_settings",
-                yml: $('#yml').val(),
-                orderEmails: $('#orderEmails').val(),
-                contactEmails: $('#contactEmails').val(),
-                yandexKey: $('#yandexKey').val(),
-                isEnabled: $('#isEnabled').bootstrapSwitch('state')
-            }
-        }).done(function (data) {
-            if (!data.success) {
-                alert('settingsAlert', data.error, 'danger', 5000);
-            } else {
-                location.reload();
-            }
-        });
-    });
-
-    //Geo
-    $('#saveRule').on('click', function () {
-        var selection = jQuery.map(
-                jQuery('#fancyTree').fancytree('getRootNode').tree.getSelectedNodes(),
-                function (node) {
-                    return node.key;
-                }
-        );
-
-        var days = [];
-        for (var i = 0; i <= 6; i++) {
-            if ($('#day' + i).is(":checked")) {
-                days.push(i + 1);
-            }
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "geo",
-            data: {
-                tree: selection.join(":"),
-                channels: ($('#chnl').selectpicker('val') || []).join(":"),
-                devices: $('#devices').selectpicker('val'),
-                days: days.join(":"),
-                hourFrom: $('#hourFrom').selectpicker('val'),
-                hourTo: $('#hourTo').selectpicker('val')
-            }
-        }).done(function (data) {
-            if (!data.success) {
-                alert('geoAlert', data.error, 'danger', 5000);
-            } else {
-                location.reload();
-            }
-        });
-    });
-
-    //Vendor and categories discounts
-    var id;
-
-    var vendorDiscounts = $('#vendorDiscountsTbl').DataTable({
-        colReorder: true,
-        ordering: false,
-        paging: false,
-        searching: false,
-        language: language,
-        ajax: {
-            url: "vendor_discounts",
-            type: "GET",
-            data: function (d) {
-                d.type = "discounts"
-            }
-        },
-        columns: [
-            {
-                data: 'id', render: function (data, type, full, meta) {
-                return '<a data-id="' + full.id + '" data-category="' + full.categoryId + '" data-vendor="' + full.vendor + '" data-minprice="' + full.minPrice +
-                        '" data-maxprice="' + full.maxPrice + '" data-discount1="' + full.discount1 + '" data-discount2="' + full.discount2 +
-                        '" data-toggle="modal" href="#editVendorDiscount"><span class="glyphicon glyphicon-pencil"></span></a>';
-            }
-            },
-            {data: 'category', title: 'категория', defaultContent: ''},
-            {data: 'vendor', title: 'вендор', defaultContent: ''},
-            {data: 'minPrice', title: 'цена, от', defaultContent: ''},
-            {data: 'maxPrice', title: 'цена, до', defaultContent: ''},
-            {data: 'discount1', title: 'скидка 1 шаг, %', defaultContent: ''},
-            {data: 'discount2', title: 'скидка 2 шаг, %', defaultContent: ''}
-        ]
-    });
-
-    function fillCategories(data) {
-        $('#catSelect').empty().append('<option value=""><Все категории></option>');
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-                $('#catSelect').append('<option value="' + data[i].key + '">' + data[i].value + '</option>');
-            }
-        }
-        $('#catSelect').selectpicker('refresh');
-    }
-
-    function fillVendors(data) {
-        $('#vendorSelect').empty();
-        if (data != null) {
-            for (var i = 0; i < data.length; i++) {
-                $('#vendorSelect').append('<option>' + data[i] + '</option>');
-            }
-        }
-        $('#vendorSelect').selectpicker('refresh');
-    }
-
-    $('#editVendorDiscount').on('show.bs.modal', function (e) {
-        id = $(e.relatedTarget).data('id');
-        $('#priceFrom').val($(e.relatedTarget).data('minprice'));
-        $('#priceTo').val($(e.relatedTarget).data('maxprice'));
-        $('#discount1').val($(e.relatedTarget).data('discount1'));
-        $('#discount2').val($(e.relatedTarget).data('discount2'));
-
-        $.ajax({
-            url: "vendor_discounts",
-            type: "GET",
-            data: {
-                type: "vendors_categories",
-                categoryId: $(e.relatedTarget).data('category')
-            },
-            success: function (data) {
-                fillCategories(data.categories);
-                $('#catSelect').selectpicker('val', $(e.relatedTarget).data('category'));
-                fillVendors(data.vendors);
-                if ($(e.relatedTarget).data('vendor') != null) {
-                    $('#vendorSelect').selectpicker('val', $(e.relatedTarget).data('vendor').split(":"));
-                }
-            }
-        });
-    }).on('hidden.bs.modal', function () {
-        $('#catSelect').empty().selectpicker('refresh');
-        $('#vendorSelect').empty().selectpicker('refresh');
-        $('#priceFrom').val('');
-        $('#priceTo').val('');
-        $('#discount1').val('');
-        $('#discount2').val('');
-    });
-
-    $('#catSelect').on('changed.bs.select', function (e) {
-        $.ajax({
-            url: "vendor_discounts",
-            type: "GET",
-            data: {
-                type: "vendors",
-                categoryId: $('#catSelect').selectpicker('val')
-            },
-            success: function (data) {
-                fillVendors(data);
-            }
-        });
-        // fillVendors($('#catSelect').selectpicker('val'));
-    });
-
-    $('#saveVendorDiscount').on('click', function (e) {
-        $.ajax({
-            url: "vendor_discounts",
-            type: "POST",
-            data: {
-                type: "save",
-                id: id,
-                category: $('#catSelect').selectpicker('val'),
-                vendors: ($('#vendorSelect').selectpicker('val') || []).join(":"),
-                minPrice: $('#priceFrom').val(),
-                maxPrice: $('#priceTo').val(),
-                discount1: $('#discount1').val(),
-                discount2: $('#discount2').val()
-            }
-        }).done(function (data) {
-            if (!data.success) {
-                alert('vendorDiscountsAlert', data.error, 'danger', 5000);
-            }
-            $('#editVendorDiscount').modal('hide');
-            vendorDiscounts.ajax.reload();
-        });
-    });
-
-    $('#deleteVendorDiscount').on('click', function (e) {
-        $.ajax({
-            url: "vendor_discounts",
-            type: "POST",
-            data: {
-                type: "delete",
-                id: id
-            }
-        }).done(function (data) {
-            if (!data.success) {
-                alert('vendorDiscountsAlert', data.error, 'danger', 5000);
-            }
-            $('#editVendorDiscount').modal('hide');
-            vendorDiscounts.ajax.reload();
-        });
-    });
-
-    //Items discounts
-    var itemDiscounts = $('#itemDiscountsTbl').DataTable({
-        colReorder: true,
-        ordering: false,
-        paging: false,
-        searching: false,
-        language: language,
-        ajax: {
-            url: "offer_discounts",
-            type: "GET",
-            data: function (d) {
-                d.type = "discounts";
-            }
-        },
-        columns: [
-            {
-                data: 'id', render: function (data, type, full, meta) {
-                return '<a data-id="' + full.id + '" data-articul="' + full.articul + '" data-name="' + full.name +
-                        '" data-discount1="' + full.discount1 + '" data-discount2="' + full.discount2 +
-                        '" data-toggle="modal" href="#editItemDiscount"><span class="glyphicon glyphicon-pencil"></span></a>';
-            }
-            },
-            {data: 'articul', title: 'артикул', defaultContent: ''},
-            {data: 'name', title: 'название', defaultContent: ''},
-            {data: 'discount1', title: 'скидка 1 шаг, %', defaultContent: ''},
-            {data: 'discount2', title: 'скидка 2 шаг, %', defaultContent: ''},
-            {data: 'url', title: 'адрес', defaultContent: ''}
-        ]
-    });
-
-    $('#editItemDiscount').on('show.bs.modal', function (e) {
-        $('#discountItem1').val($(e.relatedTarget).data('discount1'));
-        $('#discountItem2').val($(e.relatedTarget).data('discount2'));
-        id = $(e.relatedTarget).data('id');
-
-        if (id != null) {
-            $("#itemSelect").append("<option value='" + $(e.relatedTarget).data('articul') + "'>" + $(e.relatedTarget).data('name') + "</option>");
-            $('#itemSelect').val($(e.relatedTarget).data('articul'));
-        }
-
-        $('#itemSelect').select2({
-            theme: "bootstrap",
-            language: {
-                noResults: function () {
-                    return "Ничего не найдено";
-                },
-                searching: function () {
-                    return "Поиск...";
-                },
-                inputTooShort: function () {
-                    return "Начните вводить название товара";
-                }
-            },
-            ajax: {
-                url: "offer_discounts",
-                type: "GET",
-                dataType: 'json',
-                delay: 250,
-                data: function (params) {
-                    return {
-                        type: "offers",
-                        search: params.term
-                    };
-                },
-                processResults: function (data) {
-                    // parse the results into the format expected by Select2.
-                    // since we are using custom formatting functions we do not need to
-                    // alter the remote JSON data
-                    return {
-                        results: data.map(function (obj) {
-                            return {id: obj.key, text: obj.value};
-                        })
-                    };
-                },
-                cache: true
-            },
-            escapeMarkup: function (markup) {
-                return markup;
-            }, // let our custom formatter work
-            minimumInputLength: 1
-        });
-    }).on('hidden.bs.modal', function () {
-        $('#discountItem1').val('');
-        $('#discountItem2').val('');
-        $("#itemSelect").val('');
-    });
-
-    $('#saveItemDiscount').on('click', function (e) {
-        $.ajax({
-            url: "offer_discounts",
-            type: "POST",
-            data: {
-                type: "save",
-                id: id,
-                offerId: $('#itemSelect').val(),
-                discount1: $('#discountItem1').val(),
-                discount2: $('#discountItem2').val()
-            }
-        }).done(function (data) {
-            if (!data.success) {
-                alert('itemDiscountsAlert', data.error, 'danger', 5000);
-            }
-            $('#editItemDiscount').modal('hide');
-            itemDiscounts.ajax.reload();
-        });
-    });
-
-    $('#deleteItemDiscount').on('click', function (e) {
-        $.ajax({
-            url: "offer_discounts",
-            type: "POST",
-            data: {
-                type: "delete",
-                id: id
-            }
-        }).done(function (data) {
-            if (!data.success) {
-                alert('itemDiscountsAlert', data.error, 'danger', 5000);
-            }
-            $('#editItemDiscount').modal('hide');
-            itemDiscounts.ajax.reload();
-        });
     });
 
     //Pages

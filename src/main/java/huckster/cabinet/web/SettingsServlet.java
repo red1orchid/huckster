@@ -43,6 +43,7 @@ public class SettingsServlet extends UserServlet implements JsonOutput {
             if (!isAutoMode) {
                 req.setAttribute("devices", widgetDao.getDevices());
             }
+            req.setAttribute("widgetColors", widgetDao.getColors(userData.getCompanyId()));
 
             req.getRequestDispatcher("/jsp/settings.jsp").forward(req, resp);
         } else if (type.equals("widget_url")) {
@@ -70,6 +71,10 @@ public class SettingsServlet extends UserServlet implements JsonOutput {
                 break;
                 case "save_password": {
                     writeObject(resp, savePassword(req, userData));
+                }
+                break;
+                case "save_colors": {
+                    writeObject(resp, getOperationStatus(saveWidgetColors(req, userData), "Ошибка сохранения. Повторите попытку позже или обратитесь в поддержку"));
                 }
                 break;
             }
@@ -116,6 +121,17 @@ public class SettingsServlet extends UserServlet implements JsonOutput {
             }
         } catch (SQLException | NotFoundException e) {
             Util.logError("Failed to update settings for company ", e, userData);
+        }
+        return false;
+    }
+
+    private boolean saveWidgetColors(HttpServletRequest req, UserData userData) {
+        try {
+            widgetDao.updateColors(userData.getCompanyId(), req.getParameter("body"), req.getParameter("buttonTop"), req.getParameter("buttonBottom"));
+            return true;
+        }
+        catch (SQLException e) {
+            Util.logError("Failed to update widget colors for company ", e, userData);
         }
         return false;
     }

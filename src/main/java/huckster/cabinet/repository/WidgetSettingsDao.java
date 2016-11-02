@@ -1,11 +1,8 @@
 package huckster.cabinet.repository;
 
-import huckster.cabinet.model.DiscountEntity;
-import huckster.cabinet.model.ListEntity;
-import huckster.cabinet.model.RuleEntity;
-import huckster.cabinet.model.TreeEntity;
-import org.apache.commons.codec.language.bm.Rule;
+import huckster.cabinet.model.*;
 
+import javax.ws.rs.NotFoundException;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -35,7 +32,7 @@ public class WidgetSettingsDao extends DbDao {
 
         Map<Integer, String> devices = getDevices();
         return selectValue(sql, (rs) -> new RuleEntity(rs.getString("utm_medium"), rs.getInt("destination"),
-                        devices.get(rs.getInt("destination")), rs.getString("days"), rs.getInt("start_hour"), rs.getInt("end_hour"), rs.getString("geo")), companyId);
+                devices.get(rs.getInt("destination")), rs.getString("days"), rs.getInt("start_hour"), rs.getInt("end_hour"), rs.getString("geo")), companyId);
     }
 
     public void updateRule(int companyId, RuleEntity rule) throws SQLException {
@@ -214,7 +211,7 @@ public class WidgetSettingsDao extends DbDao {
     }
 
     public void insertOfferDiscount(int companyId, int offerId, Integer step1, Integer step2) throws SQLException {
-        String sql = "INSERT INTO sync_discounts_offers(company_id, offer_id, step1, step2)" +
+        String sql = "INSERT INTO sync_discounts_offers2(company_id, offer_id, step1, step2)" +
                 "     VALUES(?, ?, ?, ?)";
 
         executeUpdate(sql, companyId, offerId, step1, step2);
@@ -247,5 +244,22 @@ public class WidgetSettingsDao extends DbDao {
                 , companyId);
 
         return list;
+    }
+
+    public WidgetColors getColors(int companyId) throws SQLException {
+        String sql = "SELECT brand_color, button_color_top, button_color_bottom FROM companies WHERE id = ?";
+
+        return selectValue(sql, (rs) -> new WidgetColors(rs.getString("brand_color"), rs.getString("button_color_top"), rs.getString("button_color_bottom"))
+                , companyId).orElseThrow(NotFoundException::new);
+    }
+
+    public void updateColors(int companyId, String body, String buttonTop, String buttonBottom) throws SQLException {
+        String sql = "UPDATE companies" +
+                "        SET brand_color = ?, " +
+                "            button_color_top = ?, " +
+                "            button_color_bottom = ?" +
+                "      WHERE id = ?";
+
+        executeUpdate(sql, body, buttonTop, buttonBottom, companyId);
     }
 }
