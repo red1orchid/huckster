@@ -4,6 +4,8 @@ import huckster.cabinet.OperationStatus;
 import huckster.cabinet.Util;
 import huckster.cabinet.model.CompanyEntity;
 import huckster.cabinet.repository.CompanyInfoDao;
+import huckster.cabinet.repository.SettingsDao;
+import huckster.cabinet.repository.SyncDao;
 import huckster.cabinet.repository.UserData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,7 @@ abstract class UserServlet extends HttpServlet {
             try {
                 req.setAttribute("company", userData.getCompanyInfo());
                 req.setAttribute("isWidgetActive", dao.isWidgetActive(userData.getCompanyId()));
+                req.setAttribute("isSync", SyncDao.getSyncState(userData.getCompanyId()));
                 initDataGet(req, resp, userData);
             } catch (SQLException e) {
                 e.printStackTrace();

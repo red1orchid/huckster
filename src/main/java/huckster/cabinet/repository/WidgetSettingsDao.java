@@ -211,7 +211,7 @@ public class WidgetSettingsDao extends DbDao {
     }
 
     public void insertOfferDiscount(int companyId, int offerId, Integer step1, Integer step2) throws SQLException {
-        String sql = "INSERT INTO sync_discounts_offers2(company_id, offer_id, step1, step2)" +
+        String sql = "INSERT INTO sync_discounts_offers(company_id, offer_id, step1, step2)" +
                 "     VALUES(?, ?, ?, ?)";
 
         executeUpdate(sql, companyId, offerId, step1, step2);

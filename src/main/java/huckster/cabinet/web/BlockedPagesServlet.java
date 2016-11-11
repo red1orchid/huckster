@@ -28,15 +28,13 @@ public class BlockedPagesServlet extends UserServlet implements JsonOutput {
     void initDataPost(HttpServletRequest req, HttpServletResponse resp, UserData userData) throws ServletException, IOException, SQLException {
         String type = req.getParameter("type");
         if (type != null) {
-            OperationStatus status;
             switch (type) {
                 case "save": {
                     writeObject(resp, getOperationStatus(saveUrl(req, userData), "Ошибка сохранения. Проверьте правильность вводимых данных"));
                 }
                 break;
                 case "delete": {
-                    //TODO: text?!
-                    writeObject(resp, getOperationStatus(deleteUrl(req, userData), "Ошибка удаления"));
+                    writeObject(resp, getOperationStatus(deleteUrl(req, userData), "Ошибка удаления. Повторите попытку позже или обратитесь в поддержку"));
                 }
                 break;
             }

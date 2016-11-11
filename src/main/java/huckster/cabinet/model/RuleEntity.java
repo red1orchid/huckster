@@ -1,8 +1,5 @@
 package huckster.cabinet.model;
 
-import java.util.Arrays;
-import java.util.StringJoiner;
-
 /**
  * Created by PerevalovaMA on 21.07.2016.
  */
@@ -11,7 +8,7 @@ public class RuleEntity {
     private int devices;
     private String strDevices;
     private String days;
-  //  private boolean[] daysArray = new boolean[7];
+    //  private boolean[] daysArray = new boolean[7];
     private int timeFrom;
     private int timeTo;
     private String geo;
@@ -53,8 +50,10 @@ public class RuleEntity {
 
     public boolean[] getDaysArray() {
         boolean[] daysArray = new boolean[7];
-        for (String day : days.split(":")) {
-            daysArray[Integer.parseInt(day) - 1] = true;
+        if (days != null) {
+            for (String day : days.split(":")) {
+                daysArray[Integer.parseInt(day) - 1] = true;
+            }
         }
 
         return daysArray;

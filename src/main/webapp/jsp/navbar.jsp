@@ -5,6 +5,8 @@
   Time: 13:17
   To change this template use File | Settings | File Templates.
 --%>
+
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
@@ -25,7 +27,8 @@
                         class="glyphicon glyphicon-play green widget_preview"></span></a></li>
             </c:if>
 
-            <li><a data-placement="bottom" title="Скачать инструкцию" href="http://hucksterbot.ru/HucksterBot_Guide_2016.pdf" download><span
+            <li><a data-placement="bottom" title="Скачать инструкцию"
+                   href="http://hucksterbot.ru/HucksterBot_Guide_2016.pdf" download><span
                     class="glyphicon glyphicon-question-sign"></span></a></li>
             <li><a href="logout"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
         </ul>
@@ -66,6 +69,18 @@
         </div>
     </div>
 </div>
+<%--Syncronizing...--%>
+<div id="loadingBar" style="<c:if
+        test="${!isSync}">display:none; </c:if>position: fixed; width: 200px; z-index: 10; bottom: 0px; right: 20px;">
+    <p style="text-align: center">Синхронизация данных...</p>
+    <div class="progress">
+        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45"
+             aria-valuemin="0"
+             aria-valuemax="100" style="width: 100%">
+            <%--<span class="sr-only">45% Complete</span>--%>
+        </div>
+    </div>
+</div>
 
 <style type="text/css">
     .green {
@@ -84,21 +99,16 @@
             });
         }
     }
-    /*
-     bootstrap_alert = function () {
-     };
-     bootstrap_alert.error = function (message) {
-     $('#passAlert').html('<div class="alert alert-danger alert-dismissible fade in" role="alert">' +
-     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-     '<span aria-hidden="true">&times;</span></button>' + message + '</div>').show();
-     };
-     bootstrap_alert.success = function (message, timeOut) {
-     $('#passAlert').html('<div class="alert alert-success alert-dismissible fade in" role="alert">' +
-     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-     '<span aria-hidden="true">&times;</span></button>' + message + '</div>').fadeTo(timeOut, 500).slideUp(500, function () {
-     $("#passAlert").slideUp(500);
-     }).show();
-     };*/
+
+    var webSocket = new WebSocket('ws://' + window.location.host + '/cabinet/sync');
+
+    webSocket.onmessage = function (event) {
+        if (event.data == 'show') {
+            $('#loadingBar').show();
+        } else if (event.data == 'hide') {
+            $('#loadingBar').hide();
+        }
+    };
 
     $('.widget_preview').on('click', function (e) {
         $.ajax({

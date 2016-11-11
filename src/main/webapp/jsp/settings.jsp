@@ -62,7 +62,7 @@
             <li><a data-toggle="tab" href="#step2">Скидки для категорий и вендоров</a></li>
             <li><a data-toggle="tab" href="#step3">Скидки на отдельные товары</a></li>
             <li><a data-toggle="tab" href="#pages">Страницы-исключения</a></li>
-            <li><a data-toggle="tab" href="#widget">Виджет</a></li>
+            <li><a data-toggle="tab" href="#widget">Оформление виджета</a></li>
             <c:if test="${!isScriptInstalled}">
                 <li><a data-toggle="tab" href="#script">Ваш код установки</a></li>
             </c:if>
@@ -124,10 +124,10 @@
                                 <h4 class="modal-title">Редактирование страницы</h4>
                             </div>
                             <div class="modal-body">
-                                <div role="form">
+                                <div id="pagesForm" role="form">
                                     <div class="form-group">
                                         <label for="url">Адрес</label>
-                                        <input id="url" type="text" class="form-control" value="${url.url}">
+                                        <input id="url" type="text" class="form-control" value="${url.url}" required>
                                         <br>
                                         <label for="isTrash">Это корзина</label>
                                         <br>
@@ -139,6 +139,8 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Отмена
+                                </button>
+                                <button id="deletePage" type="submit" class="btn btn-default">Удалить
                                 </button>
                                 <button id="savePage" type="submit" class="btn btn-primary">Сохранить
                                 </button>
@@ -194,7 +196,6 @@
         if (activeTab && $('a[href="' + activeTab + '"]').val() != undefined) {
             $('a[href="' + activeTab + '"]').tab('show');
         } else {
-            console.log('here');
             $('.nav-tabs a:first').tab('show');
         }
     });
@@ -211,6 +212,7 @@
     });
 
     $('#savePage').on('click', function (e) {
+        $("#pagesForm").valid();
         $.ajax({
             url: "blocked_pages",
             type: "POST",
@@ -219,6 +221,24 @@
                 id: id,
                 url: $('#url').val(),
                 isTrash: $('#isTrash').bootstrapSwitch('state') ? 1 : 0
+            }
+        }).done(function (data) {
+            if (!data.success) {
+                $('#editPage').modal('hide');
+                alert('pagesAlert', data.error, 'danger', 5000);
+            } else {
+                location.reload();
+            }
+        });
+    });
+
+    $('#deletePage').on('click', function (e) {
+        $.ajax({
+            url: "blocked_pages",
+            type: "POST",
+            data: {
+                type: "delete",
+                id: id
             }
         }).done(function (data) {
             if (!data.success) {

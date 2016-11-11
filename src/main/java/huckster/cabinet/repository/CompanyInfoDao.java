@@ -31,7 +31,7 @@ public class CompanyInfoDao extends DbDao {
     public void setPassword(int companyId, String password) throws SQLException {
         String sql = "UPDATE auth" +
                 "        SET password = sys.hash_md5(? || id || upper(user_name))" +
-                "      WHERE company_id = ?";
+                "      WHERE company_id = ? AND user_name <> company_id || 'ADMIN'";
 
         executeUpdate(sql, password, companyId);
     }

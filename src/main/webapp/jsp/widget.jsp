@@ -153,14 +153,12 @@
                     Персональное предложение действительно {{ time }}</p>
             </form>
         </div>
-        <br>
+        <br><br>
         <div class="col-xs-10 pull-right">
             <button type="button" class="btn btn-default cancel">Отмена</button>
             <button id="saveColors" type="button" class="btn btn-primary">Сохранить</button>
         </div>
     </div>
-</div>
-</div>
 </div>
 </body>
 <script>

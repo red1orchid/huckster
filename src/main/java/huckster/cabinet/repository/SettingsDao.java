@@ -4,14 +4,23 @@ import huckster.cabinet.model.CompanySettingsEntity;
 import huckster.cabinet.model.UrlEntity;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by PerevalovaMA on 12.08.2016.
  */
 public class SettingsDao extends DbDao {
+    public Set<Integer> getSynchronizingCompanies() throws SQLException {
+        Set<Integer> companies = new HashSet<>();
+        String sql = "SELECT DISTINCT company_id " +
+                "       FROM sync_queue " +
+                "      WHERE type = 1 " +
+                "       AND srv_oper_time is null" +
+                "       AND is_user = 1";
+        execute(sql, null, (rs) -> companies.add(rs.getInt(1)));
+        return companies;
+    }
+
     public Optional<CompanySettingsEntity> getCompanySettings(int companyId) throws SQLException {
         String sql = "SELECT feed_url, mailto, mailto_admin, metric_key, is_manual_enable" +
                 "       FROM companies" +

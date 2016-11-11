@@ -88,9 +88,13 @@
     </form>
 </div>
 
+<div id="mycontainer"></div>
+
 <script type="text/javascript">
     $('.alert-success').fadeTo(1500, 500).slideUp(500, function () {
         $(".alert-success").slideUp(500);
-    });</script>
+    });
+</script>
+
 </body>
 </html>
