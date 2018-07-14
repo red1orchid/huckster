@@ -212,7 +212,6 @@
     });
 
     $('#savePage').on('click', function (e) {
-        $("#pagesForm").valid();
         $.ajax({
             url: "blocked_pages",
             type: "POST",

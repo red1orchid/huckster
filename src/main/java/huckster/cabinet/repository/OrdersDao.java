@@ -13,7 +13,7 @@ import java.util.List;
 public class OrdersDao extends DbDao {
     public List<OrderEntity> getOrders(int companyId, Date startDate, Date endDate) throws SQLException {
         List<OrderEntity> orders = new ArrayList<>();
-        String sql = "SELECT h.id as order_id," +
+        String sql = "SELECT DISTINCT h.id as order_id," +
                 "            t.offer_id," +
                 "            f.vendor_code," +
                 "            f.name as model," +

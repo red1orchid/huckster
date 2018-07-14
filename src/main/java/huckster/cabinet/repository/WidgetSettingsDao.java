@@ -11,7 +11,11 @@ import java.util.*;
  */
 public class WidgetSettingsDao extends DbDao {
     public Optional<String> getUrl(int companyId) throws SQLException {
-        String sql = "SELECT 'http://' || t.url || '?utm_medium=' || t.utm_medium || chr(38) || 'utm_campaign=gold' AS url" +
+        String sql = "SELECT 'http://' || t.url || " +
+                "            CASE" +
+                "              WHEN t.url like '%?%' THEN '&' " +
+                "              ELSE '?' " +
+                "            END || 'utm_medium=' || t.utm_medium || chr(38) || 'utm_campaign=gold' AS url" +
                 "       FROM (SELECT t.* FROM sync_offers_auto t ORDER BY DBMS_RANDOM.RANDOM) t" +
                 "      WHERE rownum = 1" +
                 "        AND company_id = ?";
