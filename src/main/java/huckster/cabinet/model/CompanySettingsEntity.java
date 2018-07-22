@@ -9,15 +9,15 @@ public class CompanySettingsEntity {
     private String orderEmails;
     private String contactEmails;
     private String yandexKey;
-    private int isActive;
+    private String workMode;
 
-    public CompanySettingsEntity(int companyId, String yml, String orderEmails, String contactEmails, String yandexKey, int isActive) {
+    public CompanySettingsEntity(int companyId, String yml, String orderEmails, String contactEmails, String yandexKey, String workMode) {
         this.companyId = companyId;
         this.yml = yml;
         this.orderEmails = orderEmails;
         this.contactEmails = contactEmails;
         this.yandexKey = yandexKey;
-        this.isActive = isActive;
+        this.workMode = workMode;
     }
 
     public String getYml() {
@@ -36,7 +36,7 @@ public class CompanySettingsEntity {
         return yandexKey;
     }
 
-    public int getIsActive() {
-        return isActive;
+    public String getWorkMode() {
+        return workMode;
     }
 }

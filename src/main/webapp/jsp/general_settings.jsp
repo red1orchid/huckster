@@ -48,14 +48,23 @@
                 <label for="yandexKey">Ключ Яндекс.Метрики</label>
                 <input id="yandexKey" type="number" class="form-control" value="${settings.yandexKey}">
                 <br>
-                <label for="isEnabled">Виджет</label><br>
+                <label for="workMode">Виджет</label><br>
                 <button id="widgetPreview" type="submit"
                         class="btn btn-success <c:if test="${!isWidgetActive}">disabled</c:if>"><span
                         class="glyphicon glyphicon-play"></span>Предпросмотр
                 </button>
-                <form class="input-group pull-right">
-                    <input id="isEnabled" type="checkbox" class="toggle form-control" data-on-text="Включен"
-                           data-off-text="Выключен" <c:if test="${settings.isActive == 1}">checked</c:if>>
+                <form id="workMode" class="input-group pull-right">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-default <c:if test="${settings.workMode == 'on'}">active</c:if>">
+                            <input type="radio" class="workMode"  value="on"> Включен
+                        </label>
+                        <label class="btn btn-default <c:if test="${settings.workMode == 'off'}">active</c:if>">
+                            <input type="radio" class="workMode" value="off"> Выключен
+                        </label>
+                        <label class="btn btn-default <c:if test="${settings.workMode == 'button'}">active</c:if>">
+                            <input type="radio" class="workMode" value="button"> Кнопка
+                        </label>
+                    </div>
                 </form>
                 <br><br>
                 <button id="saveSettings" type="submit" class="btn btn-primary center-block">Сохранить
@@ -80,6 +89,16 @@
         });
     });
 
+    /*   $('#workMode .btn').on('click', function(event) {
+        console.log($(this).find('input').val());
+        var val = $(this).find('input').val();
+        $('#output').html(val);
+    });
+    $(".workMode").click(function(){
+        $(".workMode").removeClass("active");
+        $(this).addClass("active");
+    });*/
+
     $('#saveSettings').on('click', function (e) {
         $.ajax({
             url: "settings",
@@ -90,7 +109,7 @@
                 orderEmails: $('#orderEmails').val(),
                 contactEmails: $('#contactEmails').val(),
                 yandexKey: $('#yandexKey').val(),
-                isEnabled: $('#isEnabled').bootstrapSwitch('state')
+                workMode: $('.workMode:checked').val()
             }
         }).done(function (data) {
             if (!data.success) {

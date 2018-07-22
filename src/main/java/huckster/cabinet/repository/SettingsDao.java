@@ -22,26 +22,26 @@ public class SettingsDao extends DbDao {
     }
 
     public Optional<CompanySettingsEntity> getCompanySettings(int companyId) throws SQLException {
-        String sql = "SELECT feed_url, mailto, mailto_admin, metric_key, is_manual_enable" +
+        String sql = "SELECT feed_url, mailto, mailto_admin, metric_key, work_mode" +
                 "       FROM companies" +
                 "      WHERE id = ?";
 
         return selectValue(sql, (rs) ->
                         new CompanySettingsEntity(companyId, rs.getString("feed_url"), rs.getString("mailto"), rs.getString("mailto_admin"),
-                                rs.getString("metric_key"), rs.getInt("is_manual_enable"))
+                                rs.getString("metric_key"), rs.getString("work_mode"))
                 , companyId);
     }
 
-    public void updateCompanySettings(int companyId, String yml, String orderEmails, String contactEmails, String yandexKey, int isActive) throws SQLException {
+    public void updateCompanySettings(int companyId, String yml, String orderEmails, String contactEmails, String yandexKey, String workMode) throws SQLException {
         String sql = "UPDATE companies" +
                 "        SET feed_url         = ?," +
                 "            mailto           = ?," +
                 "            mailto_admin     = ?," +
                 "            metric_key       = ?," +
-                "            is_manual_enable = ?" +
+                "            work_mode = ?" +
                 "      WHERE id = ?";
 
-        executeUpdate(sql, yml, orderEmails, contactEmails, yandexKey, isActive, companyId);
+        executeUpdate(sql, yml, orderEmails, contactEmails, yandexKey, workMode, companyId);
     }
 
     public List<UrlEntity> getBlockedUrls(int companyId) throws SQLException {

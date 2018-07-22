@@ -109,14 +109,13 @@ public class SettingsServlet extends UserServlet implements JsonOutput {
     }
 
     private boolean saveSettings(HttpServletRequest req, UserData userData) {
-        String isEnabled = req.getParameter("isEnabled");
+        String workMode = req.getParameter("workMode");
         try {
-            if (isEnabled == null) {
-                throw new NotFoundException("Empty field isEnabled");
+            if (workMode == null) {
+                throw new NotFoundException("Empty field workMode");
             } else {
-                int isActive = Boolean.parseBoolean(isEnabled) ? 1 : 0;
                 dao.updateCompanySettings(userData.getCompanyId(), req.getParameter("yml"), req.getParameter("orderEmails"), req.getParameter("contactEmails"),
-                        req.getParameter("yandexKey"), isActive);
+                        req.getParameter("yandexKey"), workMode);
                 return true;
             }
         } catch (SQLException | NotFoundException e) {
