@@ -7,6 +7,12 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
+<head>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel="stylesheet">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
+</head>
 <body>
 <div id="step2" class="tab-pane fade">
     <br>
@@ -46,6 +52,22 @@
                             <input id="discount1" type="number" class="form-control">
                             <label for="discount2">Cкидка 2 уровня, %</label>
                             <input id="discount2" type="number" class="form-control">
+                            <label for="startdatecat">Период действия</label>
+                            <div class="form-inline">
+                                <div class="form-group">
+                                    <div class="input-group date">
+                                        <input id="startdatecat" type="text" name="startDateCat"
+                                               class="form-control" data-date-format="dd.mm.yyyy" autocomplete="off">
+                                        <%--<span class="input-group-addon btn"><i class="glyphicon glyphicon-th"></i></span>--%>
+                                    </div>
+                                    <div class="input-group date">
+                                        <input id="enddatecat" type="text" name="endDateCat"
+                                               class="form-control"
+                                               data-date-format="dd.mm.yyyy" autocomplete="off">
+                                        <%-- <span class="input-group-addon btn"><i class="glyphicon glyphicon-th"></i></span>--%>
+                                    </div>
+                                </div>
+                            </div>
                             <br>
                             <br>
                             <br>
@@ -83,6 +105,7 @@
                 data: 'id', render: function (data, type, full, meta) {
                 return '<a data-id="' + full.id + '" data-category="' + full.categoryId + '" data-vendor="' + full.vendor + '" data-minprice="' + full.minPrice +
                         '" data-maxprice="' + full.maxPrice + '" data-discount1="' + full.discount1 + '" data-discount2="' + full.discount2 +
+                        '" data-startdate="' + full.startDate + '" data-enddate="' + full.endDate +
                         '" data-toggle="modal" href="#editVendorDiscount"><span class="glyphicon glyphicon-pencil"></span></a>';
             }
             },
@@ -91,7 +114,9 @@
             {data: 'minPrice', title: 'цена, от', defaultContent: ''},
             {data: 'maxPrice', title: 'цена, до', defaultContent: ''},
             {data: 'discount1', title: 'скидка 1 шаг, %', defaultContent: ''},
-            {data: 'discount2', title: 'скидка 2 шаг, %', defaultContent: ''}
+            {data: 'discount2', title: 'скидка 2 шаг, %', defaultContent: ''},
+            {data: 'startDate', title: 'действует с', defaultContent: ''},
+            {data: 'endDate', title: 'действует по', defaultContent: ''}
         ]
     });
 
@@ -116,12 +141,28 @@
     }
 
     var id;
-    $('#editVendorDiscount').on('show.bs.modal', function (e) {
+
+    var checkincat = $('#startdatecat').datepicker().on('changeDate', function (ev) {
+        checkincat.hide();
+        $('#enddatecat')[0].focus();
+    }).data('datepicker');
+
+    var checkoutcat = $('#enddatecat').datepicker({
+        onRender: function (date) {
+            return date.valueOf() <= checkincat.date.valueOf() ? 'disabled' : '';
+        }
+    }).on('changeDate', function (ev) {
+        checkoutcat.hide();
+    }).data('datepicker');
+
+    $('#editVendorDiscount').on('shown.bs.modal', function (e) {
         id = $(e.relatedTarget).data('id');
         $('#priceFrom').val($(e.relatedTarget).data('minprice') != null ? $(e.relatedTarget).data('minprice') : 0);
         $('#priceTo').val($(e.relatedTarget).data('maxprice') != null ? $(e.relatedTarget).data('maxprice') : 1000000000);
         $('#discount1').val($(e.relatedTarget).data('discount1'));
         $('#discount2').val($(e.relatedTarget).data('discount2'));
+        $('#enddatecat').datepicker('update', $(e.relatedTarget).data('enddate'));
+        $('#startdatecat').datepicker('update', $(e.relatedTarget).data('startdate'));
 
         $.ajax({
             url: "vendor_discounts",
@@ -146,6 +187,8 @@
         $('#priceTo').val('');
         $('#discount1').val('');
         $('#discount2').val('');
+        $('#startdatecat').val('');
+        $('#enddatecat').val('');
     });
 
     $('#catSelect').on('changed.bs.select', function (e) {
@@ -175,7 +218,9 @@
                 minPrice: $('#priceFrom').val(),
                 maxPrice: $('#priceTo').val(),
                 discount1: $('#discount1').val(),
-                discount2: $('#discount2').val()
+                discount2: $('#discount2').val(),
+                startDate: $('#startdatecat').val(),
+                endDate: $('#enddatecat').val()
             }
         }).done(function (data) {
             if (!data.success) {

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -151,17 +152,19 @@ public class VendorDiscounts extends UserServlet implements JsonOutput {
         Integer step2 = stringToInt(req.getParameter("discount2"));
         Integer minPrice = stringToInt(req.getParameter("minPrice"));
         Integer maxPrice = stringToInt(req.getParameter("maxPrice"));
+        LocalDate startDate = Util.parseDate(req.getParameter("startDate"));
+        LocalDate endDate = Util.parseDate(req.getParameter("endDate"));
 
         if (id != null) {
             try {
-                dao.updateVendorsDiscount(id, userData.getCompanyId(), categoryId, vendor, step1, step2, minPrice, maxPrice);
+                dao.updateVendorsDiscount(id, userData.getCompanyId(), categoryId, vendor, step1, step2, minPrice, maxPrice, startDate, endDate);
                 success = true;
             } catch (SQLException e) {
                 Util.logError("Failed to update vendor discount " + req.getParameter("id"), e, userData);
             }
         } else {
             try {
-                dao.insertVendorsDiscount(userData.getCompanyId(), categoryId, vendor, step1, step2, minPrice, maxPrice);
+                dao.insertVendorsDiscount(userData.getCompanyId(), categoryId, vendor, step1, step2, minPrice, maxPrice, startDate, endDate);
                 success = true;
             } catch (SQLException e) {
                 Util.logError("Failed to insert new vendor discount", e, userData);

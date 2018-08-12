@@ -13,10 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by PerevalovaMA on 26.10.2016.
@@ -108,20 +107,22 @@ public class OfferDiscountsServlet extends UserServlet implements JsonOutput{
         Integer offerId = stringToInt(req.getParameter("offerId"));
         Integer step1 = stringToInt(req.getParameter("discount1"));
         Integer step2 = stringToInt(req.getParameter("discount2"));
+        LocalDate startDate = Util.parseDate(req.getParameter("startDate"));
+        LocalDate endDate = Util.parseDate(req.getParameter("endDate"));
         boolean success = false;
 
         if (offerId == null) {
             Util.logError("Failed to update offer discount: empty offerId", userData);
         } else if (id != null) {
             try {
-                dao.updateOfferDiscount(id, userData.getCompanyId(), offerId, step1, step2);
+                dao.updateOfferDiscount(id, userData.getCompanyId(), offerId, step1, step2, startDate, endDate);
                 success = true;
             } catch (SQLException e) {
                 Util.logError("Failed to update offer discount " + req.getParameter("id"), e, userData);
             }
         } else {
             try {
-                dao.insertOfferDiscount(userData.getCompanyId(), offerId, step1, step2);
+                dao.insertOfferDiscount(userData.getCompanyId(), offerId, step1, step2, startDate, endDate);
                 success = true;
             } catch (SQLException e) {
                 Util.logError("Failed to insert offer discount", e, userData);

@@ -14,12 +14,12 @@
     <link href="./css/table.css" rel="stylesheet">
     <link href="./css/bootstrap.min.css" rel="stylesheet">
     <link href="./css/dashboard.css" rel="stylesheet">
-    <link href="./css/datepicker.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css" rel="stylesheet">
 
     <script src="./js/jquery-2.2.4.min.js"></script>
     <script src="./DataTables/datatables.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/bootstrap-datepicker.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
 </head>
 <body>
 
@@ -151,12 +151,6 @@
 
     $(document).ready(function () {
         var checkin = $('#startdate').datepicker().on('changeDate', function (ev) {
-            if (ev.date.valueOf() > checkout.date.valueOf()) {
-                var startDate = new Date(ev.date);
-                checkout.setValue(startDate);
-            } else {
-                checkout.setValue(checkout.date);
-            }
             checkin.hide();
             $('#enddate')[0].focus();
         }).data('datepicker');

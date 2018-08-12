@@ -4,6 +4,7 @@ import huckster.cabinet.model.*;
 
 import javax.ws.rs.NotFoundException;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -108,27 +109,29 @@ public class WidgetSettingsDao extends DbDao {
                 "            step1," +
                 "            step2," +
                 "            min_price," +
-                "            max_price" +
+                "            max_price," +
+                "            to_char(start_date, 'DD.MM.YYYY') as start_date," +
+                "            to_char(end_date, 'DD.MM.YYYY') as end_date" +
                 "       FROM sync_discounts_cat_vndrs t" +
                 "      WHERE company_id = ?" +
                 "      ORDER BY category DESC, vendors DESC";
 
         execute(sql, 100, (rs) -> {
             discounts.add(new DiscountEntity(rs.getInt("id"), rs.getInt("category_id"), rs.getString("category"), rs.getString("vendors"), rs.getInt("min_price"), rs.getInt("max_price"),
-                    rs.getInt("step1"), rs.getInt("step2")));
+                    rs.getInt("step1"), rs.getInt("step2"), rs.getString("start_date"), rs.getString("end_date")));
         }, companyId);
 
         return discounts;
     }
 
-    public void insertVendorsDiscount(int companyId, Integer categoryId, String vendor, Integer step1, Integer step2, Integer minPrice, Integer maxPrice) throws SQLException {
-        String sql = "INSERT INTO sync_discounts_cat_vndrs(company_id, category_id, vendors, step1, step2, min_price, max_price)" +
-                "     VALUES(?, ?, ?, ?, ?, ?, ?)";
+    public void insertVendorsDiscount(int companyId, Integer categoryId, String vendor, Integer step1, Integer step2, Integer minPrice, Integer maxPrice, LocalDate startDate, LocalDate endDate) throws SQLException {
+        String sql = "INSERT INTO sync_discounts_cat_vndrs(company_id, category_id, vendors, step1, step2, min_price, max_price, start_date, end_date)" +
+                "     VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        executeUpdate(sql, companyId, categoryId, vendor, step1, step2, minPrice, maxPrice);
+        executeUpdate(sql, companyId, categoryId, vendor, step1, step2, minPrice, maxPrice, startDate, endDate);
     }
 
-    public void updateVendorsDiscount(int id, int companyId, Integer categoryId, String vendor, Integer step1, Integer step2, Integer minPrice, Integer maxPrice) throws SQLException {
+    public void updateVendorsDiscount(int id, int companyId, Integer categoryId, String vendor, Integer step1, Integer step2, Integer minPrice, Integer maxPrice, LocalDate startDate, LocalDate endDate) throws SQLException {
         String sql = "UPDATE sync_discounts_cat_vndrs" +
                 "        SET category_id = ?," +
                 "            vendors     = ?," +
@@ -136,10 +139,12 @@ public class WidgetSettingsDao extends DbDao {
                 "            step2       = ?," +
                 "            min_price   = ?," +
                 "            max_price   = ?," +
+                "            start_date  = ?," +
+                "            end_date    = ?," +
                 "            atime       = sysdate" +
                 "      WHERE id = ? AND company_id = ?";
 
-        executeUpdate(sql, categoryId, vendor, step1, step2, minPrice, maxPrice, id, companyId);
+        executeUpdate(sql, categoryId, vendor, step1, step2, minPrice, maxPrice, startDate, endDate, id, companyId);
     }
 
     public void deleteVendorsDiscount(int id, int companyId) throws SQLException {
@@ -199,7 +204,9 @@ public class WidgetSettingsDao extends DbDao {
                 "            d.step1," +
                 "            d.step2," +
                 "            f.url," +
-                "            d.atime" +
+                "            d.atime," +
+                "            to_char(d.start_date, 'DD.MM.YYYY') as start_date," +
+                "            to_char(d.end_date, 'DD.MM.YYYY') as end_date" +
                 "       FROM sync_discounts_offers d" +
                 "      INNER JOIN offers f" +
                 "         ON f.company_id = d.company_id" +
@@ -208,26 +215,27 @@ public class WidgetSettingsDao extends DbDao {
                 "      ORDER BY d.atime DESC";
 
         execute(sql, 100, (rs) -> {
-            discounts.add(new DiscountEntity(rs.getInt("id"), rs.getString("offer_id"), rs.getString("name"), rs.getInt("step1"), rs.getInt("step2"), rs.getString("url")));
+            discounts.add(new DiscountEntity(rs.getInt("id"), rs.getString("offer_id"), rs.getString("name"), rs.getInt("step1"),
+                    rs.getInt("step2"), rs.getString("url"), rs.getString("start_date"), rs.getString("end_date")));
         }, companyId);
 
         return discounts;
     }
 
-    public void insertOfferDiscount(int companyId, int offerId, Integer step1, Integer step2) throws SQLException {
-        String sql = "INSERT INTO sync_discounts_offers(company_id, offer_id, step1, step2)" +
-                "     VALUES(?, ?, ?, ?)";
+    public void insertOfferDiscount(int companyId, int offerId, Integer step1, Integer step2, LocalDate startDate, LocalDate endDate) throws SQLException {
+        String sql = "INSERT INTO sync_discounts_offers(company_id, offer_id, step1, step2, start_date, end_date)" +
+                "     VALUES(?, ?, ?, ?, ?, ?)";
 
-        executeUpdate(sql, companyId, offerId, step1, step2);
+        executeUpdate(sql, companyId, offerId, step1, step2, startDate, endDate);
     }
 
-    public void updateOfferDiscount(int id, int companyId, int offerId, Integer step1, Integer step2) throws SQLException {
+    public void updateOfferDiscount(int id, int companyId, int offerId, Integer step1, Integer step2, LocalDate startDate, LocalDate endDate) throws SQLException {
         String sql = "UPDATE sync_discounts_offers" +
-                "        SET offer_id = ?, step1 = ?, step2 = ?" +
+                "        SET offer_id = ?, step1 = ?, step2 = ?, start_date = ?, end_date = ?" +
                 "      WHERE id = ?" +
                 "        AND company_id = ?";
 
-        executeUpdate(sql, offerId, step1, step2, id, companyId);
+        executeUpdate(sql, offerId, step1, step2, startDate, endDate, id, companyId);
     }
 
     public void deleteOfferDiscount(int id, int companyId) throws SQLException {

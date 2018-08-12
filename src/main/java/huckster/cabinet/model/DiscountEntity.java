@@ -15,8 +15,10 @@ public class DiscountEntity {
     private String articul;
     private String name;
     private String url;
+    private String startDate;
+    private String endDate;
 
-    public DiscountEntity(int id, int categoryId, String category, String vendor, int priceFrom, int priceTo, int discount1, int discount2) {
+    public DiscountEntity(int id, int categoryId, String category, String vendor, int priceFrom, int priceTo, int discount1, int discount2, String startDate, String endDate) {
         this.id = id;
         if (categoryId != 0) {
             this.categoryId = categoryId;
@@ -27,9 +29,11 @@ public class DiscountEntity {
         this.maxPrice = priceTo;
         this.discount1 = discount1;
         this.discount2 = discount2;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
-    public DiscountEntity(int id, String articul, String name, int discount1, int discount2, String url) {
+    public DiscountEntity(int id, String articul, String name, int discount1, int discount2, String url, String startDate, String endDate) {
         this.id = id;
         this.articul = articul;
         this.name = name;
@@ -37,6 +41,8 @@ public class DiscountEntity {
         this.url = url;
         this.discount1 = discount1;
         this.discount2 = discount2;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     public int getId() {
@@ -79,5 +85,21 @@ public class DiscountEntity {
 
     public String getUrl() {
         return url;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 }
